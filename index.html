@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>D3 Project</title>
+<style>
+/*html layout*/
+body {
+  font: 11px sans-serif;
+}
+#wrapper {
+    width: 850px;
+    margin: 20px auto;
+    padding: 0 25px;
+}
+#header {
+    padding:10px 25px 0 25px;
+}
+h1 {
+    border-bottom:1px #D6D6D6 solid;
+    padding-left:10px;
+}
+#footer {
+    text-align: center;
+    margin:0 25px;
+    padding:0 25px 10px 25px;
+    color:#555;
+    border-top:1px #D6D6D6 solid;
+}
+
+/*svg layout */
+path {
+	fill: none;
+	stroke: #FFF;
+	stroke-linejoin: round;
+	stroke-linecap: round;
+}
+
+.gemeente path {
+	fill: #ddd;
+}
+
+.legend circle {
+	fill: none;
+	stroke: #ccc;
+}
+
+.legend text {
+	fill: #777;
+	font: 10px sans-serif;
+	text-anchor: middle;
+}
+.gemeente path :hover {
+	fill: steelblue;
+}
+
+</style>
+<body>
+
+<script src="d3.v3.js"></script>
+<script src="node_modules/topojson/topojson.min.js"></script>
+
+<div id="map"></div>
+<script>
+
+var width = 800,
+    height = 900;
+
+var formatNumber = d3.format(",.0f");
+
+var projection = d3.geo.mercator()
+    .scale(10700)
+    .translate([width / 2, height / 2])
+    .center([5.4, 52.2]);
+
+var path = d3.geo.path()
+    .projection(projection);    
+
+var radius = d3.scale.sqrt()
+    .domain([0, 1e5])
+    .range([0, 10]);
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+    
+var land;
+
+/*d3.json("build/prov.json", function(error, prov) {
+      if (error) return console.error(error);
+
+      land = svg.append("path")
+          .datum(topojson.feature(prov, prov.objects.provgeo))
+          .attr("class", "land")
+          .attr("d", path);
+          
+	
+	
+});*/
+d3.json("build/gem.json", function(error, gem) {
+	if (error) return console.error(error);
+
+	//console.log(gem.objects);
+	/*svg.append("path")
+	    .datum(topojson.feature(gem, gem.objects.gemeentes))
+	    .attr("class", "land")
+	    .attr("d", path);*/
+	
+	 svg.append('g')
+		.attr("class", "gemeente")
+	 	.selectAll("path")
+		.data(topojson.feature(gem, gem.objects.gemeentes).features)
+		.enter()
+		.append("path")
+		.attr("id", function(d) { return d.properties.name })
+		.attr("d", path)
+		.append("title")
+		.text(function(d) {
+			return d.properties.name;
+		});
+        
+});
+
+
+
+</script>
+</body>
+
