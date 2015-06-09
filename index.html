@@ -120,6 +120,7 @@
 			var min = data.Jaar[0];
 			var max = data.Jaar[data.Jaar.length - 1];
 			d3.select('#slider')
+				.style("width", width + "px")
 				.call(d3.slider()
 				.scale(d3.scale.ordinal()
 					.domain(data.Jaar).rangePoints([0, 1], 0.5))
