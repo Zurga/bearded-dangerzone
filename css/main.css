@@ -1,0 +1,48 @@
+body {
+  font: 11px sans-serif;
+}
+#wrapper {
+    width: 850px;
+    margin: 20px auto;
+    padding: 0 25px;
+}
+#header {
+    padding:10px 25px 0 25px;
+}
+h1 {
+    border-bottom:1px #D6D6D6 solid;
+    padding-left:10px;
+}
+#footer {
+    text-align: center;
+    margin:0 25px;
+    padding:0 25px 10px 25px;
+    color:#555;
+    border-top:1px #D6D6D6 solid;
+}
+
+/*svg layout */
+path {
+	fill: none;
+	stroke: #FFF;
+	stroke-linejoin: round;
+	stroke-linecap: round;
+}
+
+.gemeente path {
+	fill: #ddd;
+}
+
+.legend circle {
+	fill: none;
+	stroke: #ccc;
+}
+
+.legend text {
+	fill: #777;
+	font: 10px sans-serif;
+	text-anchor: middle;
+}
+.gemeente path :hover {
+	fill: steelblue;
+}
