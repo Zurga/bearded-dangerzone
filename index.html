@@ -66,10 +66,11 @@
 			d3.json("build/gem.json", function(error, gem) {
 				if (error) return console.error(error);
 				
-				g.attr("class", "gemeente")
+				g.attr("class", "gemeentes")
 					.selectAll("path")
 					.data(topojson.feature(gem, gem.objects.gemeentes).features)
-					.enter()
+					.enter().append("g")
+					.attr("class", "gemeente")
 					.append("path")
 					.on("click", clicked)
 					.attr("id", function(d) { return d.properties.name })
@@ -117,6 +118,7 @@
 			/* slider with test data */
 			// !!!test data please remove!!!
 			var data = {Jaar: [2001, 2002, 2003,  2004, 2005, 2006]};
+			var colors = d3.scale.category10();
 			var min = data.Jaar[0];
 			var max = data.Jaar[data.Jaar.length - 1];
 			d3.select('#slider')
@@ -127,7 +129,9 @@
 				.snap(true)
 				.value(min)
 				.on("slide", function(evt, value){
-					return true; }));
+					d3.selectAll('.gemeente path')
+					.transition()
+					.style('fill', colors(value)); }));
 					
 		
 			
