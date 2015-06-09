@@ -29,7 +29,7 @@ path {
 	stroke-linecap: round;
 }
 
-.gemeente path {
+.gemeentes path {
 	fill: #ddd;
 }
 
@@ -44,7 +44,7 @@ path {
 	text-anchor: middle;
 }
 .gemeente path:hover {
-	fill: lightblue;
+	fill: lightblue !important;
 }
 .gemeente path.active {	
 	fill: steelblue;
