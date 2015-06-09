@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<script src='d3.min.js'></script>
+		<script src='d3.slider.js'></script>
+		<link rel="stylesheet" href="d3.slider.css"/>
+	</head>
+	<body>
+	<p id="value"></p>
+	<div id="slider" style='width: 500px;'></div>
+		<script type="text/javascript">
+			var data = {Jaar: [2001, 2002, 2003,  2004, 2005, 2006]};
+			var min = data.Jaar[0];
+			var max = data.Jaar[data.Jaar.length - 1];
+			d3.select('#slider')
+			.call(d3.slider()
+			.scale(d3.scale.ordinal()
+				.domain(data.Jaar).rangePoints([0, 1], 0.5))
+			.axis(d3.svg.axis())
+			.snap(true)
+			.value(min)
+			.on("slide", function(evt, value){
+				d3.select('#value').text(value);}));
+			d3.select('#value')
+		</script>
+	</body>
+</html>
