@@ -44,5 +44,8 @@ path {
 	text-anchor: middle;
 }
 .gemeente path:hover {
+	fill: lightblue;
+}
+.gemeente path.active {	
 	fill: steelblue;
 }

@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>D3 Project</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 		<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 		<script src="node_modules/topojson/topojson.min.js"></script>
 		<link rel="stylesheet" href="css/main.css" />
@@ -50,30 +51,23 @@
 			var g = svg.append('g');
 			
 			svg.call(zoom.event);
-				//.call(zoom) // delete this line to disable free zooming
-				
-			/*d3.json("build/prov.json", function(error, prov) {
-			      if (error) return console.error(error);
 			
-			      land = svg.append("path")
-			          .datum(topojson.feature(prov, prov.objects.provgeo))
-			          .attr("class", "land")
-			          .attr("d", path);
-			          
-				
-				
-			});*/
+			var vars = [], hash;
+			var q = document.URL.split('?')[1];
+			if(q != undefined){
+				q = q.split('&');
+				for(var i = 0; i < q.length; i++){
+					hash = q[i].split('=');
+					vars.push(hash[1]);
+					vars[hash[0]] = hash[1];
+				}
+			}
+			
 			d3.json("build/gem.json", function(error, gem) {
 				if (error) return console.error(error);
-			
-				//console.log(gem.objects);
-				/*svg.append("path")
-				    .datum(topojson.feature(gem, gem.objects.gemeentes))
-				    .attr("class", "land")
-				    .attr("d", path);*/
 				
-				 g.attr("class", "gemeente")
-				 	.selectAll("path")
+				g.attr("class", "gemeente")
+					.selectAll("path")
 					.data(topojson.feature(gem, gem.objects.gemeentes).features)
 					.enter()
 					.append("path")
@@ -81,28 +75,26 @@
 					.attr("id", function(d) { return d.properties.name })
 					.attr("d", path)
 					.append("title")
-					.text(function(d) {
-						return d.properties.name;
-					});
-			        
+					.text(function(d) {	return d.properties.name; });
+					
 			});
 			
 			function clicked(d) {
-			  if (active.node() === this) return reset();
-			  active.classed("active", false);
-			  active = d3.select(this).classed("active", true);
-			
-			  var bounds = path.bounds(d),
-			      dx = bounds[1][0] - bounds[0][0],
-			      dy = bounds[1][1] - bounds[0][1],
-			      x = (bounds[0][0] + bounds[1][0]) / 2,
-			      y = (bounds[0][1] + bounds[1][1]) / 2,
-			      scale = 0.8 / Math.max(dx / width, dy / height),
-			      translate = [width / 2 - scale * x, height / 2 - scale * y];
-			
-			  svg.transition()
-			      .duration(1250)
-			      .call(zoom.translate(translate).scale(scale).event);
+				if (active.node() === this) return reset();
+				active.classed("active", false);
+				active = d3.select(this).classed("active", true);
+				
+				var bounds = path.bounds(d),
+					dx = bounds[1][0] - bounds[0][0],
+					dy = bounds[1][1] - bounds[0][1],
+					x = (bounds[0][0] + bounds[1][0]) / 2,
+					y = (bounds[0][1] + bounds[1][1]) / 2,
+					scale = 0.6 / Math.max(dx / width, dy / height),
+					translate = [width / 2 - scale * x, height / 2 - scale * y];
+				
+				svg.transition()
+					.duration(1250)
+					.call(zoom.translate(translate).scale(scale).event);
 			}
 			
 			function reset() {
@@ -138,6 +130,27 @@
 					return true; }));
 					
 		
+			
+			$(document).ready(function() {
+				setTimeout(function() {
+					jQuery.fn.d3Click = function () {
+						this.each(function (i, e) {
+							var evt = document.createEvent("MouseEvents");
+							evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+							
+							e.dispatchEvent(evt);
+						});
+					};
+					
+					if (vars.hasOwnProperty("gemeente")) {
+						var gemeente = $('#'+vars['gemeente']);
+						gemeente.d3Click();
+					}
+					
+				}, 1000);
+			});
+			
+			
 		</script>
 	</body>
 </html>
