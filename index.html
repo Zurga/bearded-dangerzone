@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>D3 Project</title>
-		<script src="js/d3.v3.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 		<script src="node_modules/topojson/topojson.min.js"></script>
 		<link rel="stylesheet" href="css/main.css" />
 	</head>
@@ -14,16 +14,23 @@
 		
 		<script type="text/javascript">
 			
-			var width = 800,
-			    height = 900;
-			
+			var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
+			    width = height * 0.85,
+			    active = d3.select(null);
+			    
 			var formatNumber = d3.format(",.0f");
 			
 			var projection = d3.geo.mercator()
-			    .scale(10700)
+			    .scale(height * 11)
 			    .translate([width / 2, height / 2])
 			    .center([5.4, 52.2]);
 			
+			var zoom = d3.behavior.zoom()
+			    .translate([0, 0])
+			    .scale(1)
+			    .scaleExtent([1, 8])
+			    .on("zoom", zoomed);
+						
 			var path = d3.geo.path()
 			    .projection(projection);    
 			
@@ -33,10 +40,14 @@
 			
 			var svg = d3.select("#map").append("svg")
 			    .attr("width", width)
-			    .attr("height", height);
+			    .attr("height", height)
+				.on("click", stopped, true);
 			    
-			var land;
+			var g = svg.append('g');
 			
+			svg.call(zoom.event);
+				//.call(zoom) // delete this line to disable free zooming
+				
 			/*d3.json("build/prov.json", function(error, prov) {
 			      if (error) return console.error(error);
 			
@@ -57,12 +68,12 @@
 				    .attr("class", "land")
 				    .attr("d", path);*/
 				
-				 svg.append('g')
-					.attr("class", "gemeente")
+				 g.attr("class", "gemeente")
 				 	.selectAll("path")
 					.data(topojson.feature(gem, gem.objects.gemeentes).features)
 					.enter()
 					.append("path")
+					.on("click", clicked)
 					.attr("id", function(d) { return d.properties.name })
 					.attr("d", path)
 					.append("title")
@@ -71,6 +82,42 @@
 					});
 			        
 			});
+			
+			function clicked(d) {
+			  if (active.node() === this) return reset();
+			  active.classed("active", false);
+			  active = d3.select(this).classed("active", true);
+			
+			  var bounds = path.bounds(d),
+			      dx = bounds[1][0] - bounds[0][0],
+			      dy = bounds[1][1] - bounds[0][1],
+			      x = (bounds[0][0] + bounds[1][0]) / 2,
+			      y = (bounds[0][1] + bounds[1][1]) / 2,
+			      scale = 0.8 / Math.max(dx / width, dy / height),
+			      translate = [width / 2 - scale * x, height / 2 - scale * y];
+			
+			  svg.transition()
+			      .duration(1250)
+			      .call(zoom.translate(translate).scale(scale).event);
+			}
+			
+			function reset() {
+			  active.classed("active", false);
+			  active = d3.select(null);
+			
+			  svg.transition()
+			      .duration(1250)
+			      .call(zoom.translate([0, 0]).scale(1).event);
+			}
+			
+			function zoomed() {
+			  g.style("stroke-width", 1.5 / d3.event.scale + "px");
+			  g.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+			}
+			
+			function stopped() {
+			  if (d3.event.defaultPrevented) d3.event.stopPropagation();
+			}
 		
 		</script>
 	</body>

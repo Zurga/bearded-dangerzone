@@ -43,6 +43,6 @@ path {
 	font: 10px sans-serif;
 	text-anchor: middle;
 }
-.gemeente path :hover {
+.gemeente path:hover {
 	fill: steelblue;
 }
