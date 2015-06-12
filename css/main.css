@@ -29,7 +29,7 @@ path {
 	stroke-linecap: round;
 }
 
-.gemeentes path {
+.gemeentes path, .provincies path {
 	fill: #ddd;
 }
 
@@ -43,9 +43,9 @@ path {
 	font: 10px sans-serif;
 	text-anchor: middle;
 }
-.gemeente path:hover {
+.gemeente path:hover, .provincie path:hover {
 	fill: lightblue !important;
 }
-.gemeente path.active {	
+.gemeente path.active, .provincie path.active {	
 	fill: steelblue;
 }
