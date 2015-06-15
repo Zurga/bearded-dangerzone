@@ -6,6 +6,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js"></script>
 		<script src="node_modules/topojson/topojson.min.js"></script>
+		<script src="js/colorbrewer.js"></script>
 		<link rel="stylesheet" href="css/main.css" />
 		<script src="js/d3.slider.js" type="text/javascript"></script>
 		<link rel="stylesheet" href="css/d3.slider.css" />
@@ -18,16 +19,17 @@
 		<div id="slider"></div>
 		
 		<script type="text/javascript">
-			var jaar_prov_gem;		
+			/*var jaar_prov_gem;		
 			$(function () {
 				$.getJSON('build/jaar_prov_gem.json', function(data) {
 					jaar_prov_gem = data;
 				});
-			});
+			});*/
 			
 			var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
 			    width = height * 0.85,
-			    active = d3.select(null);
+			    active_prov = d3.select(null);
+			    active_gem = d3.select(null);
 			    
 			var formatNumber = d3.format(",.0f");
 			
@@ -58,7 +60,7 @@
 			    .attr("class", "background")
 			    .attr("width", width)
 			    .attr("height", height)
-			    .on("click", reset);
+			    .on("click", reset_to_land);
 			    
 			var g = svg.append('g');
 			var gg = svg.append('g');
@@ -91,16 +93,17 @@
 					.on("click", zoom_prov)
 					.attr("id", function(d) { return d.properties.PROV_NAME })
 					.attr("d", path)
+					.attr("fill", "#ccc")
 					.append("title")
 					.text(function(d) {	return d.properties.PROV_NAME; });
 					
 			});
 			
 			function zoom_gem(d) {
-				if (active.node() === this) return reset_to_prov();
+				if (active_gem.node() === this) return reset_to_prov();
 				
-				active.classed("active", false);
-				active = d3.select(this).classed("active", true);
+				active_gem.classed("active", false);
+				active_gem = d3.select(this).classed("active", true);
 				
 				var bounds = path.bounds(d),
 					dx = bounds[1][0] - bounds[0][0],
@@ -117,29 +120,45 @@
 			}
 			
 			function zoom_prov(d) {
-				if (active.node() === this) return reset();
-				
 				selected_provincie = d;
 				selected_provincie_obj = this;
 				console.log(this);
-				active.classed("active_prov", false);
-				active = d3.select(this).classed("active_prov", true);
+				active_prov.classed("active_prov", false);
+				active_prov = d3.select(this).classed("active_prov", true);
 				
 				d3.json("build/provincies/"+d.id+".json", function(error, gem) {
 					if (error) return console.error(error);
 					
-					gg.attr("class", "gemeentes")
-						.selectAll("path")
-						.data(topojson.feature(gem, gem.objects.gemeentes).features)
-						.enter().append("g")
-						.attr("class", "gemeente")
-						.append("path")
-						.on("click", zoom_gem)
-						.attr("id", function(d) { return d.properties.name })
-						.attr("d", path)
-						.append("title")
-						.text(function(d) {	return d.properties.name; });
+					d3.json("convert/data/json/15_tot_25_jaar.json", function(error, data) {
+						if (error) return console.error(error);
 						
+						dataset = data['2013'];
+						var values = d3.values(dataset);
+						values = values.map(function(d) {
+							return +d;
+						});
+						var max = d3.max(values);
+						
+						var colorScale = d3.scale.quantize()
+						    .range(colorbrewer.OrRd[8])
+						    .domain([8, 16]);
+						
+						gg.attr("fill", "#ccc")
+							.selectAll("path")
+							.data(topojson.feature(gem, gem.objects.gemeentes).features)
+							.enter().append("g")
+							.attr("class", "gemeente")
+							.append("path")
+							.on("click", zoom_gem)
+							.attr("id", function(d) { return d.properties.name })
+							.attr("d", path)
+							.attr("fill", function(d) {
+								return colorScale(dataset[d.properties.name]);
+							})
+							.append("title")
+							.text(function(d) {	return d.properties.name + ": " + dataset[d.properties.name]; });
+							
+					});
 					var bounds = path.bounds(d),
 						dx = bounds[1][0] - bounds[0][0],
 						dy = bounds[1][1] - bounds[0][1],
@@ -157,9 +176,11 @@
 			
 			function reset() {
 				// TODO: Verwijderen gemeente paths/groups maar hoofdgroep gemeente laten staan
+				gg.selectAll("path").remove();
+				
 				selected_provincie = null;
-				active.classed("active", false);
-				active = d3.select(null);
+				active_gem.classed("active_gem", false);
+				active_gem = d3.select(null);
 				
 				svg.transition()
 				  .duration(1250)
@@ -168,8 +189,10 @@
 			
 			function reset_to_prov() {
 				
-				active.classed("active", false);
-				active = d3.select(selected_provincie_obj).classed("active", true);
+				active_gem.classed("active_gem", false);
+				active_gem = d3.select(null);
+				active_prov.classed("active_prov", false);
+				active_prov = d3.select(selected_provincie_obj).classed("active_prov", true);
 				
 				var bounds = path.bounds(selected_provincie),
 					dx = bounds[1][0] - bounds[0][0],
@@ -182,6 +205,18 @@
 				svg.transition()
 					.duration(1250)
 					.call(zoom.translate(translate).scale(scale).event);
+				
+			}
+			
+			function reset_to_land() {
+				reset();
+				
+				active_prov.classed("active_prov", false);
+				active_prov = d3.select(null);
+				
+				svg.transition()
+				  .duration(1250)
+				  .call(zoom.translate([0, 0]).scale(1).event);
 				
 			}
 			
