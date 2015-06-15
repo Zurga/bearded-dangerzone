@@ -20,6 +20,10 @@ h1 {
     color:#555;
     border-top:1px #D6D6D6 solid;
 }
+.background {
+  fill: none;
+  pointer-events: all;
+}
 
 /*svg layout */
 path {
@@ -46,6 +50,10 @@ path {
 .gemeente path:hover, .provincie path:hover {
 	fill: lightblue !important;
 }
-.gemeente path.active, .provincie path.active {	
+.gemeente path.active_gem {	
 	fill: steelblue;
+}
+
+.provincie path.active_prov {	
+	display: none;
 }
