@@ -79,7 +79,7 @@
 			var colors = d3.scale.category10();
 			var min = data.Jaar[0];
 			var max = data.Jaar[data.Jaar.length - 1];
-			var slider_value = '2006';
+			var slider_value = max;
 			d3.select('#slider')
 				.style("width", width + "px")
 				.call(d3.slider()
@@ -87,7 +87,7 @@
 					.domain(data.Jaar).rangePoints([0, 1], 0.5))
 				.axis(d3.svg.axis())
 				.snap(true)
-				.value(min)
+				.value(max)
 				.on("slide", function(evt, value){
 					slider_value = value;
 					d3.selectAll('.gemeente path')
@@ -150,10 +150,10 @@
 				active_prov.classed("active_prov", false);
 				active_prov = d3.select(this).classed("active_prov", true);
 				
-				//	var year = d3.select('#slider').value();
 				d3.json("gemeente-prov/topo_"+d.id+"_"+slider_value+".json", function(error, gem) {
 					if (error) return console.error(error);
 					
+
 					d3.json("convert/data/json/0_tot_15_jaar.json", function(error, data) {
 						if (error) return console.error(error);
 						
