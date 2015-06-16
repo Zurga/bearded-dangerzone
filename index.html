@@ -13,33 +13,56 @@
 	</head>
 	
 	<body>
+		<div id="wrapper">
+			<div class="column left">
+				<div id="map"></div>
 	
-		<div id="map"></div>
-
-		<div id="slider"></div>
+				<div id="slider"></div>
+			</div>
+			
+			<div class="column right">
+			
+				<div id="properties">
+					<select id="select_variable" name="select_variable">
+						<option value="">Selecteer variabelen</option>
+						<option value="0_tot_15_jaar" selected="selected">0_tot_15_jaar</option>
+						<option value="15_tot_25_jaar">15_tot_25_jaar</option>
+						<option value="25_tot_45_jaar">25_tot_45_jaar</option>
+					</select>
+				</div>
+			
+			</div>
+		</div>
 		
 		<script type="text/javascript">
 		$(document).ready(function() {
-			var cbs_data = (function () {
-			    var json = null;
-			    $.ajax({
-			        'async': false,
-			        'global': false,
-			        'url': 'convert/data/json/0_tot_15_jaar.json',
-			        'dataType': "json",
-			        'success': function (data) {
-			            json = data;
-			        }
-			    });
-			    return json;
-			})();
+			var selected_variable = $('#select_variable').val();
 			
-			var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
+			function loadData(variable) {
+				if (variable == '') {
+					return false;
+				}
+				return (function () {
+				    var json = null;
+				    $.ajax({
+				        'async': false,
+				        'global': false,
+				        'url': 'convert/data/json/' + selected_variable + '.json',
+				        'dataType': "json",
+				        'success': function (data) {
+				            json = data;
+				        }
+				    });
+				    return json;
+				})();
+			}
+			
+			var cbs_data = loadData(selected_variable);
+						
+			var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) * 0.88,
 			    width = height * 0.85,
 			    active_prov = d3.select(null);
 			    active_gem = d3.select(null);
-			    
-			var formatNumber = d3.format(",.0f");
 			
 			var projection = d3.geo.mercator()
 			    .scale(height * 11)
@@ -75,6 +98,45 @@
 			var selected_provincie;
 			var selected_provincie_obj;
 			
+			
+			$('#select_variable').change(function() {
+				selected_variable = $(this).val();
+				cbs_data = loadData(selected_variable);
+				
+				if (selected_provincie != null) {
+					dataset = cbs_data[slider_value][selected_provincie.properties.PROV_NAME];
+					
+					var values = d3.values(dataset);
+					values = values.map(function(d) {
+						return +d;
+					});
+					
+					var min = d3.min(values);
+					var max = d3.max(values);
+					
+					var colorScale = d3.scale.quantize()
+					    .range(colorbrewer.OrRd[8])
+					    .domain([min, max]);
+					
+					gg.selectAll("g")
+						.selectAll("path")
+						.attr("fill", function(d) {
+							if (dataset[d.properties.statnaam] === undefined) {
+								return '#ccc';
+							}
+							return colorScale(dataset[d.properties.statnaam]);
+						})
+						.selectAll("title")
+						.text(function(d) {
+							if (dataset[d.properties.statnaam] === undefined) {
+								return d.properties.statnaam + ": Geen data bekend"; 
+							}
+							return d.properties.statnaam + ": " + dataset[d.properties.statnaam]; 
+						});
+				}
+			});
+			
+			
 			svg.call(zoom.event);
 			
 			var vars = [], hash;
@@ -105,15 +167,69 @@
 				.value(max)
 				.on("slide", function(evt, value){
 					slider_value = value;
-					d3.selectAll('.gemeente path')
-						.transition()
-						.style('fill', colors(value)); 
+					//d3.selectAll('.gemeente path')
+						//.transition()
+						//.style('fill', colors(value)); 
 					
 					redraw();
 				}));
 					
 			function redraw() {
+				console.log("call redraw");
+				cbs_data = loadData(selected_variable);
 				
+				if (selected_provincie != null) {
+					
+					//$('.gemeente').fadeOut('fast', function() {
+						gg.selectAll('g').remove();
+					
+						d3.json("gemeente-prov/topo_"+selected_provincie.id+"_"+slider_value+".json", function(error, gem) {
+							if (error) return console.error(error);
+						
+							dataset = cbs_data[slider_value][selected_provincie.properties.PROV_NAME];
+							
+							var values = d3.values(dataset);
+							values = values.map(function(d) {
+								return +d;
+							});
+							
+							var min = d3.min(values);
+							var max = d3.max(values);
+							
+							var colorScale = d3.scale.quantize()
+							    .range(colorbrewer.OrRd[8])
+							    .domain([min, max]);
+						
+							gg.attr("fill", "#ccc")
+								.selectAll("path")
+								.data(topojson.feature(gem, gem.objects[selected_provincie.id+"_"+slider_value]).features)
+								.enter().append("g")
+								.attr("class", "gemeente")
+								//.style('display', 'none')
+								.append("path")
+								.on("click", zoom_gem)
+								.attr("id", function(d) { return d.properties.name })
+								.attr("d", path)
+								.attr("fill", function(d) {
+									if (dataset[d.properties.statnaam] === undefined) {
+										return '#ccc';
+									}
+									return colorScale(dataset[d.properties.statnaam]);
+								})
+								.append("title")
+								.text(function(d) {
+									if (dataset[d.properties.statnaam] === undefined) {
+										return d.properties.statnaam + ": Geen data bekend"; 
+									}
+									return d.properties.statnaam + ": " + dataset[d.properties.statnaam]; 
+								});
+							
+							//$('.gemeente').fadeIn('fast', function() { });
+								
+							return true;
+						});
+					//});
+				}
 				
 			}
 			
@@ -180,7 +296,7 @@
 						
 						var min = d3.min(values);
 						var max = d3.max(values);
-						console.log(min + " " + max);
+						
 						var colorScale = d3.scale.quantize()
 						    .range(colorbrewer.OrRd[8])
 						    .domain([min, max]);
