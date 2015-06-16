@@ -19,6 +19,21 @@
 		<div id="slider"></div>
 		
 		<script type="text/javascript">
+		$(document).ready(function() {
+			var cbs_data = (function () {
+			    var json = null;
+			    $.ajax({
+			        'async': false,
+			        'global': false,
+			        'url': 'convert/data/json/aandeel_allochtonen_marokko_percentages.json',
+			        'dataType': "json",
+			        'success': function (data) {
+			            json = data;
+			        }
+			    });
+			    return json;
+			})();
+			
 			var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
 			    width = height * 0.85,
 			    active_prov = d3.select(null);
@@ -153,10 +168,10 @@
 				d3.json("gemeente-prov/topo_"+d.id+"_"+slider_value+".json", function(error, gem) {
 					if (error) return console.error(error);
 					
-					d3.json("convert/data/json/aandeel_allochtonen_marokko_percentages.json", function(error, data) {
-						if (error) return console.error(error);
+					//d3.json("convert/data/json/aandeel_allochtonen_marokko_percentages.json", function(error, data) {
+					//	if (error) return console.error(error);
 						
-						dataset = data[slider_value][d.properties.PROV_NAME];
+						dataset = cbs_data[slider_value][d.properties.PROV_NAME];
 						
 						var values = d3.values(dataset);
 						values = values.map(function(d) {
@@ -193,7 +208,7 @@
 								return d.properties.statnaam + ": " + dataset[d.properties.statnaam]; 
 							});
 							
-					});
+					//});
 					var bounds = path.bounds(d),
 						dx = bounds[1][0] - bounds[0][0],
 						dy = bounds[1][1] - bounds[0][1],
@@ -267,26 +282,25 @@
 				if (d3.event.defaultPrevented) d3.event.stopPropagation();
 			}
 			
-			$(document).ready(function() {
-				setTimeout(function() {
-					jQuery.fn.d3Click = function () {
-						this.each(function (i, e) {
-							var evt = document.createEvent("MouseEvents");
-							evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-							
-							e.dispatchEvent(evt);
-						});
-					};
-					
-					if (vars.hasOwnProperty("gemeente")) {
-						var gemeente = $('#'+vars['gemeente']);
-						gemeente.d3Click();
-					}
-					
-				}, 1000);
-			});
-			
-			
+		});
+		/*$(document).ready(function() {
+			setTimeout(function() {
+				jQuery.fn.d3Click = function () {
+					this.each(function (i, e) {
+						var evt = document.createEvent("MouseEvents");
+						evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+						
+						e.dispatchEvent(evt);
+					});
+				};
+				
+				if (vars.hasOwnProperty("gemeente")) {
+					var gemeente = $('#'+vars['gemeente']);
+					gemeente.d3Click();
+				}
+				
+			}, 1000);
+		});*/
 		</script>
 	</body>
 </html>
