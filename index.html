@@ -154,7 +154,7 @@
 				d3.json("gemeente-prov/topo_"+d.id+"_"+slider_value+".json", function(error, gem) {
 					if (error) return console.error(error);
 					
-					d3.json("convert/data/json/15_tot_25_jaar.json", function(error, data) {
+					d3.json("convert/data/json/0_tot_15_jaar.json", function(error, data) {
 						if (error) return console.error(error);
 						
 						dataset = data[slider_value][d.properties.PROV_NAME];
