@@ -19,13 +19,6 @@
 		<div id="slider"></div>
 		
 		<script type="text/javascript">
-			/*var jaar_prov_gem;		
-			$(function () {
-				$.getJSON('build/jaar_prov_gem.json', function(data) {
-					jaar_prov_gem = data;
-				});
-			});*/
-			
 			var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
 			    width = height * 0.85,
 			    active_prov = d3.select(null);
@@ -80,6 +73,35 @@
 				}
 			}
 			
+			/* slider with test data */
+			// !!!test data please remove!!!
+			var data = {Jaar: [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014]};
+			var colors = d3.scale.category10();
+			var min = data.Jaar[0];
+			var max = data.Jaar[data.Jaar.length - 1];
+			var slider_value = '2006';
+			d3.select('#slider')
+				.style("width", width + "px")
+				.call(d3.slider()
+				.scale(d3.scale.ordinal()
+					.domain(data.Jaar).rangePoints([0, 1], 0.5))
+				.axis(d3.svg.axis())
+				.snap(true)
+				.value(min)
+				.on("slide", function(evt, value){
+					slider_value = value;
+					d3.selectAll('.gemeente path')
+						.transition()
+						.style('fill', colors(value)); 
+					
+					redraw();
+				}));
+					
+			function redraw() {
+				
+				
+			}
+			
 			d3.json("build/prov.json", function(error, prov) {
 				if (error) return console.error(error);
 				data_feature = topojson.feature(prov, prov.objects.provgeo).features;
@@ -120,32 +142,37 @@
 			}
 			
 			function zoom_prov(d) {
+				gg.selectAll("path").remove();	
 				selected_provincie = d;
 				selected_provincie_obj = this;
 				console.log(this);
 				active_prov.classed("active_prov", false);
 				active_prov = d3.select(this).classed("active_prov", true);
 				
-				d3.json("build/provincies/"+d.id+".json", function(error, gem) {
+				//	var year = d3.select('#slider').value();
+				d3.json("gemeente-prov/topo_"+d.id+"_"+slider_value+".json", function(error, gem) {
 					if (error) return console.error(error);
 					
 					d3.json("convert/data/json/15_tot_25_jaar.json", function(error, data) {
 						if (error) return console.error(error);
-						
-						dataset = data['2013'];
+						console.log(data);
+						dataset = data[slider_value][d.properties.PROV_NAME];
+						console.log(dataset);
 						var values = d3.values(dataset);
 						values = values.map(function(d) {
 							return +d;
 						});
+						
+						var min = d3.min(values);
 						var max = d3.max(values);
 						
 						var colorScale = d3.scale.quantize()
 						    .range(colorbrewer.OrRd[8])
-						    .domain([8, 16]);
+						    .domain([min, max]);
 						
 						gg.attr("fill", "#ccc")
 							.selectAll("path")
-							.data(topojson.feature(gem, gem.objects.gemeentes).features)
+							.data(topojson.feature(gem, gem.objects[d.id+"_"+slider_value]).features)
 							.enter().append("g")
 							.attr("class", "gemeente")
 							.append("path")
@@ -153,6 +180,10 @@
 							.attr("id", function(d) { return d.properties.name })
 							.attr("d", path)
 							.attr("fill", function(d) {
+								if (dataset[d.properties.name] === undefined) {
+									return '#ccc';
+								}
+								//console.log(dataset[d.properties.name]);
 								return colorScale(dataset[d.properties.name]);
 							})
 							.append("title")
@@ -230,32 +261,6 @@
 			
 			function stopped() {
 				if (d3.event.defaultPrevented) d3.event.stopPropagation();
-			}
-			/* slider with test data */
-			// !!!test data please remove!!!
-			var data = {Jaar: [2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014]};
-			var colors = d3.scale.category10();
-			var min = data.Jaar[0];
-			var max = data.Jaar[data.Jaar.length - 1];
-			d3.select('#slider')
-				.style("width", width + "px")
-				.call(d3.slider()
-				.scale(d3.scale.ordinal()
-					.domain(data.Jaar).rangePoints([0, 1], 0.5))
-				.axis(d3.svg.axis())
-				.snap(true)
-				.value(min)
-				.on("slide", function(evt, value){
-					d3.selectAll('.gemeente path')
-						.transition()
-						.style('fill', colors(value)); 
-					
-					redraw();
-				}));
-					
-			function redraw() {
-				
-				
 			}
 			
 			$(document).ready(function() {
