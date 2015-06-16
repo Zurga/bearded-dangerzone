@@ -20,6 +20,11 @@ h1 {
     color:#555;
     border-top:1px #D6D6D6 solid;
 }
+
+.column {
+	float: left;
+}
+
 .background {
   fill: none;
   pointer-events: all;
