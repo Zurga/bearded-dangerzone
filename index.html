@@ -24,10 +24,7 @@
 			
 				<div id="properties">
 					<select id="select_variable" name="select_variable">
-						<option value="">Selecteer variabelen</option>
-						<option value="0_tot_15_jaar" selected="selected">0_tot_15_jaar</option>
-						<option value="15_tot_25_jaar">15_tot_25_jaar</option>
-						<option value="25_tot_45_jaar">25_tot_45_jaar</option>
+						<option value="">Selecteer gegevensbron</option>
 					</select>
 				</div>
 			
@@ -36,6 +33,21 @@
 		
 		<script type="text/javascript">
 		$(document).ready(function() {
+			$.ajax({
+			    'async': false,
+			    'global': false,
+			    'url': 'convert/data/json/expl.json',
+			    'dataType': "json"
+			}).done(function(data) {
+				$.each(data, function(index) { // Group
+					var options = '';
+			        $.each(this, function(index) {
+			        	options += '<option value="' + this.Filename + '">' + index + '</option>';
+			        });
+			        $('#select_variable').append('<optgroup label="' + index + '">' + options + '</optgroup>');
+			    });
+			});
+			
 			var selected_variable = $('#select_variable').val();
 			
 			function loadData(variable) {
@@ -48,10 +60,9 @@
 				        'async': false,
 				        'global': false,
 				        'url': 'convert/data/json/' + selected_variable + '.json',
-				        'dataType': "json",
-				        'success': function (data) {
-				            json = data;
-				        }
+				        'dataType': "json"
+				    }).done(function(data) {
+				    	json = data;
 				    });
 				    return json;
 				})();
