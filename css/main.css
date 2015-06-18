@@ -1,8 +1,7 @@
 body {
   font: 11px sans-serif;
 }
-#wrapper {
-}
+
 #header {
     padding:10px 25px 0 25px;
 }
@@ -16,6 +15,24 @@ h1 {
     padding:0 25px 10px 25px;
     color:#555;
     border-top:1px #D6D6D6 solid;
+}
+
+#wrapper {
+	position: relative;
+}
+.tooltip {
+	background: #eee;
+	box-shadow: 0 0 5px #999999;
+	color: #333;
+	display: none;
+	font-size: 12px;
+	left: 130px;
+	padding: 10px;
+	position: absolute;
+	text-align: center;
+	top: 95px;
+	width: 80px;
+	z-index: 1000;
 }
 
 .column {
