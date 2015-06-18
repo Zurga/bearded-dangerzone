@@ -2,9 +2,6 @@ body {
   font: 11px sans-serif;
 }
 #wrapper {
-    width: 850px;
-    margin: 20px auto;
-    padding: 0 25px;
 }
 #header {
     padding:10px 25px 0 25px;
@@ -24,14 +21,19 @@ h1 {
 .column {
 	float: left;
 	display: block;
+	width: 50%;
 }
 .right {
-	width: 200px;
+	/*width: 200px;*/
 }
 
 .background {
   fill: none;
   pointer-events: all;
+}
+
+#description {
+	width: 250px;
 }
 
 /*svg layout */
