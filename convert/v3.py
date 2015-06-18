@@ -90,6 +90,10 @@ def get_json(var, variables, provinces, years, location = "data/csv/"):
         # This will be for all gemeentes in all provinces.
         root = data[(data[areades] == 'Gemeente') |
                     (data[areades] == 'G')].filter([item, index])
+        
+        # If var is float, multiply by 10.
+        if var in ["personenautos_per_huishouden", "gemiddelde_huishoudensgrootte"]:
+            root[item].apply(lambda x: float(x.replace(',', '.'))*10 if x != "x" else 'x')
 
         # DataFrame consisting of Gemeente,Provincie data.
         # Foor 2004 and 2005, assuming data is equal to 2006 data,
