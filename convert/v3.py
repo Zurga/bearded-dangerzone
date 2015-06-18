@@ -129,7 +129,6 @@ def get_tree_json(var, variables, provinces, years, location="data/csv/"):
     # For each year provided in the years tuple parameter...
     for year in xrange(years[0], years[1] + 1):
         # Create a new entry in the JSON dict.
-        print(year)
 
         year = str(year)
         yeardict = {"name": year,
@@ -171,7 +170,6 @@ def get_tree_json(var, variables, provinces, years, location="data/csv/"):
                              .filter(["GEMEENTE"]).T.columns)
 
             for gem in gemeentes:
-                print(gem)
                 gem = gem.lower()
                 # Filter root based on this list.
                 branch = root[(root[index].isin(gemeentes))].set_index([index])
@@ -206,7 +204,7 @@ def write_json(variables, tree=False, inp_dir_prefix= '',
         if not var in broken_var:
             print("Currently writing %s.json.")  % var
             if tree:
-                filename = outdir + var + "_tree.json"
+                filename = outdir + "tree_" + var + ".json"
                 with open(filename, 'w') as f:
                     json.dump(get_tree_json(var, variables, provinces, \
                     (2006, 2014), location=inp_dir_prefix + "data/csv/"), f)
