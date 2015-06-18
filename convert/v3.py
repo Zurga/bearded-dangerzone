@@ -97,7 +97,7 @@ def get_json(var, variables, provinces, years, location = "data/csv/"):
         try:
             gemprov = pd.DataFrame.from_csv(location +
                                             "gemprov/" + year + ".csv")
-        except:
+        except Exception as e:
             gemprov = pd.DataFrame.from_csv(location +
                                             "gemprov/2006.csv")
 
@@ -157,8 +157,8 @@ def get_tree_json(var, variables, provinces, years, location="data/csv/"):
         try:
             gemprov = pd.DataFrame.from_csv(location +
                                             "gemprov/" + year + ".csv")
-        except:
-            print('except')
+        except Exception as e:
+            print e
             gemprov = pd.DataFrame.from_csv(location +
                                             "gemprov/2006.csv")
 
