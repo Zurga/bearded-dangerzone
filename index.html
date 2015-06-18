@@ -150,7 +150,7 @@
 						})
 						.selectAll("title")
 						.text(function(d) {
-							if (dataset[d.properties.statnaam] === undefined) {
+							if (dataset[d.properties.statnaam] === undefined || dataset[d.properties.statnaam] == "x") {
 								return d.properties.statnaam + ": Geen data bekend"; 
 							}
 							return d.properties.statnaam + ": " + dataset[d.properties.statnaam]; 
@@ -296,59 +296,6 @@
 				
 			}
 			
-			function drawTreemap() {
-			
-				var margin = {top: 20, right: 20, bottom: 30, left: 40},
-				    width = $(".right").width() * 0.8,
-				    height = width * 0.6;
-			
-				var color = d3.scale.category20c();
-				
-				var treemap = d3.layout.treemap()
-				    .size([width, height])
-				    .sticky(true)
-				    .value(function(d) { return d.size; });
-				
-				var div = d3.select("body").append("div")
-				    .style("position", "relative")
-				    .style("width", (width + margin.left + margin.right) + "px")
-				    .style("height", (height + margin.top + margin.bottom) + "px")
-				    .style("left", margin.left + "px")
-				    .style("top", margin.top + "px");
-				
-				d3.json("convert/data/json/tree_" + selected_variable, function(error, root) {
-				  if (error) throw error;
-				
-				  var node = div.datum(root).selectAll(".node")
-				      .data(treemap.nodes)
-				    .enter().append("div")
-				      .attr("class", "node")
-				      .call(position)
-				      .style("background", function(d) { return d.children ? color(d.name) : null; })
-				      .text(function(d) { return d.children ? null : d.name; });
-				
-				  d3.selectAll("input").on("change", function change() {
-				    var value = this.value === "count"
-				        ? function() { return 1; }
-				        : function(d) { return d.size; };
-				
-				    node
-				        .data(treemap.value(value).nodes)
-				      .transition()
-				        .duration(1500)
-				        .call(position);
-				  });
-				});
-				
-				function position() {
-				  this.style("left", function(d) { return d.x + "px"; })
-				      .style("top", function(d) { return d.y + "px"; })
-				      .style("width", function(d) { return Math.max(0, d.dx - 1) + "px"; })
-				      .style("height", function(d) { return Math.max(0, d.dy - 1) + "px"; });
-				}
-			
-			}
-			
 			function drawBarChart() {
 				
 				var margin = {top: 20, right: 20, bottom: 30, left: 40},
@@ -418,10 +365,75 @@
 				
 			}
 			
+			
+			function drawTreemap() {
+			
+				var margin = {top: 20, right: 20, bottom: 30, left: 40},
+				    width = $(".right").width() * 0.8,
+				    height = width * 0.6;
+			
+				var color = d3.scale.category20c();
+				
+				var treemap = d3.layout.treemap()
+				    .size([width, height])
+				    .sticky(true)
+				    .value(function(d) { return d.size; });
+				
+				var div = d3.select("#visual").append("div")
+				    .style("position", "relative")
+				    .style("width", (width + margin.left + margin.right) + "px")
+				    .style("height", (height + margin.top + margin.bottom) + "px")
+				    .style("left", margin.left + "px")
+				    .style("top", margin.top + "px");
+				
+				d3.json("convert/data/json/tree_" + selected_variable, function(error, root) {
+					if (error) throw error;
+					
+					var dataset;
+					//var nodes = treemap.nodes(root)
+					//   .filter(function(d) { if (d.name == slider_value) { return !d.children; } });
+					    
+					//console.log(nodes[0].children);
+					var node = div.datum(root).selectAll(".node")
+						.data(function(d) {
+							return treemap.nodes(d).filter(function(v) {
+							    if (d.name == slider_value) { return d.children; }
+							});
+						})
+						.enter()
+						.append("div")
+						.attr("class", "node")
+						.call(position)
+						.style("background", function(d) { return d.children ? color(d.name) : null; })
+						.text(function(d) { return d.children ? null : d.name; });
+					
+					d3.selectAll("input").on("change", function change() {
+						var value = this.value === "count"
+						    ? function() { return 1; }
+						    : function(d) { return d.size; };
+					
+						node
+						    .data(treemap.value(value).nodes)
+						  .transition()
+						    .duration(1500)
+						    .call(position);
+					});
+				});
+				
+			}
+			
+			function position() {
+				this.style("left", function(d) { return d.x + "px"; })
+			      .style("top", function(d) { return d.y + "px"; })
+			      .style("width", function(d) { return Math.max(0, d.dx - 1) + "px"; })
+			      .style("height", function(d) { return Math.max(0, d.dy - 1) + "px"; });
+			}
+			
 			function zoom_prov(d) {
 				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
 				gg.selectAll("path").remove();
 				
+				//drawTreemap();
 				selected_provincie = d;
 				selected_provincie_obj = this;
 				
