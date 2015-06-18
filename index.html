@@ -59,7 +59,7 @@
 				    $.ajax({
 				        'async': false,
 				        'global': false,
-				        'url': 'convert/data/json/' + selected_variable,
+				        'url': 'convert/data/json/' + selected_variable	,
 				        'dataType': "json"
 				    }).done(function(data) {
 				    	json = data;
@@ -194,7 +194,7 @@
 					//$('.gemeente').fadeOut('fast', function() {
 						gg.selectAll('g').remove();
 					
-						d3.json("gemeente-prov/topo_"+selected_provincie.id+"_"+slider_value, function(error, gem) {
+						d3.json("gemeente-prov/topo_"+selected_provincie.id+"_"+slider_value+".json", function(error, gem) {
 							if (error) return console.error(error);
 						
 							dataset = cbs_data[slider_value][selected_provincie.properties.PROV_NAME];
