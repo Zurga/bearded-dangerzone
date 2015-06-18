@@ -19,3 +19,4 @@ write_json(variables, inp_dir_prefix='', outdir='data/json/')
 print('creating tree json')
 write_json(variables, tree=True,
             inp_dir_prefix='', outdir='data/json/')
+copyfile('expl.json', 'data/json/')
