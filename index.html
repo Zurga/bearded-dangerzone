@@ -26,6 +26,7 @@
 					<select id="select_variable" name="select_variable">
 						<option value="">Selecteer gegevensbron</option>
 					</select>
+					<p id="description">test</p>
 				</div>
 			
 			</div>
@@ -42,7 +43,7 @@
 				$.each(data, function(index) { // Group
 					var options = '';
 			        $.each(this, function(index) {
-			        	options += '<option value="' + this.Filename + '">' + index + '</option>';
+			        	options += '<option value="' + this.Filename + '" data-desc="' + this.Desc + '">' + index + '</option>';
 			        });
 			        $('#select_variable').append('<optgroup label="' + index + '">' + options + '</optgroup>');
 			    });
@@ -113,6 +114,7 @@
 			$('#select_variable').change(function() {
 				selected_variable = $(this).val();
 				cbs_data = loadData(selected_variable);
+				$('#description').html($('option:selected', this).data('desc'));
 				
 				if (selected_provincie != null) {
 					dataset = cbs_data[slider_value][selected_provincie.properties.PROV_NAME];
