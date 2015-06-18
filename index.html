@@ -36,7 +36,6 @@
 				<div id="visual">
 					
 					
-					
 				</div>
 			
 			</div>
@@ -54,7 +53,7 @@
 				$.each(data, function(index) { // Group
 					var options = '';
 			        $.each(this, function(index) {
-			        	options += '<option value="' + this.Filename + '" data-desc="' + this.Desc + '">' + index + '</option>';
+			        	options += '<option value="' + this.Filename + '" data-desc="' + this.Desc + '" data-type="' + this.Type + '">' + index + '</option>';
 			        });
 			        $('#select_variable').append('<optgroup label="' + index + '">' + options + '</optgroup>');
 			    });
@@ -116,8 +115,10 @@
 			    
 			var g = svg.append('g');
 			var gg = svg.append('g');
-			var selected_provincie;
+			var selected_provincie = null;
 			var selected_provincie_obj;
+			var selected_gemeente = null;
+			var selected_gemeente_obj;
 			
 			
 			$('#select_variable').change(function() {
@@ -155,6 +156,10 @@
 							}
 							return d.properties.statnaam + ": " + dataset[d.properties.statnaam]; 
 						});
+						
+					if (selected_gemeente != null) {
+						drawChart();
+					}
 				}
 			});
 			
@@ -224,9 +229,13 @@
 							.append("path")
 							.on("click", zoom_gem)
 							.on('mouseover', function(d) {
-								console.log(d.properties.statnaam);
-								console.log(dataset);
-								tooltip.select('.label').html(toTitleCase(d.properties.statnaam) + "<br />" +dataset[d.properties.statnaam]);
+								if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
+									var value = dataset[d.properties.statnaam] / 100;
+								}
+								else {
+									var value = dataset[d.properties.statnaam];
+								}
+								tooltip.select('.label').html(toTitleCase(d.properties.statnaam) + "<br />" + value);
 								tooltip.style('display', 'block');
 							})
 							.on('mouseout', function(d) {
@@ -247,6 +256,10 @@
 							.append("title");
 													
 						return true;
+						
+						if (selected_gemeente != null) {
+							drawChart();
+						}
 					});
 				}
 				
@@ -275,6 +288,9 @@
 				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
 				if (active_gem.node() === this) { $('#gemeente').html(''); return reset_to_prov(); }
 				
+				selected_gemeente = d;
+				selected_gemeente_obj = this;
+				
 				active_gem.classed("active", false);
 				active_gem = d3.select(this).classed("active", true);
 				
@@ -291,19 +307,61 @@
 				svg.transition()
 					.duration(1250)
 					.call(zoom.translate(translate).scale(scale).event);
-					
-				drawBarChart();
+				
+				$('#slider').hide();
+				drawChart();
 				
 			}
 			
-			function drawBarChart() {
+			function drawChart() {
+				$('#visual').empty();
+				
+				$('#visual').append('<form>' + 
+									'<label><input type="radio" name="mode" value="line" checked="checked"> Lijn</label>' +
+									'<label><input type="radio" name="mode" value="bar"> Staaf</label>' +
+									'</form>');
+				
+				if ($("input[type=radio]").val() == "line") {
+					$('#visual svg').remove();
+					drawLineChart();
+				}
+				else if ($("input[type=radio]").val() == "bar") {
+					$('#visual svg').remove();
+					drawBarChart();
+				}
+				
+				$("input[type=radio]").change(function() {
+					if ($(this).val() == "line") {
+						$('#visual svg').remove();
+						drawLineChart();
+					}
+					else if ($(this).val() == "bar") {
+						$('#visual svg').remove();
+						drawBarChart();
+					}
+				});
+				
+			}
+			
+			function drawLineChart() {
+				var dataset = [
+							{'year': 2006, 'value': cbs_data['2006'][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]},
+							{'year': 2007, 'value': cbs_data['2007'][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]},
+							{'year': 2008, 'value': cbs_data['2008'][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]},
+							{'year': 2009, 'value': cbs_data['2009'][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]},
+							{'year': 2010, 'value': cbs_data['2010'][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]},
+							{'year': 2011, 'value': cbs_data['2011'][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]},
+							{'year': 2012, 'value': cbs_data['2012'][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]},
+							{'year': 2013, 'value': cbs_data['2013'][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]},
+							{'year': 2014, 'value': cbs_data['2014'][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]}
+						];
 				
 				var margin = {top: 20, right: 20, bottom: 30, left: 40},
 				    width = $(".right").width() * 0.8,
 				    height = width * 0.6;
 				
 				var x = d3.scale.ordinal()
-				    .rangeRoundBands([0, width], .1);
+				    .rangeRoundBands([0, width], .3);
 				
 				var y = d3.scale.linear()
 				    .range([height, 0]);
@@ -311,32 +369,89 @@
 				var xAxis = d3.svg.axis()
 				    .scale(x)
 				    .orient("bottom");
-				
+				    
 				var yAxis = d3.svg.axis()
 				    .scale(y)
-				    .orient("left")
-				    .ticks(10, "%");
+				    .orient("left");
+				    
+				if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
+					yAxis.tickFormat(function(d) { return d / 100; });
+				}
 				
 				var svg = d3.select("#visual").append("svg")
 				    .attr("width", width + margin.left + margin.right)
 				    .attr("height", height + margin.top + margin.bottom)
-				    
-				.append("g")
+					.append("g")
 					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-					
-				var dataset = {2006: cbs_data['2006']['Noord-Holland']['haarlem']};
-				console.log(dataset);
-					
-				var values = d3.values(cbs_data);
-				values = values.map(function(d) {
-					return +d;
-				});
 				
-				var min = d3.min(values);
-				var max = d3.max(values);
+				var line = d3.svg.line()
+				    .x(function(d) { return x(d.year); })
+				    .y(function(d) { return y(d.value); });
+					
+				x.domain([2006,2007,2008,2009,2010,2011,2012,2013,2014]);
+				y.domain([d3.min(dataset, function(d) { return d.value*0.9; }), d3.max(dataset, function(d) { return d.value * 1.1; })]);
+				
+				svg.append("g")
+					.attr("class", "x axis")
+					.attr("transform", "translate(0," + height + ")")
+					.call(xAxis);
+				
+				svg.append("g")
+					.attr("class", "y axis")
+					.call(yAxis)
+					.append("text")
+					.attr("transform", "rotate(-90)")
+					.attr("y", 6)
+					.attr("dy", ".71em")
+					.style("text-anchor", "end")
+					.text($('#select_variable').find(":selected").data('type'));
+				
+				svg.append("path")
+					.datum(dataset)
+					.attr("class", "line")
+					.attr("d", line);
+				
+			}
+			
+			function drawBarChart() {
+				var dataset = [
+							{'year': 2006, 'value': cbs_data['2006'][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]},
+							{'year': 2007, 'value': cbs_data['2007'][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]},
+							{'year': 2008, 'value': cbs_data['2008'][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]},
+							{'year': 2009, 'value': cbs_data['2009'][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]},
+							{'year': 2010, 'value': cbs_data['2010'][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]},
+							{'year': 2011, 'value': cbs_data['2011'][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]},
+							{'year': 2012, 'value': cbs_data['2012'][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]},
+							{'year': 2013, 'value': cbs_data['2013'][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]},
+							{'year': 2014, 'value': cbs_data['2014'][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]}
+						];
+				
+				var margin = {top: 20, right: 20, bottom: 30, left: 40},
+				    width = $(".right").width() * 0.8,
+				    height = width * 0.6;
+				
+				var x = d3.scale.ordinal()
+				    .rangeRoundBands([0, width], .3);
+				
+				var y = d3.scale.linear()
+				    .range([height, 0]);
+				
+				var xAxis = d3.svg.axis()
+				    .scale(x)
+				    .orient("bottom");
+				    
+				var yAxis = d3.svg.axis()
+				    .scale(y)
+				    .orient("left");
+				
+				var svg = d3.select("#visual").append("svg")
+				    .attr("width", width + margin.left + margin.right)
+				    .attr("height", height + margin.top + margin.bottom)
+					.append("g")
+					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 				
 				x.domain([2006,2007,2008,2009,2010,2011,2012,2013,2014]);
-				y.domain([0, max]);
+				y.domain([0, d3.max(dataset, function(d) { return d.value; })]);
 				
 				svg.append("g")
 				  .attr("class", "x axis")
@@ -351,20 +466,19 @@
 				  .attr("y", 6)
 				  .attr("dy", ".71em")
 				  .style("text-anchor", "end")
-				  .text("Frequency");
+				  .text($('#select_variable').find(":selected").data('type'));
 				
 				svg.selectAll(".bar")
-				  .data(data)
-				.enter().append("rect")
+				  .data(dataset)
+				  .enter()
+				  .append("rect")
 				  .attr("class", "bar")
-				  .attr("x", function(d) { return x(d.letter); })
+				  .attr("x", function(d) { return x(d.year); })
 				  .attr("width", x.rangeBand())
-				  .attr("y", function(d) { return y(d.frequency); })
-				  .attr("height", function(d) { return height - y(d.frequency); });
-				
-				
-			}
+				  .attr("y", function(d) { return y(d.value); })
+				  .attr("height", function(d) { return height - y(d.value); });
 			
+			}
 			
 			function drawTreemap() {
 			
@@ -406,18 +520,7 @@
 						.call(position)
 						.style("background", function(d) { return d.children ? color(d.name) : null; })
 						.text(function(d) { return d.children ? null : d.name; });
-					
-					d3.selectAll("input").on("change", function change() {
-						var value = this.value === "count"
-						    ? function() { return 1; }
-						    : function(d) { return d.size; };
-					
-						node
-						    .data(treemap.value(value).nodes)
-						  .transition()
-						    .duration(1500)
-						    .call(position);
-					});
+						
 				});
 				
 			}
@@ -430,8 +533,10 @@
 			}
 			
 			function zoom_prov(d) {
+			
 				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
 				gg.selectAll("path").remove();
+				$('#slider').show();
 				
 				//drawTreemap();
 				selected_provincie = d;
@@ -474,7 +579,13 @@
 						.append("path")
 						.on("click", zoom_gem)
 						.on('mouseover', function(d) {
-							tooltip.select('.label').html(toTitleCase(d.properties.statnaam) + "<br />" +dataset[d.properties.statnaam]);
+							if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
+								var value = dataset[d.properties.statnaam] / 100;
+							}
+							else {
+								var value = dataset[d.properties.statnaam];
+							}
+							tooltip.select('.label').html(toTitleCase(d.properties.statnaam) + "<br />" + value);
 							tooltip.style('display', 'block');
 						})
 						.on('mouseout', function(d) {
@@ -508,26 +619,14 @@
 				});
 			}
 			
-			function reset() {
-			
-				gg.selectAll("path").remove();
-				
-				selected_provincie = null;
-				$('#provincie').html('');
-				$('#gemeente').html('');
-				
-				active_gem.classed("active_gem", false);
-				active_gem = d3.select(null);
-				
-				svg.transition()
-				  .duration(1250)
-				  .call(zoom.translate([0, 0]).scale(1).event);
-			}
-			
 			function reset_to_prov() {
+			
+				$('#slider').show();
+				$('#visual svg').remove();
 				
 				active_gem.classed("active_gem", false);
 				active_gem = d3.select(null);
+				selected_gemeente = null;
 				active_prov.classed("active_prov", false);
 				active_prov = d3.select(selected_provincie_obj).classed("active_prov", true);
 				
@@ -546,8 +645,17 @@
 			}
 			
 			function reset_to_land() {
-				reset();
 				
+				gg.selectAll("path").remove();
+				$('#slider').show();
+				
+				selected_provincie = null;
+				selected_gemeente = null;
+				$('#provincie').html('');
+				$('#gemeente').html('');
+				
+				active_gem.classed("active_gem", false);
+				active_gem = d3.select(null);
 				active_prov.classed("active_prov", false);
 				active_prov = d3.select(null);
 				

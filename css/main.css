@@ -95,6 +95,12 @@ path {
   display: none;
 }
 
+#visual .line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
 /* treemap */
 #visual .node {
   border: solid 1px white;

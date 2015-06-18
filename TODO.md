@@ -1,0 +1,4 @@
+- Lansingerland: data 2006?
+- Fixen: Geen lijngrafiek bij Hollands Kroon bijv
+- Reverse order bij stedelijkheid
+- Bergen 65+
