@@ -192,7 +192,8 @@ def get_tree_json(var, variables, provinces, years, location="data/csv/"):
 
 
 
-def write_json(variables, tree=False):
+def write_json(variables, tree=False, inp_dir_prefix= '',
+               outdir='data/json/'):
     """
     Writes JSON to data/json/. If tree is set to true it returns a tree list
     """
@@ -205,16 +206,14 @@ def write_json(variables, tree=False):
         if not var in broken_var:
             print("Currently writing %s.json.")  % var
             if tree:
-                filename = "data/json/" + var + "_tree.json"
+                filename = outdir + var + "_tree.json"
                 with open(filename, 'w') as f:
                     json.dump(get_tree_json(var, variables, provinces, \
-                    (2006, 2014), location="data/csv/"), f)
+                    (2006, 2014), location=inp_dir_prefix + "data/csv/"), f)
             else:
-                filename = "data/json/" + var + ".json"
+                filename = outdir + var + ".json"
                 with open(filename, 'w') as f:
                     json.dump(get_json(var, variables, provinces, \
-                    (2006, 2014), location="data/csv/"), f)
+                    (2006, 2014), location=inp_dir_prefix + "data/csv/"), f)
 
 # print(write_json(variables))
-print(write_json(variables, True))
-print(write_json(variables, False))
