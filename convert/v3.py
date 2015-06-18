@@ -206,12 +206,15 @@ def write_json(variables, tree=False):
             print("Currently writing %s.json.")  % var
             if tree:
                 filename = "data/json/" + var + "_tree.json"
+                with open(filename, 'w') as f:
+                    json.dump(get_tree_json(var, variables, provinces, \
+                    (2006, 2014), location="data/csv/"), f)
             else:
                 filename = "data/json/" + var + ".json"
-
-            with open(filename, 'w') as f:
-                json.dump(get_tree_json(var, variables, provinces, \
-                (2006, 2014), location="data/csv/"), f)
+                with open(filename, 'w') as f:
+                    json.dump(get_json(var, variables, provinces, \
+                    (2006, 2014), location="data/csv/"), f)
 
 # print(write_json(variables))
 print(write_json(variables, True))
+print(write_json(variables, False))
