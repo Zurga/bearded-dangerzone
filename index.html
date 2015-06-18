@@ -135,7 +135,6 @@
 					gg.selectAll("g")
 						.selectAll("path")
 						.attr("fill", function(d) {
-						console.log(dataset[d.properties.statnaam]);
 							if (dataset[d.properties.statnaam] === undefined) {
 								return '#ccc';
 							}
@@ -182,15 +181,10 @@
 				.value(max)
 				.on("slide", function(evt, value){
 					slider_value = value;
-					//d3.selectAll('.gemeente path')
-						//.transition()
-						//.style('fill', colors(value)); 
-					
 					redraw();
 				}));
 					
 			function redraw() {
-				console.log("call redraw");
 				cbs_data = loadData(selected_variable);
 				
 				if (selected_provincie != null) {
@@ -221,6 +215,17 @@
 							.attr("class", "gemeente")
 							.append("path")
 							.on("click", zoom_gem)
+							.on('mouseover', function(d) {
+								tooltip.select('.label').html(toTitleCase(d.properties.statnaam) + "<br />" +dataset[d.properties.statnaam]);
+								tooltip.style('display', 'block');
+							})
+							.on('mouseout', function(d) {
+								tooltip.style('display', 'none');
+							})
+							.on('mousemove', function(d) {
+								tooltip.style('top', (d3.event.pageY + 10) + 'px')
+							    	.style('left', (d3.event.pageX + 10) + 'px');
+							})
 							.attr("id", function(d) { return d.properties.name })
 							.attr("d", path)
 							.attr("fill", function(d) {
@@ -229,13 +234,7 @@
 								}
 								return colorScale(dataset[d.properties.statnaam]);
 							})
-							.append("title")
-							.text(function(d) {
-								if (dataset[d.properties.statnaam] === undefined) {
-									return d.properties.statnaam + ": Geen data bekend"; 
-								}
-								return d.properties.statnaam + ": " + dataset[d.properties.statnaam]; 
-							});
+							.append("title");
 													
 						return true;
 					});
@@ -321,6 +320,17 @@
 						.attr("class", "gemeente")
 						.append("path")
 						.on("click", zoom_gem)
+						.on('mouseover', function(d) {
+							tooltip.select('.label').html(toTitleCase(d.properties.statnaam) + "<br />" +dataset[d.properties.statnaam]);
+							tooltip.style('display', 'block');
+						})
+						.on('mouseout', function(d) {
+							tooltip.style('display', 'none');
+						})
+						.on('mousemove', function(d) {
+							tooltip.style('top', (d3.event.pageY + 10) + 'px')
+						    	.style('left', (d3.event.pageX + 10) + 'px');
+						})
 						.attr("id", function(d) { return d.properties.name })
 						.attr("d", path)
 						.attr("fill", function(d) {
@@ -328,14 +338,14 @@
 								return '#ccc';
 							}
 							return colorScale(dataset[d.properties.statnaam]);
-						})
-						.append("title")
-						.text(function(d) {
-							if (dataset[d.properties.statnaam] === undefined) {
-								return d.properties.statnaam + ": Geen data bekend"; 
-							}
-							return d.properties.statnaam + ": " + dataset[d.properties.statnaam]; 
 						});
+					
+					var tooltip = d3.select('#wrapper') 
+						.append('div')                 
+						.attr('class', 'tooltip');     
+					
+					tooltip.append('div')            
+						.attr('class', 'label');
 					
 					var bounds = path.bounds(d),
 						dx = bounds[1][0] - bounds[0][0],
