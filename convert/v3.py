@@ -216,4 +216,6 @@ def write_json(variables, tree=False, inp_dir_prefix= '',
                     json.dump(get_json(var, variables, provinces, \
                     (2006, 2014), location=inp_dir_prefix + "data/csv/"), f)
 
-# print(write_json(variables))
+
+if __name__ == "__main__":
+    print(write_json(variables))
