@@ -70,3 +70,37 @@ path {
 .provincie path.active_prov {	
 	display: none;
 }
+
+/* barchart */
+#visual .bar {
+  fill: steelblue;
+}
+
+#visual .bar:hover {
+  fill: brown;
+}
+
+#visual .axis {
+  font: 10px sans-serif;
+}
+
+#visual .axis path,
+#visual .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+#visual .x.axis path {
+  display: none;
+}
+
+/* treemap */
+#visual .node {
+  border: solid 1px white;
+  font: 10px sans-serif;
+  line-height: 12px;
+  overflow: hidden;
+  position: absolute;
+  text-indent: 2px;
+}
