@@ -32,8 +32,8 @@ variables = {os.path.basename(fn)[:-4]: get_vars(fn)
 
 # List of all provinces.
 provinces = ["Groningen", "Friesland", "Drenthe", "Overijssel",
-			 "Flevoland", "Gelderland", "Utrecht", "Noord-Holland",
-			 "Zuid-Holland", "Zeeland", "Noord-Brabant", "Limburg"]
+            "Flevoland", "Gelderland", "Utrecht", "Noord-Holland",
+             "Zuid-Holland", "Zeeland", "Noord-Brabant", "Limburg"]
 
 def get_json(var, variables, provinces, years, location = "data/csv/"):
     """
@@ -88,24 +88,24 @@ def get_json(var, variables, provinces, years, location = "data/csv/"):
         # First select only all gemeentes,
         # then filter based on given item and index.
         # This will be for all gemeentes in all provinces.
-        root = data[(data[areades] == 'Gemeente') | \
-			        (data[areades] == 'G')].filter([item, index])
+        root = data[(data[areades] == 'Gemeente') |
+                    (data[areades] == 'G')].filter([item, index])
 
         # DataFrame consisting of Gemeente,Provincie data.
         # Foor 2004 and 2005, assuming data is equal to 2006 data,
         # because of nonexistence of data for these years.
         try:
-            gemprov = pd.DataFrame.from_csv(location + \
-											"gemprov/" + year + ".csv")
+            gemprov = pd.DataFrame.from_csv(location +
+                                            "gemprov/" + year + ".csv")
         except:
-            gemprov = pd.DataFrame.from_csv(location + \
-											"gemprov/2006.csv")
+            gemprov = pd.DataFrame.from_csv(location +
+                                            "gemprov/2006.csv")
 
         # For each province in the provinces list parameter...
         for prov in provinces:
             # Create a list of Gemeentes in currently iterated province.
-            gem = list(gemprov[(gemprov["PROVINCIE"] == prov)] \
-								.filter(["GEMEENTE"]).T.columns)
+            gem = list(gemprov[(gemprov["PROVINCIE"] == prov)]
+                       .filter(["GEMEENTE"]).T.columns)
 
             # Filter root based on this list.
             branch = root[(root[index].isin(gem))].set_index([index])
@@ -119,7 +119,7 @@ def get_json(var, variables, provinces, years, location = "data/csv/"):
     return JSON
 
 
-def get_tree_json(var, variables, provinces, years, location = "data/csv/"):
+def get_tree_json(var, variables, provinces, years, location="data/csv/"):
     """
     Generates a json file in tree format.
     """
@@ -128,7 +128,7 @@ def get_tree_json(var, variables, provinces, years, location = "data/csv/"):
 
     # For each year provided in the years tuple parameter...
     for year in xrange(years[0], years[1] + 1):
-		# Create a new entry in the JSON dict.
+        # Create a new entry in the JSON dict.
         print(year)
 
         year = str(year)
@@ -149,26 +149,27 @@ def get_tree_json(var, variables, provinces, years, location = "data/csv/"):
         # First select only all gemeentes,
         # then filter based on given item and index.
         # This will be for all gemeentes in all provinces.
-        root = data[(data[areades] == 'Gemeente') | \
-			        (data[areades] == 'G')].filter([item, index])
+        root = data[(data[areades] == 'Gemeente') |
+                    (data[areades] == 'G')].filter([item, index])
 
         # DataFrame consisting of Gemeente,Provincie data.
         # Foor 2004 and 2005, assuming data is equal to 2006 data,
         # because of nonexistence of data for these years.
         try:
-            gemprov = pd.DataFrame.from_csv(location + \
+            gemprov = pd.DataFrame.from_csv(location +
                                             "gemprov/" + year + ".csv")
         except:
             print('except')
-            gemprov = pd.DataFrame.from_csv(location + \
+            gemprov = pd.DataFrame.from_csv(location +
                                             "gemprov/2006.csv")
 
         for prov in provinces:
             provdict = {"name": prov,
                         "children": []}
             # Create a list of Gemeentes in currently iterated province.
-            gemeentes = list(gemprov[(gemprov["PROVINCIE"] == prov)] \
-								.filter(["GEMEENTE"]).T.columns)
+            gemeentes = list(gemprov[(gemprov["PROVINCIE"] == prov)]
+                             .filter(["GEMEENTE"]).T.columns)
+
             for gem in gemeentes:
                 print(gem)
                 gem = gem.lower()
@@ -178,7 +179,7 @@ def get_tree_json(var, variables, provinces, years, location = "data/csv/"):
 
                 branch.index = branch.index.str.lower()
 
-                gemdict = {"name": index,
+                gemdict = {"name": gem,
                            "value": branch.T[gem].values[0]}
                 provdict["children"].append(gemdict)
             yeardict["children"].append(provdict)
@@ -210,8 +211,7 @@ def write_json(variables, tree=False):
 
             with open(filename, 'w') as f:
                 json.dump(get_tree_json(var, variables, provinces, \
-                (2006, 2014), location = "data/csv/"), f)
+                (2006, 2014), location="data/csv/"), f)
 
-#print write_json(variables)
+# print(write_json(variables))
 print(write_json(variables, True))
-
