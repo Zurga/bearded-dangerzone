@@ -84,16 +84,16 @@ def get_json(var, variables, provinces, years, location = "data/csv/"):
         index = index.lower()
         data.columns = map(str.lower, data.columns)
 
-
         # First select only all gemeentes,
         # then filter based on given item and index.
         # This will be for all gemeentes in all provinces.
         root = data[(data[areades] == 'Gemeente') |
                     (data[areades] == 'G')].filter([item, index])
-        
-        # If var is float, multiply by 10.
-        if var in ["personenautos_per_huishouden", "gemiddelde_huishoudensgrootte"]:
-            root[item].apply(lambda x: float(x.replace(',', '.'))*10 if x != "x" else 'x')
+                    
+        # If var is float, multiply by 100.
+        if var == "gemiddelde_huishoudensgrootte" or var == "personenautos_per_huishouden":
+            root[item] = root[item].apply(lambda x: float(x.replace(',', '.'))*100 if x != "x" else 'x')
+
 
         # DataFrame consisting of Gemeente,Provincie data.
         # Foor 2004 and 2005, assuming data is equal to 2006 data,
@@ -220,4 +220,4 @@ def write_json(variables, tree=False, inp_dir_prefix= '',
 
 
 if __name__ == "__main__":
-    print(write_json(variables))
+    print get_json("gemiddelde_huishoudensgrootte", variables, provinces, (2006, 2014))
