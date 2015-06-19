@@ -1,4 +1,4 @@
-- Lansingerland: data 2006?
-- Fixen: Geen lijngrafiek bij Hollands Kroon bijv
 - Reverse order bij stedelijkheid
-- Bergen 65+
+- Fun fact: Bergen 65+
+- Fun fact: Utrecht stijging vrouwen (mannen?)
+- Toevoeging of wijziging: Type in expl.json als % in plaats van PERC of extra Type met % bijv
