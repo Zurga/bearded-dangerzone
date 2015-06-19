@@ -134,7 +134,7 @@
 		},
 		"Stedelijkheid":{
 		"Type":"SCH",
-		"Desc":"Schaal op basis van aantal adressen per km2: 1) zeer sterk stedelijk - meer dan 2500 adressen, 2) sterk stedelijk - tussen 1500 en 2500 adressen, 3) matig stedelijk - tussen 1000 en 1500 adressen, 4) weinig stedelijk - tussen 500 en 1000 adressen, 5) niet stedelijk - minder dan 500 adressen.",
+		"Desc":"Schaal op basis van aantal adressen per km2:<br />1) zeer sterk stedelijk - meer dan 2500 adressen, 2) sterk stedelijk - tussen 1500 en 2500 adressen, 3) matig stedelijk - tussen 1000 en 1500 adressen, 4) weinig stedelijk - tussen 500 en 1000 adressen, 5) niet stedelijk - minder dan 500 adressen.",
 		"Group":"Geografie",
 		"Filename":"stedelijkheid.json"
 		}

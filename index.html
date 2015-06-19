@@ -225,8 +225,14 @@
 							return +d;
 						});
 						
-						var min = d3.min(values);
-						var max = d3.max(values);
+						if (selected_variable == "stedelijkheid.json") {
+							var max = d3.min(values);
+							var min = d3.max(values);
+						}
+						else {
+							var min = d3.min(values);
+							var max = d3.max(values);
+						}
 						
 						var colorScale = d3.scale.quantize()
 						    .range(colorbrewer.OrRd[8])
@@ -583,8 +589,14 @@
 						return +d;
 					});
 					
-					var min = d3.min(values);
-					var max = d3.max(values);
+					if (selected_variable == "stedelijkheid.json") {
+						var max = d3.min(values);
+						var min = d3.max(values);
+					}
+					else {
+						var min = d3.min(values);
+						var max = d3.max(values);
+					}
 					
 					var colorScale = d3.scale.quantize()
 					    .range(colorbrewer.OrRd[8])
