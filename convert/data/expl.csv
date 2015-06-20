@@ -1,0 +1,27 @@
+Variable,Desc,Filename,Group,Type
+0 tot 15 jaar,"Aantal inwoners dat op 1 januari 0 tot 15 jaar oud is, uitgedrukt in hele procenten van het totaal aantal Inwoners in een gemeente.",0_tot_15_jaar.json,Algehele bevolking,%
+15 tot 25 jaar,"Aantal inwoners dat op 1 januari 15 tot 25 jaar oud is, uitgedrukt in hele procenten van het totaal aantal Inwoners in een gemeente.",15_tot_25_jaar.json,Algehele bevolking,%
+25 tot 45 jaar,"Aantal inwoners dat op 1 januari 25 tot 45 jaar oud is, uitgedrukt in hele procenten van het totaal aatal inwoners in een gemeente.",25_tot_45_jaar.json,Algehele bevolking,%
+45 tot 65 jaar,"Aantal inwoners dat op 1 januari 45 tot 65 jaar oud is, uitgedrukt in hele procenten van het totaal aantal Inwoners in een gemeente.",45_tot_65_jaar.json,Algehele bevolking,%
+65 jaar of ouder,"Aantal inwoners dat op 1 januari 65 jaar of ouder is, uitgedrukt in hele procenten van het totaal aantal Inwoners in een gemeente.",65_of_ouder.json,Algehele bevolking,%
+Antillianen,"Het aantal allochtonen met herkomstgroep Aruba, Bonaire, Curaçao, Saba, Sint Eustatius of Sint Maarten op 1 januari uitgedrukt in hele procenten van het aantal inwoners in een gemeente.",voormalige_nederlandse_antillen_en_aruba.json,Afkomst,%
+Bedrijfsmotorvoertuigen,"Het absolute aantal bestelauto's, vrachtauto's, trekkers (motorvoertuigen ingericht voor het trekken van opleggers), speciale voertuigen (bedrijfsauto's voor bijzondere doeleinden zoals bijvoorbeeld brandweerauto's, reinigingsauto's, takelwagens) en autobussen op 1 januari in gemeente. Het cijfer is afgerond op vijftallen.",bedrijfsmotorvoertuigen.json,Voertuigen,Aantal
+Dichtheid,Het niet afgeronde aantal inwoners per km2 in een gemeente.,bevolkingsdichtheid.json,Algehele bevolking,Aantal
+Eenpersoonshuishoudens,"Het aantal huishoudens met één persoon, die ouder is dan 14 jaar, uitgedrukt in hele procenten van het totaal aantal particuliere huishoudens in een gemeente.",eenpersoonshuishoudens.json,Wonen,%
+Huishoudens met kinderen,Het aantal huishoudens met kinderen uitgedrukt in procenten van het totaal aantal huishoudens in een gemeente.,huishoudens_met_kinderen.json,Wonen,%
+Huishoudensgrootte,"Het gemiddeld aantal mensen dat in een huis woont (aantal in particuliere huishoudens levende personen gedeeld door het totale aantal particuliere huishoudens, beide in een gemeente). Het cijfer is afgrond op maximaal twee decimalen.",gemiddelde_huishoudensgrootte.json,Wonen,Aantal (relatief)
+Mannen,"Het absolute aantal mannen in een gemeente, afgerond op vijftallen.",aantal_mannen.json,Algehele bevolking,Aantal
+Marokkanen,"Het aandeel allochtonen met herkomstgroep Marokko op 1 januari, uitgedrukt in hele procenten van het aantal inwoners in een gemeente.",aandeel_allochtonen_marokko_percentages.json,Afkomst,%
+Motortweewielers,"Het aantal motorrijwielen, scooters, motorcarriers en motorinvalidenwagens met een motorrijwielkentekenbewijs op 1 januari in een gemeente, afgerond op vijftallen.",motortweewielers.json,Voertuigen,Aantal
+Niet-westerse allochten,"Het aantal allochtonen met een niet-westerse herkomst op 1 januari, uitgedrukt in hele procenten van het aantal inwoners in een gemeente.",niet_westers_totaal_percentage.json,Afkomst,%
+Particuliere huishoudens,"Het absolute aantal particuliere huishoudens in een gemeente, afgerond op vijftallen.",aantal_huishoudens.json,Wonen,Aantal
+Personenauto's (per hh),Het aantal personenauto's per (particulier) huishouden op 1 januari in een gemeente.,personenautos_per_huishouden.json,Voertuigen,Aantal (relatief)
+Personenauto's (per km2),Het aantal personenauto's per km2 land op 1 januari in een gemeente.,overig_niet_westers_percentage.json,Voertuigen,Aantal (relatief)
+Personenauto's (totaal),"Het aantal personenauto's, bestelwagens voor vervoer, taxi's, huurauto's, ziekenwagens en campers in een gemeente. Geheel getal, afgerond op vijftallen.",personenautos_totaal.json,Voertuigen,Aantal
+Stedelijkheid,"Schaal op basis van aantal adressen per km2 in een gemeente:<br />1) zeer sterk stedelijk - meer dan 2500 adressen, 2) sterk stedelijk - tussen 1500 en 2500 adressen, 3) matig stedelijk - tussen 1000 en 1500 adressen, 4) weinig stedelijk - tussen 500 en 1000 adressen, 5) niet stedelijk - minder dan 500 adressen.",stedelijkheid.json,Geografie,Schaal (1-5)
+Surinamers,"Het aandeel allochtonen met herkomstgroep Suriname op 1 januari, uitgedrukt in hele procenten van het aantal inwoners in een gemeente.",aandeel_allochtonen_suriname_percentage.json,Afkomst,%
+Totale oppervlakte,De som van de oppervlakten water en land in hele hectaren in een gemeente.,oppervlakte_totaal.json,Geografie,Aantal
+Turken,"Het aandeel allochtonen met herkomstgroep Turkije op 1 januari, uitgedrukt in hele procenten van het aantal inwoners in een gemeente.",aandeel_allochtonen_turkije_percentage.json,Afkomst,%
+Vrouwen,"Het absolute aantal vrouwen in een gemeente, afgerond op vijftallen.",aantal_vrouwen.json,Algehele bevolking,Aantal (relatief)
+Water oppervlakte,Het aantal oppervlakte binnen- en buitenwater uitgedrukt in hele hectaren in een gemeente.,oppervlakte_water.json,Geografie,Aantal
+Westerse allochten,"Het aandeel westerse allochtonen op 1 januari, uitgedrukt in hele procenten van het aantal inwoners in een gemeente. Onder westerse allochtonen worden mensen verstaan die uit de volgende gebieden naar Nederland zijn gekomen: Europa, Noord-Amerika, Oceanië, Indonesië en Japan.",aandeel_allochtonen_westers_percentage.json,Afkomst,%

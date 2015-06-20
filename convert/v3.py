@@ -220,4 +220,5 @@ def write_json(variables, tree=False, inp_dir_prefix= '',
 
 
 if __name__ == "__main__":
-    print get_json("gemiddelde_huishoudensgrootte", variables, provinces, (2006, 2014))
+    print write_json(variables)
+    print write_json(variables, tree = True)
