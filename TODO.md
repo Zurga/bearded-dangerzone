@@ -1,4 +1,4 @@
 - Funfact: Bergen 65+  
 - Funfact: Utrecht stijging vrouwen (mannen?)  
-- Bug: Treemap werkt niet  
+- Toevoeging: highlighten gemeente op hover kaart en/of treemap
 - Toevoeging of wijziging: Type in expl.json als % in plaats van PERC of extra Type met % bijv  
