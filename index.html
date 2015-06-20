@@ -252,7 +252,7 @@
 								else {
 									var value = dataset[d.properties.statnaam];
 								}
-								tooltip.select('.label').html(toTitleCase(d.properties.statnaam) + "<br />" + parseInt(value).toLocaleString('nl'));
+								tooltip.select('.label').html(toTitleCase(d.properties.statnaam) + "<br />" + parseFloat(value).toLocaleString('nl'));
 								tooltip.style('display', 'block');
 							})
 							.on('mouseout', function(d) {
@@ -393,7 +393,7 @@
 				    .tickFormat(function(d) { return parseInt(d).toLocaleString('nl'); });
 				    
 				if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
-					yAxis.tickFormat(function(d) { return parseInt(d / 100).toLocaleString('nl'); });
+					yAxis.tickFormat(function(d) { return parseFloat(d / 100).toLocaleString('nl'); });
 				}
 				
 				var svg = d3.select("#visual").append("svg")
@@ -473,7 +473,7 @@
 				    .tickFormat(function(d) { return parseInt(d).toLocaleString('nl'); });
 				    
 			    if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
-			    	yAxis.tickFormat(function(d) { return parseInt(d / 100).toLocaleString('nl'); });
+			    	yAxis.tickFormat(function(d) { return parseFloat(d / 100).toLocaleString('nl'); });
 			    }
 				
 				var svg = d3.select("#visual").append("svg")
@@ -514,6 +514,8 @@
 			
 			function drawTreemap() {
 			
+				$('#visual').empty();
+				
 				var margin = {top: 20, right: 20, bottom: 30, left: 40},
 				    width = $(".right").width() * 0.8,
 				    height = width * 0.6;
@@ -570,7 +572,7 @@
 				gg.selectAll("path").remove();
 				$('#slider').show();
 				
-				//drawTreemap();
+				drawTreemap();
 				selected_provincie = d;
 				selected_provincie_obj = this;
 				
@@ -623,7 +625,7 @@
 							else {
 								var value = dataset[d.properties.statnaam];
 							}
-							tooltip.select('.label').html(toTitleCase(d.properties.statnaam) + "<br />" + parseInt(value).toLocaleString('nl'));
+							tooltip.select('.label').html(toTitleCase(d.properties.statnaam) + "<br />" + parseFloat(value).toLocaleString('nl'));
 							tooltip.style('display', 'block');
 						})
 						.on('mouseout', function(d) {

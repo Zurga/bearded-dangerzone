@@ -1,4 +1,4 @@
-import glob, os
+import glob, os, shutil
 from v3 import *
 
 
@@ -19,4 +19,5 @@ write_json(variables, inp_dir_prefix='', outdir='data/json/')
 print('creating tree json')
 write_json(variables, tree=True,
             inp_dir_prefix='', outdir='data/json/')
-os.copyfile('expl.json', 'data/json/')
+
+shutil.copy('data/expl.json', 'data/json/')
