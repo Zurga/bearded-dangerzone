@@ -1,10 +1,10 @@
 Variable;Desc;Filename;Group;Type
-Antillianen;Het aantal allochtonen met herkomstgroep Aruba, Bonaire, CuraÃ§ao, Saba, Sint Eustatius of Sint Maarten op 1 januari uitgedrukt in hele procenten van het aantal inwoners in een gemeente.;voormalige_nederlandse_antillen_en_aruba.json;Afkomst;%
+Antillianen;Het aantal allochtonen met herkomstgroep Aruba, Bonaire, Curaçao, Saba, Sint Eustatius of Sint Maarten op 1 januari uitgedrukt in hele procenten van het aantal inwoners in een gemeente.;voormalige_nederlandse_antillen_en_aruba.json;Afkomst;%
 Marokkanen;Het aandeel allochtonen met herkomstgroep Marokko op 1 januari, uitgedrukt in hele procenten van het aantal inwoners in een gemeente.;aandeel_allochtonen_marokko_percentages.json;Afkomst;%
 Niet-westerse allochten;Het aantal allochtonen met een niet-westerse herkomst op 1 januari, uitgedrukt in hele procenten van het aantal inwoners in een gemeente.;niet_westers_totaal_percentage.json;Afkomst;%
 Surinamers;Het aandeel allochtonen met herkomstgroep Suriname op 1 januari, uitgedrukt in hele procenten van het aantal inwoners in een gemeente.;aandeel_allochtonen_suriname_percentage.json;Afkomst;%
 Turken;Het aandeel allochtonen met herkomstgroep Turkije op 1 januari, uitgedrukt in hele procenten van het aantal inwoners in een gemeente.;aandeel_allochtonen_turkije_percentage.json;Afkomst;%
-Westerse allochten;Het aandeel westerse allochtonen op 1 januari, uitgedrukt in hele procenten van het aantal inwoners in een gemeente. Onder westerse allochtonen worden mensen verstaan die uit de volgende gebieden naar Nederland zijn gekomen: Europa, Noord-Amerika, OceaniÃ«, IndonesiÃ« en Japan.;aandeel_allochtonen_westers_percentage.json;Afkomst;%
+Westerse allochten;Het aandeel westerse allochtonen op 1 januari, uitgedrukt in hele procenten van het aantal inwoners in een gemeente. Onder westerse allochtonen worden mensen verstaan die uit de volgende gebieden naar Nederland zijn gekomen: Europa, Noord-Amerika, Oceanië, Indonesië en Japan.;aandeel_allochtonen_westers_percentage.json;Afkomst;%
 0 tot 15 jaar;Aantal inwoners dat op 1 januari 0 tot 15 jaar oud is, uitgedrukt in hele procenten van het totaal aantal Inwoners in een gemeente.;0_tot_15_jaar.json;Algehele bevolking;%
 15 tot 25 jaar;Aantal inwoners dat op 1 januari 15 tot 25 jaar oud is, uitgedrukt in hele procenten van het totaal aantal Inwoners in een gemeente.;15_tot_25_jaar.json;Algehele bevolking;%
 25 tot 45 jaar;Aantal inwoners dat op 1 januari 25 tot 45 jaar oud is, uitgedrukt in hele procenten van het totaal aatal inwoners in een gemeente.;25_tot_45_jaar.json;Algehele bevolking;%
@@ -21,7 +21,7 @@ Motortweewielers;Het aantal motorrijwielen, scooters, motorcarriers en motorinva
 Personenauto's (per hh);Het aantal personenauto's per (particulier) huishouden op 1 januari in een gemeente.;personenautos_per_huishouden.json;Voertuigen;Aantal (relatief)
 Personenauto's (per km2);Het aantal personenauto's per km2 land op 1 januari in een gemeente.;overig_niet_westers_percentage.json;Voertuigen;Aantal (relatief)
 Personenauto's (totaal);Het aantal personenauto's, bestelwagens voor vervoer, taxi's, huurauto's, ziekenwagens en campers in een gemeente. Geheel getal, afgerond op vijftallen.;personenautos_totaal.json;Voertuigen;Aantal
-Eenpersoonshuishoudens;Het aantal huishoudens met Ã©Ã©n persoon, die ouder is dan 14 jaar, uitgedrukt in hele procenten van het totaal aantal particuliere huishoudens in een gemeente.;eenpersoonshuishoudens.json;Wonen;%
+Eenpersoonshuishoudens;Het aantal huishoudens met één persoon, die ouder is dan 14 jaar, uitgedrukt in hele procenten van het totaal aantal particuliere huishoudens in een gemeente.;eenpersoonshuishoudens.json;Wonen;%
 Huishoudens met kinderen;Het aantal huishoudens met kinderen uitgedrukt in procenten van het totaal aantal huishoudens in een gemeente.;huishoudens_met_kinderen.json;Wonen;%
 Huishoudensgrootte;Het gemiddeld aantal mensen dat in een huis woont (aantal in particuliere huishoudens levende personen gedeeld door het totale aantal particuliere huishoudens, beide in een gemeente). Het cijfer is afgrond op maximaal twee decimalen.;gemiddelde_huishoudensgrootte.json;Wonen;Aantal (relatief)
 Particuliere huishoudens;Het absolute aantal particuliere huishoudens in een gemeente, afgerond op vijftallen.;aantal_huishoudens.json;Wonen;Aantal

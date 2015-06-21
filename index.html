@@ -92,10 +92,9 @@
 						
 			var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) * 0.88,
 			    width = height * 0.85,
-			    active_prov = d3.select(null);
-			    active_gem = d3.select(null);
-			    
-			var tooltip;
+			    active_prov = d3.select(null),
+			    active_gem = d3.select(null),
+			    tooltip;
 			
 			var projection = d3.geo.mercator()
 			    .scale(height * 11)
@@ -122,12 +121,12 @@
 			    .attr("height", height)
 			    .on("click", reset_to_land);
 			    
-			var g = svg.append('g');
-			var gg = svg.append('g');
-			var selected_provincie = null;
-			var selected_provincie_obj;
-			var selected_gemeente = null;
-			var selected_gemeente_obj;
+			var g = svg.append('g'),
+				gg = svg.append('g'),
+				selected_provincie = null,
+				selected_provincie_obj,
+				selected_gemeente = null,
+				selected_gemeente_obj;
 			
 			$('#select_variable').change(function() {
 				selected_variable = $(this).val();
@@ -171,6 +170,9 @@
 					else {
 						drawTreemap();
 					}
+				}
+				else {
+					
 				}
 			});
 			
@@ -253,7 +255,7 @@
 								else {
 									var value = dataset[d.properties.statnaam];
 								}
-								tooltip.select('.label').html(toTitleCase(d.properties.statnaam) + "<br />" + parseFloat(value).toLocaleString('nl'));
+								tooltip.select('.label').html(toTitleCase(d.properties.statnaam) + "<br />" + parseFloat(value).toLocaleString('nl') + $('#select_variable').find(":selected").data('type'));
 								tooltip.style('display', 'block');
 							})
 							.on('mouseout', function(d) {
