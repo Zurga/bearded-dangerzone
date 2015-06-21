@@ -1,5 +1,6 @@
 - Funfact: Bergen 65+  
-- Funfact: Utrecht stijging vrouwen (mannen?) 
-- Bug: stedelijkheid treemap reverse data  
+- Funfact: Utrecht stijging vrouwen (mannen?)
+- Funfact: Almere Niet-westerse allochtonen 4% gestegen
+- Bug: stedelijkheid treemap reverse data
 - Toevoeging: highlighten gemeente op hover kaart en/of treemap
 - Toevoeging of wijziging: Type in expl.json als % in plaats van PERC of extra Type met % bijv  
