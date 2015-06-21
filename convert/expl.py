@@ -1,7 +1,6 @@
 import pandas as pd
 import json
 import sys
-from collections import OrderedDict
 
 reload(sys)  
 sys.setdefaultencoding('utf8')
@@ -23,12 +22,9 @@ def csv_to_json(inp = "data/expl.csv", oup = "data/expl.json", grouped = True):
         x = {}
         for group in set(df["Group"].values):
             x[group] = {}
-            print group
             for var in set(df[df["Group"] == group].index):
                 x[group][var] = df.loc[var].to_dict()
 	
-	#y = OrderedDict(sorted(x.items()))
-	#print y
     with open(oup, 'w') as f:
         json.dump(json.loads(json.dumps(x, ensure_ascii=False)), f, sort_keys=True)
     
