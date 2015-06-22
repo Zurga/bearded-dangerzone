@@ -133,6 +133,8 @@
 				selected_gemeente = null,
 				selected_gemeente_obj;
 			
+            var colorScale = d3.scale.quantize()
+
 			$('#select_variable').change(function() {
 				
 				selected_variable = $(this).val();
@@ -157,7 +159,7 @@
 					var min = d3.min(values);
 					var max = d3.max(values);
 					
-					var colorScale = d3.scale.quantize()
+					colorScale
 					    .range(colorbrewer.OrRd[8])
 					    .domain([min*10, max*10]);
 					
@@ -176,7 +178,9 @@
 							}
 							return d.properties.statnaam + ": " + dataset[d.properties.statnaam]; 
 						});
-						
+
+                    console.log('var change');
+                    legend();
 					if (selected_gemeente != null) {
 						drawChart();
 					}
@@ -191,22 +195,11 @@
 			
 			
 			svg.call(zoom.event);
-			
-			var vars = [], hash;
-			var q = document.URL.split('?')[1];
-			if(q != undefined){
-				q = q.split('&');
-				for(var i = 0; i < q.length; i++){
-					hash = q[i].split('=');
-					vars.push(hash[1]);
-					vars[hash[0]] = hash[1];
-				}
-			}
+			var i= 0;
 			
 			/* slider with test data */
 			// !!!test data please remove!!!
 			var data = {Jaar: [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014]};
-			var colors = d3.scale.category10();
 			var min = data.Jaar[0];
 			var max = data.Jaar[data.Jaar.length - 1];
 			var slider_value = max;
@@ -250,7 +243,7 @@
 							var max = d3.max(values);
 						}
 						
-						var colorScale = d3.scale.quantize()
+						colorScale
 						    .range(colorbrewer.OrRd[8])
 						    .domain([min, max]);
 					
@@ -288,7 +281,8 @@
 								return colorScale(dataset[d.properties.statnaam]);
 							})
 							.append("title");
-													
+
+                        legend();								
 						return true;
 						
 						if (selected_gemeente != null) {
@@ -344,6 +338,7 @@
 				
 				$('#slider').hide();
 				drawChart();
+                legend()
 				
 			}
 			
@@ -621,7 +616,7 @@
 						var max = d3.max(values);
 					}
 					
-					var colorScale = d3.scale.quantize()
+					colorScale
 					    .range(colorbrewer.OrRd[8])
 					    .domain([min, max]);
 					
@@ -745,26 +740,42 @@
 			{
 			    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 			}
+
+            /* keyboard events */
+            function legend(){
+                console.log('legend')
+                var legend = svg.selectAll('g.legendEntry')
+                    .data(colorScale.range().reverse())
+                    .enter()
+                    .append('g').attr('class', 'legendEntry');
+
+                legend.append('rect')
+                    .attr("x", width - 780)
+                    .attr("y", function(d, i) {
+                               return i * 20;
+                                   })
+                    .attr("width", 10)
+                    .attr("height", 10)
+                    .style("stroke", "black")
+                    .style("stroke-width", 1)
+                    .style("fill", function(d){return d;}); 
+                  //the data objects are the fill colors
+
+                legend.append('text')
+                    .attr("x", width - 765) //leave 5 pixel space after the <rect>
+                    .attr("y", function(d, i) {
+                                return i * 20;
+                            })
+                    .attr("dy", "0.8em") //place text one line *below* the x,y point
+                    .text(function(d,i) {
+                        var extent = colorScale.invertExtent(d);
+                        //extent will be a two-element array, format it however you want:
+                        var format = d3.format("0.2f");
+                        return format(+extent[0]) + " - " + format(+extent[1]);
+                    });
+            }
 			
 		});
-		/*$(document).ready(function() {
-			setTimeout(function() {
-				jQuery.fn.d3Click = function () {
-					this.each(function (i, e) {
-						var evt = document.createEvent("MouseEvents");
-						evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-						
-						e.dispatchEvent(evt);
-					});
-				};
-				
-				if (vars.hasOwnProperty("gemeente")) {
-					var gemeente = $('#'+vars['gemeente']);
-					gemeente.d3Click();
-				}
-				
-			}, 1000);
-		});*/
 		</script>
 	</body>
 </html>
