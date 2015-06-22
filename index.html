@@ -415,7 +415,7 @@
 					translate = [width / 2 - scale * x, height / 2 - scale * y];
 				
 				svg.transition()
-					.duration(1250)
+					.duration(500)
 					.call(zoom.translate(translate).scale(scale).event);
 				
 				$('#slider').hide();
@@ -746,7 +746,7 @@
 						translate = [width / 2 - scale * x, height / 2 - scale * y];
 					
 					svg.transition()
-						.duration(1250)
+						.duration(375)
 						.call(zoom.translate(translate).scale(scale).event);
 					
 				});
@@ -797,7 +797,8 @@
 				svg.transition()
 				  .duration(1250)
 				  .call(zoom.translate([0, 0]).scale(1).event);
-				
+
+			    remove_legend();	
 			}
 			
 			function zoomed() {
@@ -821,21 +822,19 @@
             /* keyboard events */
 
             function legend(){
-                var old = svg.selectAll('g.legendEntry');
+                remove_legend();
 
-                if ( old ){
-                    console.log('found it!!!');
-                    old.remove();
-                }
-                var legend = svg.selectAll('g.legendEntry')
+                var legend = svg.append('g')
+                    .attr('class', 'legend')
+                    .selectAll('g.legendEntry')
                     .data(colorScale.range())
                     .enter()
                     .append('g').attr('class', 'legendEntry');
 
                 legend.append('rect')
-                    .attr("x", 0)
+                    .attr("x", 5)
                     .attr("y", function(d, i) {
-                               return i * 20;
+                               return (i * 20) + 5;
                                    })
                     .attr("width", 10)
                     .attr("height", 10)
@@ -845,17 +844,21 @@
                   //the data objects are the fill colors
 
                 legend.append('text')
-                    .attr("x", 15) //leave 5 pixel space after the 
+                    .attr("x", 20) //leave 5 pixel space after the 
                     .attr("y", function(d, i) {
-                                return i * 20;
+                                return (i * 20) + 5;
                             })
                     .attr("dy", "0.8em") //place text one line *below* the x,y point
                     .text(function(d,i) {
                         var extent = colorScale.invertExtent(d);
                         //extent will be a two-element array, format it however you want:
-                        var format = d3.format("1r");
+                        var format = d3.format("r1.2");
                         return format(+extent[0]) + " - " + format(+extent[1]);
                     });
+            }
+
+            function remove_legend(){
+                svg.selectAll('g.legend').remove();
             }
 			
 		});
