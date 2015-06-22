@@ -38,3 +38,4 @@ Thumbs.db
 
 # json files that will be generated #
 convert/data/json/*
+*.pyc
