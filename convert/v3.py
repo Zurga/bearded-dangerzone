@@ -119,10 +119,13 @@ def get_json(var, variables, provinces, years, location = "data/csv/"):
                 root = data[(data[areades] == 'Gemeente') |
                 (data[areades] == 'G')].filter([item, index, mannen])
                 root["inwoners"] = root[mannen] + root[item]
-                    
-        # If var is float, multiply by 100.
+        
+        # Remove rows which contain no data (notice the ~)
+        rootx = root[~root[item].isin(['x', '-'])]
+
+        # If 'probleemvars', multiply by 100
         if var == "gemiddelde_huishoudensgrootte" or var == "personenautos_per_huishouden":
-            root[item] = root[item].apply(lambda x: float(x.replace(',', '.'))*100 if x != "x" else None)
+            rootx[item] = rootx[item].apply(lambda x: float(x.replace(',', '.'))*100)
 
         # DataFrame consisting of Gemeente,Provincie data.
         # Foor 2004 and 2005, assuming data is equal to 2006 data,
@@ -142,28 +145,27 @@ def get_json(var, variables, provinces, years, location = "data/csv/"):
 
             # Filter root based on this list.
             branch = root[(root[index].isin(gem))].set_index([index])
+            branchx = rootx[(rootx[index].isin(gem))].set_index([index])        
 
             # Lowercase all Gemeente names.
             branch.index = branch.index.str.lower()
+            branchx.index = branchx.index.str.lower()
             
-            # Min, max, average for each province.
-            branch = branch.replace(['x', '-'], np.nan)
-            bd = branch[item].to_dict()
             
-            values = map(lambda x: float(x), bd.values()) 
-
-            bd.update({"__provdata": 
-                                    {"min": [provinces[prov], branch[item].idxmin(skipna = True), 
-                                              min(values)], 
-                                     "max": [provinces[prov], branch[item].idxmax(skipna = True), 
-                                              max(values)],
-                                     "avg": np.mean(values),
-                                     "inw": (branch["inwoners"]).to_json()
-                                     }
-                       }
-                      )
+            # Min, max, average for each province.            
+            bd = branch[item].to_dict()            
+            values = map(lambda x: float(x), branchx[item].to_dict().values())
+            countrydata = {"__provdata": 
+                                {"min": [provinces[prov], branchx[item].idxmin(skipna = True), min(values)], 
+                                 "max": [provinces[prov], branchx[item].idxmax(skipna = True), max(values)], 
+                                 "avg": np.mean(values), 
+                                 "inw": (branch["inwoners"]).to_dict()
+                                }
+                          }     
+                          
+            bd.update(countrydata)
             
-
+            
             # Write to JSON dictionary.
             JSON[year][prov] = json.loads(json.dumps(bd))
         
@@ -275,5 +277,4 @@ def write_json(variables, tree=False, inp_dir_prefix= '',
 
 
 if __name__ == "__main__":
-    #print write_json(variables)
-    print get_json("aantal_vrouwen", variables, provinces, (2014, 2014), location = "data/csv/")
+    print write_json(variables)
