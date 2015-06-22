@@ -45,10 +45,11 @@ variables = {os.path.basename(fn)[:-4]: get_vars(fn)
 				for fn in glob.glob('data/csv/vars/*')
 				if not fn.endswith("~")}
 
-# List of all provinces.
-provinces = ["Groningen", "Friesland", "Drenthe", "Overijssel",
-            "Flevoland", "Gelderland", "Utrecht", "Noord-Holland",
-             "Zuid-Holland", "Zeeland", "Noord-Brabant", "Limburg"]
+# Dict of all provinces and their codes.          
+provinces = {"Groningen": 20, "Friesland": 21, "Drenthe": 22,
+             "Overijssel": 23, "Flevoland": 24, "Gelderland": 25,
+             "Utrecht": 26, "Noord-Holland": 27, "Zuid-Holland": 28, 
+             "Zeeland": 29, "Noord-Brabant": 30, "Limburg": 31}
 
 def get_json(var, variables, provinces, years, location = "data/csv/"):
     """
@@ -91,6 +92,8 @@ def get_json(var, variables, provinces, years, location = "data/csv/"):
         item = variables[var][year]
         areades = variables["regioaanduiding"][year]
         index = variables["regionaam"][year]
+        mannen = variables["aantal_mannen"][year]
+        vrouwen = variables["aantal_vrouwen"][year]
         data = pd.DataFrame.from_csv(location + year + ".csv")
 
         # Lower all input and all columns
@@ -102,8 +105,20 @@ def get_json(var, variables, provinces, years, location = "data/csv/"):
         # First select only all gemeentes,
         # then filter based on given item and index.
         # This will be for all gemeentes in all provinces.
-        root = data[(data[areades] == 'Gemeente') |
-                    (data[areades] == 'G')].filter([item, index])
+        
+        if var != "aantal_mannen" and var != "aantal_vrouwen":
+            root = data[(data[areades] == 'Gemeente') |
+            (data[areades] == 'G')].filter([item, index, mannen, vrouwen])
+            root["inwoners"] = root[mannen] + root[vrouwen]
+        else:
+            if var == "aantal_mannen":
+                root = data[(data[areades] == 'Gemeente') |
+                (data[areades] == 'G')].filter([item, index, vrouwen])
+                root["inwoners"] = root[item] + root[vrouwen]
+            elif var == "aantal_vrouwen":
+                root = data[(data[areades] == 'Gemeente') |
+                (data[areades] == 'G')].filter([item, index, mannen])
+                root["inwoners"] = root[mannen] + root[item]
                     
         # If var is float, multiply by 100.
         if var == "gemiddelde_huishoudensgrootte" or var == "personenautos_per_huishouden":
@@ -131,18 +146,19 @@ def get_json(var, variables, provinces, years, location = "data/csv/"):
             # Lowercase all Gemeente names.
             branch.index = branch.index.str.lower()
             
-            # Min, max, average for each province
+            # Min, max, average for each province.
             branch = branch.replace(['x', '-'], np.nan)
             bd = branch[item].to_dict()
             
-            values = map(lambda x: float(x), bd.values())
+            values = map(lambda x: float(x), bd.values()) 
 
             bd.update({"__provdata": 
-                                    {"min": [prov, branch[item].idxmin(skipna = True), 
+                                    {"min": [provinces[prov], branch[item].idxmin(skipna = True), 
                                               min(values)], 
-                                     "max": [prov, branch[item].idxmax(skipna = True), 
+                                     "max": [provinces[prov], branch[item].idxmax(skipna = True), 
                                               max(values)],
-                                     "avg": np.mean(values)
+                                     "avg": np.mean(values),
+                                     "inw": (branch["inwoners"]).to_json()
                                      }
                        }
                       )
@@ -259,4 +275,5 @@ def write_json(variables, tree=False, inp_dir_prefix= '',
 
 
 if __name__ == "__main__":
-    print write_json(variables)
+    #print write_json(variables)
+    print get_json("aantal_vrouwen", variables, provinces, (2014, 2014), location = "data/csv/")
