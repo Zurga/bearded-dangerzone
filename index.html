@@ -272,6 +272,9 @@
 					/*********** DRAW MIN MAX AVG *********/
 					gg.selectAll('path').remove();
 					
+					var countrydata = cbs_data[slider_value]['__countrydata'];
+					console.log(countrydata);
+					
 					var land_gem_data = loadData('gemeente-prov/topo_27_' + slider_value + '.json');
 					
 					var draw_gem = [];
@@ -632,6 +635,9 @@
 				if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
 					treemap.value(function(d) { return d.value / 100; });
 				}
+				else if (selected_variable == 'stedelijkheid.json') {
+					treemap.value(function(d) { return 6 - d.value; });
+				}
 				else {
 				    treemap.value(function(d) { return d.value; });
 				}
@@ -673,7 +679,7 @@
 						.attr("class", "node")
 						.call(position)
 						.style("background", function(d) { return color(d.name); })
-						.text(function(d) { return toTitleCase(d.name); });
+						.text(function(d) { return toTitleCase(d.name) + "\n" + d.value; });
 						
 				});
 				
