@@ -110,6 +110,8 @@
 			    .scale(1)
 			    .scaleExtent([1, 8])
 			    .on("zoom", zoomed);
+			
+			var zoom_speed = 400;
 						
 			var path = d3.geo.path()
 			    .projection(projection);
@@ -415,7 +417,7 @@
 					translate = [width / 2 - scale * x, height / 2 - scale * y];
 				
 				svg.transition()
-					.duration(1250)
+					.duration(zoom_speed)
 					.call(zoom.translate(translate).scale(scale).event);
 				
 				$('#slider').hide();
@@ -756,7 +758,7 @@
 						translate = [width / 2 - scale * x, height / 2 - scale * y];
 					
 					svg.transition()
-						.duration(1250)
+						.duration(zoom_speed)
 						.call(zoom.translate(translate).scale(scale).event);
 					
 				});
@@ -783,7 +785,7 @@
 					translate = [width / 2 - scale * x, height / 2 - scale * y];
 				
 				svg.transition()
-					.duration(1250)
+					.duration(zoom_speed)
 					.call(zoom.translate(translate).scale(scale).event);
 				
 			}
@@ -805,7 +807,7 @@
 				active_prov = d3.select(null);
 				
 				svg.transition()
-				  .duration(1250)
+				  .duration(zoom_speed)
 				  .call(zoom.translate([0, 0]).scale(1).event);
 				
 			}
