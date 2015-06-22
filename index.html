@@ -134,6 +134,8 @@
 			
             var colorScale = d3.scale.quantize()
 
+            $("#select_variable").focus();
+
 			/*********** DRAW MIN MAX AVG *********/
 			var land_gem_data = loadData('gemeente-prov/topo_27_2014.json');
 			console.log(land_gem_data);
@@ -824,15 +826,17 @@
 			}
 
             /* keyboard events */
+
             function legend(){
-                console.log('legend')
-                var legend = svg.selectAll('g.legendEntry')
-                    .data(colorScale.range().reverse())
+                if (svg.selectAll('g.legendEntry'){
+                }
+                var legend = svg.selectAll('g.legendEntry');
+                    .data(colorScale.range())
                     .enter()
                     .append('g').attr('class', 'legendEntry');
 
                 legend.append('rect')
-                    .attr("x", width - 780)
+                    .attr("x", 0)
                     .attr("y", function(d, i) {
                                return i * 20;
                                    })
@@ -844,13 +848,14 @@
                   //the data objects are the fill colors
 
                 legend.append('text')
-                    .attr("x", width - 765) //leave 5 pixel space after the <rect>
+                    .attr("x", 15) //leave 5 pixel space after the 
                     .attr("y", function(d, i) {
                                 return i * 20;
                             })
                     .attr("dy", "0.8em") //place text one line *below* the x,y point
                     .text(function(d,i) {
                         var extent = colorScale.invertExtent(d);
+                        console.log( extent);
                         //extent will be a two-element array, format it however you want:
                         var format = d3.format("0.2f");
                         return format(+extent[0]) + " - " + format(+extent[1]);
@@ -858,6 +863,6 @@
             }
 			
 		});
-		</script>
+        </script>
 	</body>
 </html>
