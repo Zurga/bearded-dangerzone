@@ -424,6 +424,16 @@
 				
 			}
 			
+			function genDataset() {
+				var dataset = [];
+				
+				$.each(yearRange, function (i, v) {
+					dataset.push({'year': v, 'value': cbs_data[v][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]});
+				});
+				
+				return dataset;
+			}
+			
 			function drawChart() {
 				$('#visual').empty();
 				
