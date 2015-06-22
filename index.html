@@ -828,9 +828,9 @@
             /* keyboard events */
 
             function legend(){
-                if (svg.selectAll('g.legendEntry'){
+                if (svg.selectAll('g.legendEntry')){
                 }
-                var legend = svg.selectAll('g.legendEntry');
+                var legend = svg.selectAll('g.legendEntry')
                     .data(colorScale.range())
                     .enter()
                     .append('g').attr('class', 'legendEntry');
