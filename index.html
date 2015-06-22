@@ -651,7 +651,8 @@
 						.attr("class", "node")
 						.call(position)
 						.style("background", function(d) { return color(d.name); })
-						.text(function(d) { return toTitleCase(d.name); });
+                        .append("span")
+                            .html(function(d) { return toTitleCase(d.name) + "<br>" + d.value;});
 						
 				});
 				
@@ -864,7 +865,7 @@
                     .text(function(d,i) {
                         var extent = colorScale.invertExtent(d);
                         //extent will be a two-element array, format it however you want:
-                        var format = d3.format("r1.2");
+                        var format = d3.format("1f");
                         return format(+extent[0]) + " - " + format(+extent[1]);
                     });
             }
