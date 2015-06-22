@@ -132,7 +132,7 @@
 				selected_gemeente = null,
 				selected_gemeente_obj;
 			
-            var colorScale = d3.scale.quantize()
+            var colorScale = d3.scale.quantize();
 
 			/*********** DRAW MIN MAX AVG *********/
 			var land_gem_data = loadData('gemeente-prov/topo_27_2014.json');
@@ -223,7 +223,7 @@
 				else {
 					dataset = cbs_data[slider_value]['Noord-Holland'];
 				
-					var colorScale = d3.scale.quantize()
+					colorScale
 						    .range(colorbrewer.OrRd[8])
 						    .domain([min, max]);
 					
