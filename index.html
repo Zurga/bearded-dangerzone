@@ -701,6 +701,8 @@
 					
 					tooltip.append('div')            
 						.attr('class', 'label');
+
+                    legend(colorScale);
 					
 					gg.attr("fill", "#ccc")
 						.selectAll("path")
@@ -819,7 +821,11 @@
             /* keyboard events */
 
             function legend(){
-                if (svg.selectAll('g.legendEntry')){
+                var old = svg.selectAll('g.legendEntry');
+
+                if ( old ){
+                    console.log('found it!!!');
+                    old.remove();
                 }
                 var legend = svg.selectAll('g.legendEntry')
                     .data(colorScale.range())
@@ -846,9 +852,8 @@
                     .attr("dy", "0.8em") //place text one line *below* the x,y point
                     .text(function(d,i) {
                         var extent = colorScale.invertExtent(d);
-                        console.log( extent);
                         //extent will be a two-element array, format it however you want:
-                        var format = d3.format("0.2f");
+                        var format = d3.format("1r");
                         return format(+extent[0]) + " - " + format(+extent[1]);
                     });
             }
