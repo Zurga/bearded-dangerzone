@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import pandas as pd
+import numpy as np
+import math
 import json
 import csv
 import glob
@@ -24,6 +26,19 @@ def get_vars(csvfile):
     with open(csvfile, "rbU") as f:
         reader = reader=csv.reader(f, delimiter=';')
         return {row[0]:row[1] for row in reader}
+        
+def get_countrydata(JSON):
+    minimum = min((JSON[province]["__provdata"]["min"] for province in JSON.keys()), 
+                                                                key = lambda x: x[2])
+    
+    maximum = max((JSON[province]["__provdata"]["max"] for province in JSON.keys()), 
+                                                                key = lambda x: x[2])
+    
+    average = np.mean([JSON[province]["__provdata"]["avg"] for province in JSON.keys()])
+    
+    return {"min": minimum,
+            "max": maximum,
+            "avg": average}
 
 # Dictionary of correct variables for all years.
 variables = {os.path.basename(fn)[:-4]: get_vars(fn)
@@ -92,7 +107,7 @@ def get_json(var, variables, provinces, years, location = "data/csv/"):
                     
         # If var is float, multiply by 100.
         if var == "gemiddelde_huishoudensgrootte" or var == "personenautos_per_huishouden":
-            root[item] = root[item].apply(lambda x: float(x.replace(',', '.'))*100 if x != "x" else 'x')
+            root[item] = root[item].apply(lambda x: float(x.replace(',', '.'))*100 if x != "x" else None)
 
         # DataFrame consisting of Gemeente,Provincie data.
         # Foor 2004 and 2005, assuming data is equal to 2006 data,
@@ -115,9 +130,30 @@ def get_json(var, variables, provinces, years, location = "data/csv/"):
 
             # Lowercase all Gemeente names.
             branch.index = branch.index.str.lower()
+            
+            # Min, max, average for each province
+            branch = branch.replace(['x', '-'], np.nan)
+            bd = branch[item].to_dict()
+            
+            values = map(lambda x: float(x), bd.values())
+
+            bd.update({"__provdata": 
+                                    {"min": [prov, branch[item].idxmin(skipna = True), 
+                                              min(values)], 
+                                     "max": [prov, branch[item].idxmax(skipna = True), 
+                                              max(values)],
+                                     "avg": np.mean(values)
+                                     }
+                       }
+                      )
+            
 
             # Write to JSON dictionary.
-            JSON[year][prov] = json.loads(branch[item].to_json())
+            JSON[year][prov] = json.loads(json.dumps(bd))
+        
+
+        # Min, max, average for whole country
+        JSON[year]["__countrydata"] = get_countrydata(JSON[year])
 
     return JSON
 
@@ -224,4 +260,3 @@ def write_json(variables, tree=False, inp_dir_prefix= '',
 
 if __name__ == "__main__":
     print write_json(variables)
-    print write_json(variables, tree = True)
