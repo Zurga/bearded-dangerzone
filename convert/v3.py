@@ -94,7 +94,6 @@ def get_json(var, variables, provinces, years, location = "data/csv/"):
         if var == "gemiddelde_huishoudensgrootte" or var == "personenautos_per_huishouden":
             root[item] = root[item].apply(lambda x: float(x.replace(',', '.'))*100 if x != "x" else 'x')
 
-
         # DataFrame consisting of Gemeente,Provincie data.
         # Foor 2004 and 2005, assuming data is equal to 2006 data,
         # because of nonexistence of data for these years.
@@ -154,7 +153,11 @@ def get_tree_json(var, variables, provinces, years, location="data/csv/"):
         # This will be for all gemeentes in all provinces.
         root = data[(data[areades] == 'Gemeente') |
                     (data[areades] == 'G')].filter([item, index])
-
+		
+		# If var is float, multiply by 100.
+        if var == "gemiddelde_huishoudensgrootte" or var == "personenautos_per_huishouden":
+            root[item] = root[item].apply(lambda x: float(x.replace(',', '.'))*100 if x != "x" else 'x')
+		
         # DataFrame consisting of Gemeente,Provincie data.
         # Foor 2004 and 2005, assuming data is equal to 2006 data,
         # because of nonexistence of data for these years.

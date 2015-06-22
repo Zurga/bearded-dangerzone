@@ -68,13 +68,6 @@
 			    });
 			});
 			
-			var selected_variable = $('#select_variable').val();
-			var selected_type = $('#select_variable').find(":selected").data('type');
-			var eenheid = '';
-			if (selected_type == "%") {
-				eenheid = '%';
-			}
-			
 			function loadData(variable) {
 				if (variable == '') {
 					return false;
@@ -84,7 +77,7 @@
 				    $.ajax({
 				        'async': false,
 				        'global': false,
-				        'url': 'convert/data/json/' + selected_variable	,
+				        'url': variable,
 				        'dataType': "json"
 				    }).done(function(data) {
 				    	json = data;
@@ -93,8 +86,14 @@
 				})();
 			}
 			
-			var cbs_data = loadData(selected_variable);
-						
+			var selected_variable = $('#select_variable').val();
+			var selected_type = $('#select_variable').find(":selected").data('type');
+			var eenheid = '';
+			if (selected_type == "%") {
+				eenheid = '%';
+			}
+			var cbs_data = '';
+			
 			var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) * 0.88,
 			    width = height * 0.85,
 			    active_prov = d3.select(null),
@@ -135,6 +134,20 @@
 			
             var colorScale = d3.scale.quantize()
 
+			/*********** DRAW MIN MAX AVG *********/
+			var land_gem_data = loadData('gemeente-prov/topo_27_2014.json');
+			console.log(land_gem_data);
+			var draw_gem = [];
+			var gem_topo = topojson.feature(land_gem_data, land_gem_data.objects['27_2014']).features;
+			console.log(gem_topo);
+			$.each(gem_topo, function(i, v) {
+			    if (v.properties.statnaam == "haarlem") {
+			        draw_gem.push(v);
+			        
+			        return;
+			    }
+			});
+			
 			$('#select_variable').change(function() {
 				
 				selected_variable = $(this).val();
@@ -143,8 +156,11 @@
 				if (selected_type == "%") {
 					eenheid = '%';
 				}
+				else {
+					eenheid = '';
+				}
 				
-				cbs_data = loadData(selected_variable);
+				cbs_data = loadData('convert/data/json/' + selected_variable);
 				
 				$('#description').html($('option:selected', this).data('desc'));
 				
@@ -156,12 +172,18 @@
 						return +d;
 					});
 					
-					var min = d3.min(values);
-					var max = d3.max(values);
+					if (selected_variable == "stedelijkheid.json") {
+						var max = d3.min(values);
+						var min = d3.max(values);
+					}
+					else {
+						var min = d3.min(values);
+						var max = d3.max(values);
+					}
 					
 					colorScale
 					    .range(colorbrewer.OrRd[8])
-					    .domain([min*10, max*10]);
+					    .domain([min, max]);
 					
 					gg.selectAll("g")
 						.selectAll("path")
@@ -169,14 +191,24 @@
 							if (dataset[d.properties.statnaam] === undefined) {
 								return '#ccc';
 							}
-							return colorScale(dataset[d.properties.statnaam]*10);
+							return colorScale(dataset[d.properties.statnaam]);
 						})
-						.selectAll("title")
-						.text(function(d) {
-							if (dataset[d.properties.statnaam] === undefined || dataset[d.properties.statnaam] == "x") {
-								return d.properties.statnaam + ": Geen data bekend"; 
+						.on('mouseover', function(d) {
+							if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
+								var value = dataset[d.properties.statnaam] / 100;
 							}
-							return d.properties.statnaam + ": " + dataset[d.properties.statnaam]; 
+							else {
+								var value = dataset[d.properties.statnaam];
+							}
+							tooltip.select('.label').html(toTitleCase(d.properties.statnaam) + "<br />" + parseFloat(value).toLocaleString('nl') + eenheid);
+							tooltip.style('display', 'block');
+						})
+						.on('mouseout', function(d) {
+							tooltip.style('display', 'none');
+						})
+						.on('mousemove', function(d) {
+							tooltip.style('top', (d3.event.pageY + 10) + 'px')
+						    	.style('left', (d3.event.pageX + 10) + 'px');
 						});
 
                     console.log('var change');
@@ -189,7 +221,47 @@
 					}
 				}
 				else {
+					dataset = cbs_data[slider_value]['Noord-Holland'];
+				
+					var colorScale = d3.scale.quantize()
+						    .range(colorbrewer.OrRd[8])
+						    .domain([min, max]);
 					
+					gg.attr("fill", "#ccc")
+						.selectAll("path")
+						.data(draw_gem)
+						.enter().append("g")
+						.attr("class", "gemeente")
+						.append("path")
+						.on("click", zoom_gem)
+						.on('mouseover', function(d) {
+							if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
+								var value = dataset[d.properties.statnaam] / 100;
+							}
+							else {
+								var value = dataset[d.properties.statnaam];
+							}
+							
+							tooltip.select('.label').html(toTitleCase(d.properties.statnaam) + "<br />" + parseFloat(value).toLocaleString('nl') + eenheid);
+							tooltip.style('display', 'block');
+						})
+						.on('mouseout', function(d) {
+							tooltip.style('display', 'none');
+						})
+						.on('mousemove', function(d) {
+							tooltip.style('top', (d3.event.pageY + 10) + 'px')
+						    	.style('left', (d3.event.pageX + 10) + 'px');
+						})
+						.attr("id", function(d) { return d.properties.name })
+						.attr("d", path)
+						.attr("fill", function(d) {
+							if (dataset[d.properties.statnaam] === undefined) {
+								return '#ccc';
+							}
+							return colorScale(dataset[d.properties.statnaam]);
+						});
+					
+				
 				}
 			});
 			
@@ -217,7 +289,7 @@
 				}));
 					
 			function redraw() {
-				cbs_data = loadData(selected_variable);
+				cbs_data = loadData('convert/data/json/' + selected_variable);
 				
 				if (selected_provincie != null) {
 				
@@ -279,8 +351,7 @@
 									return '#ccc';
 								}
 								return colorScale(dataset[d.properties.statnaam]);
-							})
-							.append("title");
+							});
 
                         legend();								
 						return true;
@@ -525,14 +596,20 @@
 				
 				var margin = {top: 10, right: 0, bottom: 5, left: 0},
 				    width = $(".right").width() * 0.95,
-				    height = width * 0.9;
+				    height = width * 0.7;
 			
 				var treemap = d3.layout.treemap()
 				    .size([width, height])
-				    .sticky(true)
-				    .value(function(d) { return d.value; });
+				    .sticky(true);
+				    
+				if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
+					treemap.value(function(d) { return d.value / 100; });
+				}
+				else {
+				    treemap.value(function(d) { return d.value; });
+				}
 				
-				var color = d3.scale.ordinal().domain(treemap.nodes).range(colorbrewer.Set2[7]);
+				var color = d3.scale.category20();
 				
 				var div = d3.select("#visual").append("div")
 				    .style("position", "relative")
@@ -585,7 +662,12 @@
 			function zoom_prov(d) {
 			
 				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
-				gg.selectAll("path").remove();
+				gg.selectAll('g').remove();
+				
+				selected_gemeente = null;
+				selected_gemeente_obj = null;
+				$('#gemeente').html('');
+				
 				$('#slider').show();
 				
 				drawTreemap();
@@ -599,7 +681,7 @@
 				
 				d3.json("gemeente-prov/topo_"+d.id+"_"+slider_value+".json", function(error, gem) {
 					if (error) return console.error(error);
-					
+					console.log(gem);
 					dataset = cbs_data[slider_value][d.properties.PROV_NAME];
 					
 					var values = d3.values(dataset);
@@ -703,7 +785,7 @@
 			
 			function reset_to_land() {
 				
-				gg.selectAll("path").remove();
+				gg.selectAll('g').remove();
 				$('#slider').show();
 				$('#visual').empty();
 				
