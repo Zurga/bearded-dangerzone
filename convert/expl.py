@@ -2,7 +2,7 @@ import pandas as pd
 import json
 import sys
 
-reload(sys)  
+reload(sys)
 sys.setdefaultencoding('utf8')
 
 def json_to_csv(inp = "data/expl.json", oup = "data/expl.csv"):
@@ -24,10 +24,10 @@ def csv_to_json(inp = "data/expl.csv", oup = "data/expl.json", grouped = True):
             x[group] = {}
             for var in set(df[df["Group"] == group].index):
                 x[group][var] = df.loc[var].to_dict()
-	
+
     with open(oup, 'w') as f:
         json.dump(json.loads(json.dumps(x, ensure_ascii=False)), f, sort_keys=True)
-    
+
     return "File %s written." % oup
-    
-print csv_to_json()
+
+print(csv_to_json())
