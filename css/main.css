@@ -55,11 +55,17 @@ h1 {
 
 /*svg layout */
 path {
-	stroke: #FFF;
 	stroke-linejoin: round;
 	stroke-linecap: round;
 }
-
+.provincie path {
+	stroke: #fff;
+	stroke-width: 0.5px;
+}
+.gemeente path {
+	stroke: #fafafa;
+	stroke-width: 0.2px;
+}
 .gemeente path:hover, .provincie path:hover {
 	fill: lightblue;
 }
