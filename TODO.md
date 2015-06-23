@@ -1,7 +1,12 @@
 - Bug: tooltips verdwijen na een tijdje spelen met de kaart
 - Bug: treemap fuckt up na een tijdje spelen met de kaart
 - Bug: stedelijkheid treemap reverse data
-
+- Bug: slider werkt niet meer
+- Bug: soms drawt ie ergens in Groningen als je bezig bent in Limburg
+- Bug: treemap laat soms alle gemeenten zien, één warboel
+- Bug: legenda doet gek
+- Bug: kommagetallen gaan weer fout (*100 afvangen!)
+  
 - Verbetering: procentteken staat omgekeerd in de line/bar chart, erg lelijk en onduidelijk
 - Toevoeging: highlighten gemeente op hover kaart en/of treemap
 - Toevoeging of wijziging: Type in expl.json als % in plaats van PERC of extra Type met % bijv
