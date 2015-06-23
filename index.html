@@ -41,6 +41,8 @@
 		</div>
 		
 		<script type="text/javascript">
+            //TODO Variabele naam in de Tooltip
+            //TODO 
 		$(document).ready(function() {
 			
 			// Inladen gegevensbronnen in de select
@@ -376,7 +378,7 @@
 	                		    });
 	                		});
 	                		
-	                		console.log(current_provincie);
+	                		//console.log(current_provincie);
                 			zoom_prov(provincies_data[provincies_reverse[current_provincie]], d); 
                 		})
                 		.attr("id", function(d) { return d.properties.name })
@@ -570,7 +572,6 @@
                     $.each(yearRange, function (i, v) {
                         var obj = {'year': v};
                         obj[second_variable] = data[v][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam];
-                        console.log(obj)
                         second_data.push(obj);
                     });
                     drawLineChart();
@@ -601,12 +602,11 @@
 			// Deze functie wordt aangeroepen om een linechart te bouwen
 			// Instellen x en y-as, zie variabelenamen voor hun taak
 			function drawLineChart() {
+                $('#visual svg').remove();
                 var dataset = genDataset();
                 if (second_data.length > 0) {
-                    console.log(second_data);
                     $.each(dataset, function (i, e){
-                        console.log(second_data[i][second_variable]);
-                        dataset[i][second_variable] = second_data[i][second_variable];
+                        dataset[i][second_variable] = +second_data[i][second_variable];
                     });
                 }
                 console.log(dataset);
@@ -640,22 +640,48 @@
 					.append("g")
 					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 				    
-				var min = d3.min(dataset, function(d) { return Math.floor(d[selected_variable]*0.9); }), 
-					max = d3.max(dataset, function(d) { return Math.ceil(d[selected_variable] * 1.1); });
+                
+                var min = [],
+                    max = [];
+
+                $.each(dataset, function (i, v){
+                    min.push(Math.floor(dataset[i][selected_variable] * 0.9));
+                    if (second_variable) {
+                    min.push(Math.floor(dataset[i][second_variable] * 0.9));
+                    }
+                });
+
+                $.each(dataset, function (i, v){
+                    max.push(Math.ceil(dataset[i][selected_variable] * 1.1));
+                    if (second_variable) {
+                    max.push(Math.ceil(dataset[i][second_variable] * 1.1));
+                    }
+                });
+
+				min = d3.min(min);
+			    max = d3.max(max);
+                console.log(min, max);
 					
-				x.domain([2006,2007,2008,2009,2010,2011,2012,2013,2014]);
-				y.domain([min, max]);
-				
-                var line = d3.svg.line()
-                    .defined(function (d) { return d[selected_variable]; })
-                    .x(function(d) { return x(d.year); })
-                    .y(function(d) { return y(d[selected_variable]); });
+                y.domain([min, max]);
+                x.domain(yearRange);
 
                 if (second_data.length > 0) {
+
+                    var line = d3.svg.line()
+                        .defined(function (d) { return d[selected_variable]; })
+                        .x(function(d) { return x(d.year); })
+                        .y(function(d) { return y(d[selected_variable]); });
+
                     var second_line = d3.svg.line()
                         .defined(function (d) { return d[second_variable]; })
                         .x(function(d) { return x(d.year); })
                         .y(function(d) { return y(d[second_variable]); });
+                }
+			    else{	
+                    var line = d3.svg.line()
+                        .defined(function (d) { return d[selected_variable]; })
+                        .x(function(d) { return x(d.year); })
+                        .y(function(d) { return y(d[selected_variable]); });
                 }
 				// Toevoegen x-as
 				svg.append("g")
@@ -679,6 +705,14 @@
 					.datum(dataset)
 					.attr("class", "line")
 					.attr("d", line);
+
+                if (second_data) {
+                    svg.append("path")
+                        .datum(dataset)
+                        .attr("class", "line2")
+                        .attr("d", second_line);
+                }
+                second_variable = '';
 			}
 			
 			// Deze functie wordt aangeroepen om een barchart te bouwen
