@@ -293,7 +293,6 @@
 						    	.style('left', (d3.event.pageX + 10) + 'px');
 						});
 
-                    console.log('var change');
                     // Legenda aanmaken
                     legend();
                     
@@ -314,10 +313,15 @@
 					
 					var countrydata = cbs_data[slider_value]['__countrydata'];
 					console.log(countrydata);
-                    delete countrydata.avg;
+                    var html = '<p><strong>Gemiddelde:</strong> ' + countrydata.avg + '</p>' +
+                        '<p><strong>Min:</strong> ' + toTitleCase(countrydata.min[1]) + ', ' + countrydata.min[2] + '</p>' +
+                        '<p><strong>Max:</strong> ' + toTitleCase(countrydata.max[1]) + ', ' + countrydata.max[2] + '</p>';
+                    $('#description').append(html);
 
                     var land_gem_data; 
 					var draw_gem = [];
+
+
 
                     /*
 
@@ -413,7 +417,6 @@
 					if (selected_provincie != null) {
 						
 						drawTreemap();
-						gg.selectAll('g').remove();
 					
 						d3.json("gemeente-prov/topo_"+selected_provincie.id+"_"+slider_value+".json", function(error, gem) {
 							if (error) return console.error(error);
@@ -524,12 +527,16 @@
 				var dataset = [];
 				
 				$.each(yearRange, function (i, v) {
-					dataset.push({'year': v, 'value': cbs_data[v][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam]});
+                    var obj = {'year': v}
+                    obj[selected_variable] = cbs_data[v][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam];
+					dataset.push(obj); 
 				});
 				
 				return dataset;
 			}
 			
+            var second_data = [];
+            var second_variable= '';
 			// Deze functie wordt aangeroepen als er ingezoomd wordt op een gemeente
 			// Radioboxes voor kiezen lijn/staaf aanmaken, aanroepen draw-functies 
 			function drawChart() {
@@ -539,7 +546,51 @@
 									'<label><input type="radio" name="mode" value="line" checked="checked"> Lijn</label>' +
 									'<label><input type="radio" name="mode" value="bar"> Staaf</label>' +
 									'</form>');
-				
+
+                $('#visual').append('<select id="second_variable" name="Tweede Variabele">' +
+                        '<option>Selecteer Variable</option>' +
+                        '</select>');
+                $.ajax({
+                    'async': false,
+                    'global': false,
+                    'url': 'convert/data/json/expl.json',
+                    'dataType': "json"
+                }).done(function(data) {
+                    // Groepen inladen
+                    $.each(data, function(index) {
+                        var options = '';
+                        
+                        keys = Object.keys(this),
+                        i, len = keys.length;
+                        
+                        // Alfabetische volgorde van gegevensbronnen
+                        keys.sort();
+                        
+                        // Options aanmaken
+                        for (i = 0; i < len; i++)
+                        {
+                            k = keys[i];
+                            if( this[k].Type === selected_type) {
+                                options += '<option value="' + this[k].Filename + '" data-desc="' + this[k].Desc + '" data-type="' + this[k].Type + '">' + k + '</option>';
+                            }
+                        }
+                        
+                        // Optionsgroup aanmaken en daarin options laden
+                        $('#second_variable').append('<optgroup label="' + index + '">' + options + '</optgroup>');
+                    });
+                });
+                $('#second_variable').change(function () {
+                    second_data = [];
+                    second_variable = $(this).val();
+                    var data = loadData('convert/data/json/' + second_variable);
+                    $.each(yearRange, function (i, v) {
+                        var obj = {'year': v};
+                        obj[second_variable] = data[v][selected_provincie.properties.PROV_NAME][selected_gemeente.properties.statnaam];
+                        console.log(obj)
+                        second_data.push(obj);
+                    });
+                    drawLineChart();
+                });
 				if ($("input[type=radio]").val() == "line") {
 					$('#visual svg').remove();
 					drawLineChart();
@@ -560,14 +611,21 @@
 					}
 				});
 				
-			}
+            }
 			
+
 			// Deze functie wordt aangeroepen om een linechart te bouwen
 			// Instellen x en y-as, zie variabelenamen voor hun taak
 			function drawLineChart() {
-			
-				var dataset = genDataset();
-				
+                var dataset = genDataset();
+                if (second_data.length > 0) {
+                    console.log(second_data);
+                    $.each(dataset, function (i, e){
+                        console.log(second_data[i][second_variable]);
+                        dataset[i][second_variable] = second_data[i][second_variable];
+                    });
+                }
+                console.log(dataset);
 				var margin = {top: 20, right: 20, bottom: 30, left: 60},
 				    width = $(".right").width() * 0.8,
 				    height = width * 0.6;
@@ -598,17 +656,23 @@
 					.append("g")
 					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 				    
-				var min = d3.min(dataset, function(d) { return Math.floor(d.value*0.9); }), 
-					max = d3.max(dataset, function(d) { return Math.ceil(d.value * 1.1); });
+				var min = d3.min(dataset, function(d) { return Math.floor(d[selected_variable]*0.9); }), 
+					max = d3.max(dataset, function(d) { return Math.ceil(d[selected_variable] * 1.1); });
 					
 				x.domain([2006,2007,2008,2009,2010,2011,2012,2013,2014]);
 				y.domain([min, max]);
 				
-				var line = d3.svg.line()
-					.defined(function (d) { return d.value; })
-				    .x(function(d) { return x(d.year); })
-				    .y(function(d) { return y(d.value); });
-				    
+                var line = d3.svg.line()
+                    .defined(function (d) { return d[selected_variable]; })
+                    .x(function(d) { return x(d.year); })
+                    .y(function(d) { return y(d[selected_variable]); });
+
+                if (second_data.length > 0) {
+                    var second_line = d3.svg.line()
+                        .defined(function (d) { return d[second_variable]; })
+                        .x(function(d) { return x(d.year); })
+                        .y(function(d) { return y(d[second_variable]); });
+                }
 				// Toevoegen x-as
 				svg.append("g")
 					.attr("class", "x axis")
@@ -631,7 +695,6 @@
 					.datum(dataset)
 					.attr("class", "line")
 					.attr("d", line);
-				
 			}
 			
 			// Deze functie wordt aangeroepen om een barchart te bouwen
