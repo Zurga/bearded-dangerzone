@@ -12,9 +12,9 @@ Westerse allochten;Het aandeel westerse allochtonen op 1 januari, uitgedrukt in 
 65 jaar of ouder;Aantal inwoners dat op 1 januari 65 jaar of ouder is, uitgedrukt in hele procenten van het totaal aantal Inwoners in een gemeente.;65_of_ouder.json;Algehele bevolking;%
 Dichtheid;Het niet afgeronde aantal inwoners per km2 in een gemeente.;bevolkingsdichtheid.json;Algehele bevolking;Aantal
 Mannen;Het absolute aantal mannen in een gemeente, afgerond op vijftallen.;aantal_mannen.json;Algehele bevolking;Aantal
-Vrouwen;Het absolute aantal vrouwen in een gemeente, afgerond op vijftallen.;aantal_vrouwen.json;Algehele bevolking;Aantal (relatief)
+Vrouwen;Het absolute aantal vrouwen in een gemeente, afgerond op vijftallen.;aantal_vrouwen.json;Algehele bevolking;Aantal
 Stedelijkheid;Schaal op basis van aantal adressen per km2 in een gemeente:<br />1) zeer sterk stedelijk - meer dan 2500 adressen, 2) sterk stedelijk - tussen 1500 en 2500 adressen, 3) matig stedelijk - tussen 1000 en 1500 adressen, 4) weinig stedelijk - tussen 500 en 1000 adressen, 5) niet stedelijk - minder dan 500 adressen.;stedelijkheid.json;Geografie;Schaal (1-5)
-Totale oppervlakte;De som van de oppervlakten water en land in hele hectaren in een gemeente.;oppervlakte_totaal.json;Geografie;Aantal
+Totale oppervlakte;De som van de oppervlakten water en land in hele hectaren in een gemeente.;oppervlakte_totaal.json;Geonrafie;Aantal
 Water oppervlakte;Het aantal oppervlakte binnen- en buitenwater uitgedrukt in hele hectaren in een gemeente.;oppervlakte_water.json;Geografie;Aantal
 Bedrijfsmotorvoertuigen;Het absolute aantal bestelauto's, vrachtauto's, trekkers (motorvoertuigen ingericht voor het trekken van opleggers), speciale voertuigen (bedrijfsauto's voor bijzondere doeleinden zoals bijvoorbeeld brandweerauto's, reinigingsauto's, takelwagens) en autobussen op 1 januari in gemeente. Het cijfer is afgerond op vijftallen.;bedrijfsmotorvoertuigen.json;Voertuigen;Aantal
 Motortweewielers;Het aantal motorrijwielen, scooters, motorcarriers en motorinvalidenwagens met een motorrijwielkentekenbewijs op 1 januari in een gemeente, afgerond op vijftallen.;motortweewielers.json;Voertuigen;Aantal
