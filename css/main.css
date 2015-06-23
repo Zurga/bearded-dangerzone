@@ -101,10 +101,14 @@ path {
   display: none;
 }
 
-#visual .line {
+#visual .line, .line2 {
   fill: none;
   stroke: steelblue;
   stroke-width: 1.5px;
+}
+
+.line2 {
+    stroke: red;
 }
 
 /* treemap */
