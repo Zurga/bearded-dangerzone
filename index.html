@@ -161,6 +161,8 @@
 			// Globale variabele met kleurschaal (kleurenpalet)
             var colorScale = d3.scale.quantize();
             
+            var provincies_gemcode = loadData('gemeente-prov/provincies.json');
+            
             var provincies = {"Groningen": 20, "Friesland": 21, "Drenthe": 22,
                          "Overijssel": 23, "Flevoland": 24, "Gelderland": 25,
                          "Utrecht": 26, "Noord-Holland": 27, "Zuid-Holland": 28,
@@ -334,12 +336,19 @@
                     $('#description').append(html);
 
                 	var land_gem_data = loadData('gemeente-prov/topo_' + slider_value + '_cords.json');
-                	var provincies_gemcode = loadData('gemeente-prov/provincies.json');
                 	
                 	var dataset = {};
                 	$.each(provincies, function (i, v) {
                 		$.each(cbs_data[slider_value][i], function (j, w) {
-                			dataset[j] = w;
+	                		// Als deze variabelen, dan delen door 100
+	                		if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
+	                			// TODO: delen door 100?
+	                			dataset[j] = w;
+	                			console.log(w);
+	                		}
+	                		else {
+	                			dataset[j] = w;
+                			}
                 		});
                 	});
                 	
@@ -356,6 +365,7 @@
                 	var coords = topojson.feature(land_gem_data, land_gem_data.objects['latlon_'+slider_value+'_cords']).features;
                 	
                 	// Gemeentes instellen, kleur, grootte, tooltip, click event, etc
+                	// TODO: mouseover provincie border!!
                 	gg.selectAll('path')
                 		.data(coords)
                 		.enter().append("g")
@@ -368,17 +378,11 @@
 	                		    $.each(v, function(j, w) { // Provincie
 	                		    	if (v.indexOf(d.properties.statcode.toUpperCase()) > 0) {
 	                		    		current_provincie = i;
+	                		    		
 	                		    	}
-	                		    	/*console.log(j);
-	                		    	console.log(w.toLowerCase());
-	                		        if (w.toLowerCase() == d.properties.statcode) {
-	                		            current_provincie = v;
-	                		            return;
-	                		        }*/
 	                		    });
 	                		});
 	                		
-	                		//console.log(current_provincie);
                 			zoom_prov(provincies_data[provincies_reverse[current_provincie]], d); 
                 		})
                 		.attr("id", function(d) { return d.properties.name })
@@ -474,6 +478,11 @@
 							}
 							return true;
 						});
+					}
+					else { // TODO Hier moeten we de kaart redraw'en als slider verandert
+						
+						
+						
 					}
 				}
 			}
@@ -860,8 +869,24 @@
 				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
 				
 				if (zoom_counter == 1) {
-					zoom_gem(d2);
-					return true;
+				
+					var current_provincie;
+					$.each(provincies_gemcode[slider_value], function(i, v) { //Jaar
+					    $.each(v, function(j, w) { // Provincie
+					    	if (v.indexOf(d2.properties.statcode.toUpperCase()) > 0) {
+					    		current_provincie = i;
+					    		
+					    	}
+					    });
+					});
+					
+					var next_provincie = provincies_data[provincies_reverse[current_provincie]];
+					console.log(selected_provincie);
+					console.log(next_provincie);
+					if (selected_provincie == next_provincie) {
+						zoom_gem(d2);
+						return true;
+					}
 				}
 				
 				selected_gemeente = null;
