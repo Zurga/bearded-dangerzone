@@ -18,7 +18,7 @@
 			<div class="column left">
 				<div id="map">
 					<div id="instructieBox">
-						 Selecteer een gegevensbron en klik op de gewenste provincie. Met de slider onder de kaart wordt de data van het gewenste jaar weergeven. Klik daarna op een gemeente om meer informatie over een gemeente te zien over de tijd. Op gemeenteniveau kunnen ook twee gegevensbronnen tegen elkaar af worden gezet.
+						 Selecteer een onderwerp aan de rechterkant en navigeer daarna op de kaart tussen lands-, provincie- en gemeenteniveau. Op provincieniveau is aan de rechterkant een <i>tree map</i> te zien van de provincie. Op gemeenteniveau kunnen twee onderwerpen met elkaar over de tijd worden vergeleken in een lijngrafiek. Het jaar van de kaart bedienen kan onderaan met de slider.
 					</div>
 					<div id="legend">
 					</div>
@@ -32,7 +32,7 @@
 				<div id="properties">
 					<p>
 						<select id="select_variable" name="select_variable">
-							<option value="">Selecteer gegevensbron</option>
+							<option value="">Selecteer onderwerp</option>
 						</select>
 					</p>
                     <p id="description"></p>
@@ -212,7 +212,7 @@
 	            		.attr("id", function(d) { provincies_data[d.properties.PROV_NAME] = d; return d.properties.PROV_NAME })
 	            		.attr("d", path)
 	            		.attr("fill", "#ccc")
-	            		.on('click', function() { alert('Selecteer eerst een gegevensbron.'); })
+	            		.on('click', function() { alert('Selecteer eerst een onderwerp.'); })
 	            		.on('mouseover', function(d) {
 	            			tooltip.select('.label').html(d.properties.PROV_NAME);
 	            			tooltip.style('display', 'block');
@@ -573,7 +573,7 @@
 				$('#visual').empty();
 
                 $('#visual').append('<label>Kies hier een tweede variabele om te vergelijken: </label><br/><select id="second_variable" name="Tweede Variabele">' +
-                        '<option>Selecteer Variable</option>' +
+                        '<option>Selecteer onderwerp (2)</option>' +
                         '</select>');
                 $.ajax({
                     'async': false,
@@ -867,7 +867,7 @@
 			// Spreekt redelijk voor zich
 			function zoom_prov(d, d2) {
 				
-				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
+				if (selected_variable == '') { alert('Selecteer eerst een onderwerp.'); return false; }
 				
 				$('#zoomout').css('visibility', 'visible');
 				
@@ -923,7 +923,7 @@
 			// Aan de SVG wordt doorgegeven welke x en y punten er als hoeken gekozen moeten worden (zie bounds)
 			// Tevens instellen variabelen welke gemeente geselecteerd is
 			function zoom_gem(d) {
-				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
+				if (selected_variable == '') { alert('Selecteer eerst een onderwerp.'); return false; }
 				console.log(selected_gemeente);
 				console.log(d);
 				if (selected_gemeente == d) { $('#gemeente').html(''); return reset_to_prov(); }
