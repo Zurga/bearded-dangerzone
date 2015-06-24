@@ -40,7 +40,7 @@ h1 {
 .column {
 	float: left;
 	display: block;
-    margin: 10px 2.5%;
+    padding: 10px 2.5%;
     height: calc(100% - 20px);
 	width: calc(45% - 2px);
     border-right: 2px solid #eee;
@@ -71,7 +71,7 @@ path {
 	stroke: #2C2C2C;
 	stroke-width: 0.2px;
 }
-.gemeente path:hover, .provincie path:hover {
+.gemeente path:hover, .provincie path:hover, .hover {
 	fill: lightblue;
 }
 .gemeente path.active_gem {	
