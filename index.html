@@ -15,7 +15,11 @@
 	<body>
 		<div id="wrapper">
 			<div class="column left">
-				<div id="map"></div>
+				<div id="map">
+					<div id="instructieBox">
+						 Selecteer een gegevensbron en klik op de gewenste provincie. Met de slider onder de kaart wordt de data van het gewenste jaar weergeven. Klik daarna op een gemeente om meer informatie over een gemeente te zien over de tijd. Op gemeenteniveau kunnen ook twee gegevensbronnen tegen elkaar af worden gezet.
+					</div>
+				</div>
 	
 				<div id="slider"></div>
 			</div>
@@ -23,9 +27,6 @@
 			<div class="column right">
 			
 				<div id="properties">
-					<div id="instructieBox">
-						 Selecteer een gegevensbron en klik op de gewenste provincie. Met de slider onder de kaart wordt de data van het gewenste jaar weergeven. Klik daarna op een gemeente om meer informatie over een gemeente te zien over de tijd. Op gemeenteniveau kunnen ook twee gegevensbronnen tegen elkaar af worden gezet.
-					</div>
 					<p>
 						<select id="select_variable" name="select_variable">
 							<option value="">Selecteer gegevensbron</option>
@@ -157,8 +158,13 @@
 			    .attr("height", height)
 			    .on("click", reset_to_land);
 			
-			//svg.append('rect')
-			//	.attr("
+			svg.append('image')
+				.attr("x", width - 29)
+				.attr("y", 5)
+				.attr("width", 24)
+				.attr("height", 24)
+				.attr('xlink:href', 'img/zoomout.png')
+				.on('click', reset_to_land);
 			
 			// Initialiseren provinces en gemeentes
 			var g = svg.append('g'), // Provincies
