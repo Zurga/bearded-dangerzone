@@ -871,7 +871,7 @@
 				
 				$('#zoomout').css('visibility', 'visible');
 				
-				if (zoom_counter > 0) {
+				if (zoom_counter >= 1) {
 					var current_provincie;
 					$.each(provincies_gemcode[slider_value], function(i, v) { //Jaar
 						if (v.indexOf(d2.properties.statcode) != -1) {
@@ -879,11 +879,9 @@
 						}
 					});
 					var next_provincie = provincies_data[provincies_reverse[current_provincie]];
-					console.log(selected_provincie);
-					console.log(next_provincie);
 					
-					if (selected_provincie == next_provincie) {
-						console.log(d2);
+					
+					if (selected_provincie === next_provincie) {
 						zoom_gem(d2);
 						//console.log('we gaan zoomen');
 						return true;
@@ -904,6 +902,7 @@
 				$('#provincie').html("&raquo; " + d.properties.PROV_NAME);
 				
 				zoom_counter = 1;
+				console.log(zoom_counter);
 				
 				// Inzoomen
 				var bounds = path.bounds(d),
@@ -925,9 +924,12 @@
 			// Tevens instellen variabelen welke gemeente geselecteerd is
 			function zoom_gem(d) {
 				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
-				if (selected_gemeente_obj == this) { $('#gemeente').html(''); return reset_to_prov(); }
-				//console.log('zoom naar gemeente');
+				console.log(selected_gemeente);
+				console.log(d);
+				if (selected_gemeente == d) { $('#gemeente').html(''); return reset_to_prov(); }
+
 				zoom_counter = 2;
+				console.log(zoom_counter);
 				selected_gemeente = d;
 				selected_gemeente_obj = this;
 				
@@ -947,13 +949,14 @@
 				
 				//$('#slider').hide();
 				drawChart();
-			    legend()
+			    legend();
 				
 			}
 			
 			// Uitzoomen: gemeente -> prov
 			function reset_to_prov() {
 				zoom_counter = 1;
+				console.log(zoom_counter);
 				
 				//$('#slider').show();
 				$('#visual').empty();
@@ -979,6 +982,7 @@
 			// Uitzoomen: gemeente/provincie -> land
 			function reset_to_land() {
 				zoom_counter = 0;
+				console.log(zoom_counter);
 				$('#zoomout').css('visibility', 'hidden');
 				//$('#slider').show();
 				$('#visual').empty();
@@ -1043,16 +1047,16 @@
                 $('#min').on("click", function () {
                     var gemeente = $('#'+countrydata.min[1]);
                     gemeente.d3Click();
-                    if ( zoom_counter !== 1 ){
+                    /*if ( zoom_counter !== 1 ){
                         gemeente.d3Click();
-                    }
+                    }*/
                 });
                 $('#max').on("click", function () {
                     var gemeente = $('#'+countrydata.max[1]);
                     gemeente.d3Click();
-                    if ( zoom_counter !== 1 ){
+                    /*if ( zoom_counter !== 1 ){
                         gemeente.d3Click();
-                    }
+                    }*/
                 });
                 $('#min').hover( function () {
                     var gemeente = $('#'+countrydata.min[1]);
