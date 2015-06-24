@@ -262,26 +262,7 @@
                 // Eerst alle huidige gemeentes weg
                 gg.selectAll('path').remove();
                 
-                var countrydata = cbs_data[slider_value]['__countrydata'];
-                console.log(countrydata);
-                
-                $('#minmaxavg').remove();
-                
-                if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
-                	var avg = (countrydata.avg / 100).toFixed(1);
-                	var min = (countrydata.min[2] / 100).toFixed(1);
-                	var max = (countrydata.max[2] / 100).toFixed(1);
-                }
-                else {
-                	var avg = countrydata.avg.toFixed(1);
-                	var min = countrydata.min[2].toFixed(1);
-                	var max = countrydata.max[2].toFixed(1);
-                }
-                
-                var html = '<div id="minmaxavg"><p><strong>Gemiddelde:</strong> ' + avg + '</p>' +
-                    '<p><strong>Min:</strong> ' + toTitleCase(countrydata.min[1]) + ', ' + min + '</p>' +
-                    '<p><strong>Max:</strong> ' + toTitleCase(countrydata.max[1]) + ', ' + max + '</p></div>';
-                $('#description').append(html);
+                minmaxavg(cbs_data);
 
             	var land_gem_data = loadData('gemeente-prov/topo_' + slider_value + '_cords.json');
             	
@@ -422,27 +403,12 @@
 					// Eerst alle huidige gemeentes weg
 					gg.selectAll('path').remove();
 					
-					var countrydata = cbs_data[slider_value]['__provdata'];
+					var countrydata = cbs_data[slider_value]['__countrydata'];
 					
 					$('#description').html($('option:selected', this).data('desc'));
                     $('#minmaxavg').remove();
                     
-                    if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
-                    	var avg = (countrydata.avg / 100).toFixed(1);
-                    	var min = (countrydata.min[2] / 100).toFixed(1);
-                    	var max = (countrydata.max[2] / 100).toFixed(1);
-                    }
-                    else {
-                    	var avg = countrydata.avg.toFixed(1);
-                    	var min = countrydata.min[2].toFixed(1);
-                    	var max = countrydata.max[2].toFixed(1);
-                    }
-                    
-                    var html = '<div id="minmaxavg"><p><strong>Gemiddelde:</strong> ' + avg + '</p>' +
-                        '<p><strong>Min:</strong> <a id="min">' + toTitleCase(countrydata.min[1]) + ', ' + min + '</a></p>' +
-                        '<p><strong>Max:</strong> <a id="max">' + toTitleCase(countrydata.max[1]) + ', ' + max + '</a></p></div>';
-                    $('#description').append(html);
-//                    $('#min').click( zoom
+                    minmaxavg(cbs_data);
 					
                 	var land_gem_data = loadData('gemeente-prov/topo_' + slider_value + '_cords.json');
                 	
@@ -847,7 +813,8 @@
 				drawTreemap();
 				selected_provincie = d;
 				selected_provincie_obj = this;
-				
+                minmaxavg(cbs_data);
+                console.log(selected_provincie);
 				$('#provincie').html("&raquo; " + d.properties.PROV_NAME);
 				
 				zoom_counter = 1;
@@ -962,6 +929,34 @@
 			{
 			    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 			}
+
+            function minmaxavg(cbs_data) {
+                console.log(selected_provincie);
+                if (selected_provincie) {
+                    var countrydata = cbs_data[slider_value][selected_provincie.properties.PROV_NAME]['__provdata'];
+                }
+                else {
+                    var countrydata = cbs_data[slider_value]['__countrydata'];
+                }
+                console.log(countrydata);
+
+                if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
+                	var avg = (countrydata.avg / 100).toFixed(1);
+                	var min = (countrydata.min[2] / 100).toFixed(1);
+                	var max = (countrydata.max[2] / 100).toFixed(1);
+                }
+                else {
+                	var avg = countrydata.avg.toFixed(1);
+                	var min = countrydata.min[2].toFixed(1);
+                	var max = countrydata.max[2].toFixed(1);
+                }
+                
+                var html = '<div id="minmaxavg"><p><strong>Gemiddelde:</strong> ' + avg + '</p>' +
+                    '<p><strong>Min:</strong> ' + toTitleCase(countrydata.min[1]) + ', ' + min + '</p>' +
+                    '<p><strong>Max:</strong> ' + toTitleCase(countrydata.max[1]) + ', ' + max + '</p></div>';
+                $('#description').empty();
+                $('#description').append(html);
+            }
 
             // Legenda bouwen
             function legend(){
