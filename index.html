@@ -46,6 +46,7 @@
 		<script type="text/javascript">
 		$(document).ready(function() {
 			
+            var expl = {};
 			// Inladen gegevensbronnen in de select
 			$.ajax({
 			    'async': false,
@@ -68,6 +69,7 @@
 					{
 					    k = keys[i];
 						options += '<option value="' + this[k].Filename + '" data-desc="' + this[k].Desc + '" data-type="' + this[k].Type + '">' + k + '</option>';
+                        expl[this[k].Filename] = k;
 					}
 					
 					// Optionsgroup aanmaken en daarin options laden
@@ -422,7 +424,7 @@
 					// Eerst alle huidige gemeentes weg
 					gg.selectAll('path').remove();
 					
-					var countrydata = cbs_data[slider_value]['__countrydata'];
+					var countrydata = cbs_data[slider_value]['__provdata'];
 					
 					$('#description').html($('option:selected', this).data('desc'));
                     $('#minmaxavg').remove();
@@ -439,9 +441,10 @@
                     }
                     
                     var html = '<div id="minmaxavg"><p><strong>Gemiddelde:</strong> ' + avg + '</p>' +
-                        '<p><strong>Min:</strong> ' + toTitleCase(countrydata.min[1]) + ', ' + min + '</p>' +
-                        '<p><strong>Max:</strong> ' + toTitleCase(countrydata.max[1]) + ', ' + max + '</p></div>';
+                        '<p><strong>Min:</strong> <a id="min">' + toTitleCase(countrydata.min[1]) + ', ' + min + '</a></p>' +
+                        '<p><strong>Max:</strong> <a id="max">' + toTitleCase(countrydata.max[1]) + ', ' + max + '</a></p></div>';
                     $('#description').append(html);
+//                    $('#min').click( zoom
 					
                 	var land_gem_data = loadData('gemeente-prov/topo_' + slider_value + '_cords.json');
                 	
@@ -706,28 +709,34 @@
                 var legend = svg.append("g")
                     .attr('class', 'legend')
                     .selectAll('g.legendEntry')
-                    .data(function () {if (second_variable){ return ['steelblue', 'red'];} return ['steelblue'];})
+                    .data(function () {
+                        if (second_variable){ 
+                            return [{'color': 'steelblue', 
+                                    'variable': selected_variable}, 
+                                    {'color': 'red',
+                                    'variable': second_variable}];
+                        } return [{'color': 'steelblue', 'variable': selected_variable}];})
                     .enter()
                     .append('g').attr('class', 'legendEntry');
 
                 legend.append('rect')
-                    .attr("x", width - 100)
-                    .attr("y", function(d,i){
-                        return (i * 20) + 5;})
+                    .attr("x", width - 200)
+                    .attr("y", function (d, i) {
+                        return (i * 20) + 5; })
                     .attr("width", 10)
                     .attr("height", 10)
                     .style("stroke", "black")
                     .style("stroke-width", 1)
-                    .style("fill", function (d) { return d; });
+                    .style("fill", function (d) { return d.color; });
 
                 legend.append('text')
-                    .attr("x", 20)
+                    .attr("x", width - 180)
                     .attr("y", function (d, i) {
                         return (i * 20) + 5;})
                     .attr("dy", "0.8em")
                     .text(function (d, i) {
-                        console.log(d,i)
-                    })
+                           return expl[d.variable]; 
+                        });
                 second_variable = '';
 			}
 			
@@ -793,7 +802,7 @@
 						.call(position)
 						.style("background", function(d) { return color(d.name); })
                         .append("span")
-                            .html(function(d) { return toTitleCase(d.name) + "<br>" + d.value.toLocaleString('nl');});
+                            .html(function(d) { return toTitleCase(d.name) + "<br>" + d.value.toLocaleString('nl') + ' ' + selected_type;});
 						
 				});
 				
