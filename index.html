@@ -632,13 +632,13 @@
                 
 				var margin = {top: 20, right: 20, bottom: 30, left: 60},
 				    width_chart = width_right - 105,
-				    height_chart = width_chart * 0.6;
+				    height_chart = width_chart * 0.5;
 				
 				var x = d3.scale.ordinal()
 				    .rangeRoundBands([0, width], .1);
 				
 				var y = d3.scale.linear()
-				    .range([height, 0]);
+				    .range([height_chart, 0]);
 				
 				var xAxis = d3.svg.axis()
 				    .scale(x)
@@ -707,7 +707,7 @@
 				// Toevoegen x-as
 				svg.append("g")
 					.attr("class", "x axis")
-					.attr("transform", "translate(-25," + height + ")")
+					.attr("transform", "translate(-25," + height_chart + ")")
 					.call(xAxis);
 				
 				if (selected_type == "%") {
