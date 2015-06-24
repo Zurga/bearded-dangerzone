@@ -139,6 +139,16 @@ path {
     position: absolute;
 }
 
+#legend {
+	display: block;
+	background: rgba(255, 255, 255, 0.55);
+	width: auto;
+    display: block;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+
 div.node > span:nth-child(1) {
     text-align: center;
     width: 100%;
