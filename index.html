@@ -44,8 +44,6 @@
 		</div>
 		
 		<script type="text/javascript">
-            //TODO Variabele naam in de Tooltip
-            //TODO 
 		$(document).ready(function() {
 			
 			// Inladen gegevensbronnen in de select
@@ -391,6 +389,16 @@
 						}
 					}
 					
+					selected_type = $('#select_variable').find(":selected").data('type');
+					
+					// Eenheid aanpassen op basis van gekozen gegevensbron
+					if (selected_type == "%") {
+						eenheid = '%';
+					}
+					else {
+						eenheid = '';
+					}
+					
 					// Teken alle gemeentes
 					// Eerst alle huidige gemeentes weg
 					gg.selectAll('path').remove();
@@ -449,6 +457,33 @@
 	                		});
 	                	
                 			zoom_prov(provincies_data[provincies_reverse[current_provincie]], d); 
+                		})
+                		.on('mouseover', function(d) {
+                			var current_provincie;
+                			$.each(provincies_gemcode[slider_value], function(i, v) { //Jaar
+                				if (v.indexOf(d.properties.statcode) != -1) {
+                					current_provincie = i;
+                				}
+                			});
+                			
+                			// Tooltips! Als bepaalde variabelen, dan delen door 100 omdat D3 decimale getallen niet leuk vindt
+                			if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
+                				var value = dataset[d.properties.statnaam] / 100;
+                			}
+                			else {
+                				var value = dataset[d.properties.statnaam];
+                			}
+                			
+                			// Tooltip opvullen met gemeentenaam, waarde (geformat naar NL cijfers) met eenheid (% bijv)
+                			tooltip.select('.label').html(provincies_reverse[current_provincie] + "<br /><strong>" + toTitleCase(d.properties.statnaam) + "</strong><br />" + parseFloat(value).toLocaleString('nl') + eenheid);
+                			tooltip.style('display', 'block');
+                		})
+                		.on('mouseout', function(d) {
+                			tooltip.style('display', 'none');
+                		})
+                		.on('mousemove', function(d) {
+                			tooltip.style('top', (d3.event.pageY + 10) + 'px')
+                		    	.style('left', (d3.event.pageX + 10) + 'px');
                 		})
                 		.attr("id", function(d) { return d.properties.name })
                 		.attr("d", path)
