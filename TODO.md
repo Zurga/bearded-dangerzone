@@ -4,7 +4,6 @@
 - Bug: slider werkt niet meer
 - Bug: soms drawt ie ergens in Groningen als je bezig bent in Limburg
 - Bug: treemap laat soms alle gemeenten zien, één warboel
-- Bug: legenda doet gek
 - Bug: kommagetallen gaan weer fout (*100 afvangen!)
 - Bug: kommagetallen gaan ook fout in sidebar min/max
   
