@@ -41,10 +41,13 @@ h1 {
 .column {
 	float: left;
 	display: block;
-	width: 50%;
+    margin: 10px 2.5%;
+    height: calc(100% - 20px);
+	width: calc(45% - 2px);
+    border-right: 2px solid #eee;
 }
 .right {
-	/*width: 200px;*/
+    border: none;
 }
 
 .background {
