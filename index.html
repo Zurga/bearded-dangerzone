@@ -451,36 +451,6 @@
 				}
 			}
 			
-			// Deze functie wordt aangeroepen als er op een gemeente wordt geklikt
-			// Aan de SVG wordt doorgegeven welke x en y punten er als hoeken gekozen moeten worden (zie bounds)
-			// Tevens instellen variabelen welke gemeente geselecteerd is
-			function zoom_gem(d) {
-				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
-				if (active_gem.node() === this) { $('#gemeente').html(''); return reset_to_prov(); }
-				zoom_counter = 2;
-				selected_gemeente = d;
-				selected_gemeente_obj = this;
-				
-				$('#gemeente').html("&raquo; " + toTitleCase(d.properties.statnaam));
-				
-				var bounds = path.bounds(d),
-					dx = bounds[1][0] - bounds[0][0],
-					dy = bounds[1][1] - bounds[0][1],
-					x = (bounds[0][0] + bounds[1][0]) / 2,
-					y = (bounds[0][1] + bounds[1][1]) / 2,
-					scale = 0.9 / Math.max(dx / width, dy / height),
-					translate = [width / 2 - scale * x, height / 2 - scale * y];
-				
-				svg.transition()
-					.duration(zoom_speed)
-					.call(zoom.translate(translate).scale(scale).event);
-				
-				//$('#slider').hide();
-				drawChart();
-                legend()
-				
-			}
-			
 			// Aanmaken dataset voor de lijngrafiek en staafgrafiek
 			function genDataset() {
 				var dataset = [];
@@ -870,6 +840,8 @@
 					});
 					
 					var next_provincie = provincies_data[provincies_reverse[current_provincie]];
+					console.log(selected_provincie);
+					console.log(next_provincie);
 					if (selected_provincie == next_provincie) {
 						zoom_gem(d2);
 						return true;
@@ -888,80 +860,6 @@
 				
 				zoom_counter = 1;
 				
-				// NIET NODIG
-				//active_prov.classed("active_prov", false);
-				//active_prov = d3.select(this).classed("active_prov", true);
-				
-				/*d3.json("gemeente-prov/topo_"+d.id+"_"+slider_value+".json", function(error, gem) {
-					if (error) return console.error(error);
-					
-					//Inladen data en gemeentes aanmaken
-					dataset = cbs_data[slider_value][d.properties.PROV_NAME];
-					
-					var values = d3.values(dataset);
-					values = values.map(function(d) {
-						return +d;
-					});
-					
-					if (selected_variable == "stedelijkheid.json") {
-						var max = d3.min(values);
-						var min = d3.max(values);
-					}
-					else {
-						var min = d3.min(values);
-						var max = d3.max(values);
-					}
-					
-					colorScale
-					    .range(colorbrewer.OrRd[8])
-					    .domain([min, max]);
-					 
-					if (!tooltip) {
-						tooltip = d3.select('#wrapper') 
-							.append('div')                 
-							.attr('class', 'tooltip');     
-						
-						tooltip.append('div')            
-							.attr('class', 'label');
-					}
-
-                    legend();
-        			
-					gg.attr("fill", "#ccc")
-						.selectAll("path")
-						.data(topojson.feature(gem, gem.objects[d.id+"_"+slider_value]).features)
-						.enter().append("g")
-						.attr("class", "gemeente")
-						.attr("data-name", function(d) { return d.properties.statnaam; })
-						.append("path")
-						.on("click", zoom_gem)
-						.on('mouseover', function(d) {
-							if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
-								var value = dataset[d.properties.statnaam] / 100;
-							}
-							else {
-								var value = dataset[d.properties.statnaam];
-							}
-							tooltip.select('.label').html(toTitleCase(d.properties.statnaam) + "<br />" + parseFloat(value).toLocaleString('nl') + eenheid);
-							tooltip.style('display', 'block');
-						})
-						.on('mouseout', function(d) {
-							tooltip.style('display', 'none');
-						})
-						.on('mousemove', function(d) {
-							tooltip.style('top', (d3.event.pageY + 10) + 'px')
-						    	.style('left', (d3.event.pageX + 10) + 'px');
-						})
-						.attr("d", path)
-						.attr("fill", function(d) {
-							if (dataset[d.properties.statnaam] === undefined) {
-								return '#ccc';
-							}
-							return colorScale(dataset[d.properties.statnaam]);
-						});
-					
-				});*/
-				
 				// Inzoomen
 				var bounds = path.bounds(d),
 					dx = bounds[1][0] - bounds[0][0],
@@ -974,6 +872,36 @@
 				svg.transition()
 					.duration(zoom_speed)
 					.call(zoom.translate(translate).scale(scale).event);
+				
+			}
+			
+			// Deze functie wordt aangeroepen als er op een gemeente wordt geklikt
+			// Aan de SVG wordt doorgegeven welke x en y punten er als hoeken gekozen moeten worden (zie bounds)
+			// Tevens instellen variabelen welke gemeente geselecteerd is
+			function zoom_gem(d) {
+				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
+				if (active_gem.node() === this) { $('#gemeente').html(''); return reset_to_prov(); }
+				zoom_counter = 2;
+				selected_gemeente = d;
+				selected_gemeente_obj = this;
+				
+				$('#gemeente').html("&raquo; " + toTitleCase(d.properties.statnaam));
+				
+				var bounds = path.bounds(d),
+					dx = bounds[1][0] - bounds[0][0],
+					dy = bounds[1][1] - bounds[0][1],
+					x = (bounds[0][0] + bounds[1][0]) / 2,
+					y = (bounds[0][1] + bounds[1][1]) / 2,
+					scale = 0.9 / Math.max(dx / width, dy / height),
+					translate = [width / 2 - scale * x, height / 2 - scale * y];
+				
+				svg.transition()
+					.duration(zoom_speed)
+					.call(zoom.translate(translate).scale(scale).event);
+				
+				//$('#slider').hide();
+				drawChart();
+			    legend()
 				
 			}
 			
