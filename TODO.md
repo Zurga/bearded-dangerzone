@@ -6,6 +6,7 @@
 - Bug: treemap laat soms alle gemeenten zien, één warboel
 - Bug: legenda doet gek
 - Bug: kommagetallen gaan weer fout (*100 afvangen!)
+- Bug: kommagetallen gaan ook fout in sidebar min/max
   
 - Verbetering: procentteken staat omgekeerd in de line/bar chart, erg lelijk en onduidelijk
 - Toevoeging: highlighten gemeente op hover kaart en/of treemap
