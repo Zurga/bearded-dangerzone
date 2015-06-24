@@ -283,7 +283,6 @@
                 			}
                 		}
                 		else {
-                			console.log(j);
                 			dataset[j] = w;
             			}
             		});
@@ -291,8 +290,14 @@
             	
             	provdata = cbs_data[slider_value]['__countrydata'];
             	
-            	var min = provdata.min[2];
-            	var max = provdata.max[2];
+            	if (selected_variable == 'stedelijkheid.json') {
+            		var max = provdata.min[2];
+            		var min = provdata.max[2];
+            	}
+            	else {
+            		var min = provdata.min[2];
+            		var max = provdata.max[2];
+            	}
             	
             	// Kleurschaal instellen met als range de min en max van de data
             	colorScale
@@ -431,8 +436,14 @@
                 	
                 	provdata = cbs_data[slider_value]['__countrydata'];
                 	
-                	var min = provdata.min[2];
-                	var max = provdata.max[2];
+                	if (selected_variable == 'stedelijkheid.json') {
+                		var max = provdata.min[2];
+                		var min = provdata.max[2];
+                	}
+                	else {
+                		var min = provdata.min[2];
+                		var max = provdata.max[2];
+                	}
                 	
                 	// Kleurschaal instellen met als range de min en max van de data
                 	colorScale
@@ -760,6 +771,11 @@
 					    }
 					});
 					
+					var eenheid = '';
+					if (selected_type == "%") {
+						eenheid = "%";
+					}
+					
 					var node = div.datum(dataset).selectAll(".node")
 						.data(treemap.nodes)
 						.enter()
@@ -768,7 +784,7 @@
 						.call(position)
 						.style("background", function(d) { return color(d.name); })
                         .append("span")
-                            .html(function(d) { return toTitleCase(d.name) + "<br>" + d.value.toLocaleString('nl') + ' ' + selected_type;});
+                            .html(function(d) { return toTitleCase(d.name) + "<br>" + d.value.toLocaleString('nl') + ' ' + eenheid;});
 						
 				});
 				
