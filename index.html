@@ -470,11 +470,6 @@
 			// Radioboxes voor kiezen lijn/staaf aanmaken, aanroepen draw-functies 
 			function drawChart() {
 				$('#visual').empty();
-				
-				$('#visual').append('<form>' + 
-									'<label><input type="radio" name="mode" value="line" checked="checked"> Lijn</label>' +
-									'<label><input type="radio" name="mode" value="bar"> Staaf</label>' +
-									'</form>');
 
                 $('#visual').append('<label>Kies hier een tweede variabele om te vergelijken: </label><br/><select id="second_variable" name="Tweede Variabele">' +
                         '<option>Selecteer Variable</option>' +
@@ -500,7 +495,8 @@
                         {
                             k = keys[i];
                             if( this[k].Type === selected_type) {
-                                options += '<option value="' + this[k].Filename + '" data-desc="' + this[k].Desc + '" data-type="' + this[k].Type + '">' + k + '</option>';
+                                options += '<option value="' + this[k].Filename + '" data-desc="' 
+                                    + this[k].Desc + '" data-type="' + this[k].Type + '">' + k + '</option>';
                             }
                         }
                         
@@ -519,26 +515,7 @@
                     });
                     drawLineChart();
                 });
-				if ($("input[type=radio]").val() == "line") {
-					$('#visual svg').remove();
-					drawLineChart();
-				}
-				else if ($("input[type=radio]").val() == "bar") {
-					$('#visual svg').remove();
-					drawBarChart();
-				}
-				
-				$("input[type=radio]").change(function() {
-					if ($(this).val() == "line") {
-						$('#visual svg').remove();
-						drawLineChart();
-					}
-					else if ($(this).val() == "bar") {
-						$('#visual svg').remove();
-						drawBarChart();
-					}
-				});
-				
+                drawLineChart();
             }
 
 			// Deze functie wordt aangeroepen om een linechart te bouwen
@@ -673,74 +650,6 @@
                         console.log(d,i)
                     })
                 second_variable = '';
-			}
-			
-			// Deze functie wordt aangeroepen om een barchart te bouwen
-			// Instellen x en y-as, zie variabelenamen voor hun taak
-			function drawBarChart() {
-				
-				var dataset = genDataset();
-				
-				var margin = {top: 20, right: 20, bottom: 30, left: 60},
-				    width = $(".right").width() * 0.8,
-				    height = width * 0.6;
-				
-				var x = d3.scale.ordinal()
-				    .rangeRoundBands([0, width], .3);
-				
-				var y = d3.scale.linear()
-				    .range([height, 0]);
-				
-				var xAxis = d3.svg.axis()
-				    .scale(x)
-				    .orient("bottom");
-				    
-				var yAxis = d3.svg.axis()
-				    .scale(y)
-				    .orient("left")
-				    .tickFormat(function(d) { return parseFloat(d).toLocaleString('nl'); });
-				    
-			    if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
-			    	yAxis.tickFormat(function(d) { return parseFloat(d / 100).toLocaleString('nl'); });
-			    }
-				
-				var svg = d3.select("#visual").append("svg")
-				    .attr("width", width + margin.left + margin.right)
-				    .attr("height", height + margin.top + margin.bottom)
-					.append("g")
-					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-				
-				x.domain([2006,2007,2008,2009,2010,2011,2012,2013,2014]);
-				y.domain([0, d3.max(dataset, function(d) { return Math.ceil(d[selected_variable] * 1.1); })]);
-				
-				// Toevoegen x-as
-				svg.append("g")
-				  .attr("class", "x axis")
-				  .attr("transform", "translate(0," + height + ")")
-				  .call(xAxis);
-				
-				// Toevoegen y-as
-				svg.append("g")
-				  .attr("class", "y axis")
-				  .call(yAxis)
-				.append("text")
-				  .attr("transform", "rotate(-90)")
-				  .attr("y", 6)
-				  .attr("dy", ".71em")
-				  .style("text-anchor", "end")
-				  .text($('#select_variable').find(":selected").data('type'));
-				
-				// Bars aanmaken
-				svg.selectAll(".bar")
-				  .data(dataset)
-				  .enter()
-				  .append("rect")
-				  .attr("class", "bar")
-				  .attr("x", function(d) { return x(d.year); })
-				  .attr("width", x.rangeBand())
-				  .attr("y", function(d) { return y(d[selected_variable]); })
-				  .attr("height", function(d) { return height - y(d[selected_variable]); });
-			
 			}
 			
 			// Deze functie wordt aangeroepen om een treemap te bouwen op provincieniveau
