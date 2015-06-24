@@ -668,7 +668,12 @@
 
 				min = d3.min(min);
 			    max = d3.max(max);
-					
+			    
+			    if (selected_variable == "stedelijkheid.json") {
+			    	min = Number(0);
+			        max = Number(5);
+			    }
+				
                 y.domain([min, max]);
                 x.domain(yearRange);
 
@@ -696,13 +701,20 @@
 					.attr("transform", "translate(-25," + height + ")")
 					.call(xAxis);
 				
+				if (selected_variable == "stedelijkheid.json") {
+					var eenheid_x = 0;
+				}
+				else {
+					var eenheid_x = 15;
+				}
+				
 				// Toevoegen y-as
 				svg.append("g")
 					.attr("class", "y axis")
 					.call(yAxis)
 					.append("text")	
 					.attr("y", 6)
-					.attr("x", 0)
+					.attr("x", eenheid_x)
 					.attr("dy", ".71em")
 					.style("text-anchor", "end")
 					.text($('#select_variable').find(":selected").data('type'));
@@ -851,12 +863,9 @@
 				if (zoom_counter > 0) {
 					var current_provincie;
 					$.each(provincies_gemcode[slider_value], function(i, v) { //Jaar
-					    $.each(v, function(j, w) { // Provincie
-					    	if (v.indexOf(d2.properties.statcode) != -1) {
-					    		current_provincie = i;
-					    		
-					    	}
-					    });
+						if (v.indexOf(d2.properties.statcode) != -1) {
+							current_provincie = i;
+						}
 					});
 					
 					var next_provincie = provincies_data[provincies_reverse[current_provincie]];
@@ -904,7 +913,7 @@
 			// Tevens instellen variabelen welke gemeente geselecteerd is
 			function zoom_gem(d) {
 				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
-				if (selected_gemeente_obj === this) { $('#gemeente').html(''); return reset_to_prov(); }
+				if (selected_gemeente == d) { $('#gemeente').html(''); return reset_to_prov(); }
 				//console.log('zoom naar gemeente');
 				zoom_counter = 2;
 				selected_gemeente = d;
