@@ -122,3 +122,13 @@ path {
   position: absolute;
   text-indent: 2px;
 }
+
+/* instructies */
+#instructieBox {
+	float: right;
+	display: block;
+	width: 50%;
+	margin: 25px 25px 0 0;
+	background: #eeeeee;
+	padding: 10px;
+}
