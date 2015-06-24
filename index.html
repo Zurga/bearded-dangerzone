@@ -315,6 +315,13 @@
             			zoom_prov(provincies_data[provincies_reverse[current_provincie]], d); 
             		})
             		.on('mouseover', function(d) {
+        				var current_provincie;
+        				$.each(provincies_gemcode[slider_value], function(i, v) { //Jaar
+        					if (v.indexOf(d.properties.statcode) != -1) {
+        						current_provincie = i;
+        					}
+        				});
+        				
             			// Tooltips! Als bepaalde variabelen, dan delen door 100 omdat D3 decimale getallen niet leuk vindt
             			if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
             				var value = dataset[d.properties.statnaam] / 100;
@@ -322,8 +329,9 @@
             			else {
             				var value = dataset[d.properties.statnaam];
             			}
+            			
             			// Tooltip opvullen met gemeentenaam, waarde (geformat naar NL cijfers) met eenheid (% bijv)
-            			tooltip.select('.label').html(toTitleCase(d.properties.statnaam) + "<br />" + parseFloat(value).toLocaleString('nl') + eenheid);
+            			tooltip.select('.label').html(provincies_reverse[current_provincie] + "<br /><strong>" + toTitleCase(d.properties.statnaam) + "</strong><br />" + parseFloat(value).toLocaleString('nl') + eenheid);
             			tooltip.style('display', 'block');
             		})
             		.on('mouseout', function(d) {
@@ -630,6 +638,7 @@
 					.call(yAxis)
 					.append("text")	
 					.attr("y", 6)
+					.attr("x", 10)
 					.attr("dy", ".71em")
 					.style("text-anchor", "end")
 					.text($('#select_variable').find(":selected").data('type'));
