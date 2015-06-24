@@ -144,7 +144,7 @@
 			var svg = d3.select("#map").append("svg")
 			    .attr("width", width)
 			    .attr("height", height)
-				.on("click", stopped, true); // TODO: wat doet dit?
+				.on("click", stopped, true);
 			
 			// Voeg een rectangle toe aan de SVG waar alle gemeentes in komen
 			svg.append("rect")
@@ -290,7 +290,6 @@
             		$.each(cbs_data[slider_value][i], function (j, w) {
                 		// Als deze variabelen, dan delen door 100
                 		if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
-                			// TODO: delen door 100?
                 			if (typeof w !== "object") {
                 				if (w == "x") {
 	                				dataset[j] == undefined;
@@ -319,7 +318,6 @@
             	var coords = topojson.feature(land_gem_data, land_gem_data.objects['latlon_'+slider_value+'_cords']).features;
             	
             	// Gemeentes instellen, kleur, grootte, tooltip, click event, etc
-            	// TODO: mouseover provincie border!!
             	gg.selectAll('path')
             		.data(coords)
             		.enter().append("g")
@@ -453,7 +451,6 @@
                 		$.each(cbs_data[slider_value][i], function (j, w) {
 	                		// Als deze variabelen, dan delen door 100
 	                		if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
-	                			// TODO: delen door 100?
 	                			dataset[j] = w;
 	                			console.log(w);
 	                		}
@@ -476,7 +473,6 @@
                 	var coords = topojson.feature(land_gem_data, land_gem_data.objects['latlon_'+slider_value+'_cords']).features;
                 	
                 	// Gemeentes instellen, kleur, grootte, tooltip, click event, etc
-                	// TODO: mouseover provincie border!!
                 	gg.selectAll('path')
                 		.data(coords)
                 		.enter().append("g")
@@ -928,21 +924,23 @@
 			
 			// Uitzoomen: gemeente/provincie -> land
 			function reset_to_land() {
-				zoom_counter = 0;
-				console.log('reset naar land');
-				//$('#slider').show();
-				$('#visual').empty();
-				
-				selected_provincie = null;
-				selected_gemeente = null;
-				$('#provincie').html('');
-				$('#gemeente').html('');
-				
-				svg.transition()
-				  .duration(zoom_speed)
-				  .call(zoom.translate([0, 0]).scale(1).event);
-
-			    remove_legend();	
+				if (zoom_counter > 0) {
+					zoom_counter = 0;
+					console.log('reset naar land');
+					//$('#slider').show();
+					$('#visual').empty();
+					
+					selected_provincie = null;
+					selected_gemeente = null;
+					$('#provincie').html('');
+					$('#gemeente').html('');
+					
+					svg.transition()
+					  .duration(zoom_speed)
+					  .call(zoom.translate([0, 0]).scale(1).event);
+	
+				    remove_legend();
+				}
 			}
 			
 			// D3 zoom event
@@ -969,16 +967,7 @@
             function legend(){
                 remove_legend();
 
-                var legend = svg.append('g');
-                
-                legend
-                	.append('rect')
-                	.attr("x", 5)
-                	.attr("y", 5)
-                	.attr("height", 90)
-                	.attr("width", 100)
-                	
-                legend
+                var legend = svg.append('g')
                 	.attr('class', 'legend')
                     .selectAll('g.legendEntry')
                     .data(colorScale.range())
