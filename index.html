@@ -195,36 +195,38 @@
                          "Utrecht": null, "Noord-Holland": null, "Zuid-Holland": null,
                          "Zeeland": null, "Noord-Brabant": null, "Limburg": null};
             
-            // Inladen provincies
-            d3.json("build/prov.json", function(error, prov) {
-            	if (error) return console.error(error);
-            	data_feature = topojson.feature(prov, prov.objects.provgeo).features;
-            	
-            	// Specificeren hoe de provincies eruit komen te zien, hoogte, breedte, kleur, tooltips
-            	g.attr("class", "provincies")
-            		.selectAll("path")
-            		.data(data_feature)
-            		.enter().append("g")
-            		.attr("class", "provincie")
-            		.append("path")
-            		.attr("id", function(d) { provincies_data[d.properties.PROV_NAME] = d; return d.properties.PROV_NAME })
-            		.attr("d", path)
-            		.attr("fill", "#ccc")
-            		.on('click', function() { alert('Selecteer eerst een gegevensbron.'); })
-            		.on('mouseover', function(d) {
-            			tooltip.select('.label').html(d.properties.PROV_NAME);
-            			tooltip.style('display', 'block');
-            		})
-            		.on('mouseout', function(d) {
-            			tooltip.style('display', 'none');
-            		})
-            		.on('mousemove', function(d) {
-            			tooltip.style('top', (d3.event.pageY + 10) + 'px')
-            		    	.style('left', (d3.event.pageX + 10) + 'px');
-            		});
-            		
-            });
-            
+            function load_provincies() {
+	            // Inladen provincies
+	            d3.json("build/prov.json", function(error, prov) {
+	            	if (error) return console.error(error);
+	            	data_feature = topojson.feature(prov, prov.objects.provgeo).features;
+	            	
+	            	// Specificeren hoe de provincies eruit komen te zien, hoogte, breedte, kleur, tooltips
+	            	g.attr("class", "provincies")
+	            		.selectAll("path")
+	            		.data(data_feature)
+	            		.enter().append("g")
+	            		.attr("class", "provincie")
+	            		.append("path")
+	            		.attr("id", function(d) { provincies_data[d.properties.PROV_NAME] = d; return d.properties.PROV_NAME })
+	            		.attr("d", path)
+	            		.attr("fill", "#ccc")
+	            		.on('click', function() { alert('Selecteer eerst een gegevensbron.'); })
+	            		.on('mouseover', function(d) {
+	            			tooltip.select('.label').html(d.properties.PROV_NAME);
+	            			tooltip.style('display', 'block');
+	            		})
+	            		.on('mouseout', function(d) {
+	            			tooltip.style('display', 'none');
+	            		})
+	            		.on('mousemove', function(d) {
+	            			tooltip.style('top', (d3.event.pageY + 10) + 'px')
+	            		    	.style('left', (d3.event.pageX + 10) + 'px');
+	            		});
+	            		
+	            });
+            }
+            load_provincies();
             
             svg.call(zoom.event);
             var i= 0;
@@ -256,134 +258,138 @@
 			$('#select_variable').change(function() {
 				$('#instructieBox').hide();
 				if ($(this).val() == '') {
+					reset_to_land();
+					gg.selectAll('path').remove();
+					load_provincies();
 					remove_legend();
 					$('#description').empty();
 					$('#minmaxavg').empty();
 					$('#instructieBox').show();
 				}
-				
-				// Huidige gegevensbron veranderen
-				selected_variable = $(this).val();
-				selected_type = $('#select_variable').find(":selected").data('type');
-				
-				// Eenheid aanpassen op basis van gekozen gegevensbron
-				if (selected_type == "%") {
-					eenheid = '%';
-				}
 				else {
-					eenheid = '';
-				}
 				
-				// Global variabele cbs_data opvullen met een JSON object
-				cbs_data = loadData('convert/data/json/' + selected_variable);
-				
-				// Omschrijving van gegevensbron aanpassen
-				$('#description').html($('option:selected', this).data('desc'));
-				
-                // Teken alle gemeentes
-                // Eerst alle huidige gemeentes weg
-                gg.selectAll('path').remove();
-                
-                minmaxavg(cbs_data);
-
-            	var land_gem_data = loadData('gemeente-prov/topo_' + slider_value + '_cords.json');
-            	
-            	var dataset = {};
-            	$.each(provincies, function (i, v) {
-            		$.each(cbs_data[slider_value][i], function (j, w) {
-                		// Als deze variabelen, dan delen door 100
-                		if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
-                			if (typeof w !== "object") {
-                				if (w == "x") {
-	                				dataset[j] == undefined;
-                				}
-                				else {
-                					dataset[j] = parseFloat(w.replace(",", ".")) * 100;
-                				}
-                			}
-                		}
-                		else {
-                			dataset[j] = w;
-            			}
-            		});
-            	});
-            	
-            	provdata = cbs_data[slider_value]['__countrydata'];
-            	
-            	if (selected_variable == 'stedelijkheid.json') {
-            		var max = provdata.min[2];
-            		var min = provdata.max[2];
-            	}
-            	else {
-            		var min = provdata.min[2];
-            		var max = provdata.max[2];
-            	}
-            	
-            	// Kleurschaal instellen met als range de min en max van de data
-            	colorScale
-            		    .range(colorbrewer.OrRd[8])
-            		    .domain([min, max]);
-            	
-            	var coords = topojson.feature(land_gem_data, land_gem_data.objects['latlon_'+slider_value+'_cords']).features;
-            	
-            	// Gemeentes instellen, kleur, grootte, tooltip, click event, etc
-            	gg.selectAll('path')
-            		.data(coords)
-            		.attr("id", function(d) { return d.properties.statnaam; })
-            		.enter().append("g")
-            		.attr("class", "gemeente")
-            		.append("path")
-            		.on("click", function (d) {
-                		var current_provincie;
-                		$.each(provincies_gemcode[slider_value], function(i, v) { //Jaar
-                			if (v.indexOf(d.properties.statcode) != -1) {
-                				current_provincie = i;
-                			}
-                		});
-                		
-            			zoom_prov(provincies_data[provincies_reverse[current_provincie]], d); 
-            		})
-            		.on('mouseover', function(d) {
-        				var current_provincie;
-        				$.each(provincies_gemcode[slider_value], function(i, v) { //Jaar
-        					if (v.indexOf(d.properties.statcode) != -1) {
-        						current_provincie = i;
-        					}
-        				});
-        				
-        				if (value == "x") {
-        					value == "Geen data bekend";
-        				}
-        				else {
-        					// Tooltips! Als bepaalde variabelen, dan delen door 100 omdat D3 decimale getallen niet leuk vindt
-        					if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
-        						var value = parseFloat(dataset[d.properties.statnaam] / 100).toLocaleString('nl');
-        					}
-        					else {
-        						var value = parseFloat(dataset[d.properties.statnaam]).toLocaleString('nl');
-        					}
-        				}
-            			
-            			// Tooltip opvullen met gemeentenaam, waarde (geformat naar NL cijfers) met eenheid (% bijv)
-            			tooltip.select('.label').html(provincies_reverse[current_provincie] + "<br /><strong>" + toTitleCase(d.properties.statnaam) + "</strong><br />" + parseFloat(value).toLocaleString('nl') + eenheid);
-            			tooltip.style('display', 'block');
-            		})
-            		.on('mouseout', function(d) {
-            			tooltip.style('display', 'none');
-            		})
-            		.on('mousemove', function(d) {
-            			tooltip.style('top', (d3.event.pageY + 10) + 'px')
-            		    	.style('left', (d3.event.pageX + 10) + 'px');
-            		})
-            		.attr("id", function(d) { return d.properties.statnaam })
-            		.attr("d", path)
-            		.attr("fill", function(d) {
-            			if (dataset[d.properties.statnaam] === undefined) {
-            				return '#ccc';
-            			}
-            			return colorScale(dataset[d.properties.statnaam]);
-            		});
-            		
+					// Huidige gegevensbron veranderen
+					selected_variable = $(this).val();
+					selected_type = $('#select_variable').find(":selected").data('type');
+					
+					// Eenheid aanpassen op basis van gekozen gegevensbron
+					if (selected_type == "%") {
+						eenheid = '%';
+					}
+					else {
+						eenheid = '';
+					}
+					
+					// Global variabele cbs_data opvullen met een JSON object
+					cbs_data = loadData('convert/data/json/' + selected_variable);
+					
+					// Omschrijving van gegevensbron aanpassen
+					$('#description').html($('option:selected', this).data('desc'));
+					
+	                // Teken alle gemeentes
+	                // Eerst alle huidige gemeentes weg
+	                gg.selectAll('path').remove();
+	                
+	                minmaxavg(cbs_data);
+	
+	            	var land_gem_data = loadData('gemeente-prov/topo_' + slider_value + '_cords.json');
+	            	
+	            	var dataset = {};
+	            	$.each(provincies, function (i, v) {
+	            		$.each(cbs_data[slider_value][i], function (j, w) {
+	                		// Als deze variabelen, dan delen door 100
+	                		if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
+	                			if (typeof w !== "object") {
+	                				if (w == "x" || w == "-") {
+		                				dataset[j] == undefined;
+	                				}
+	                				else {
+	                					dataset[j] = parseFloat(w.replace(",", ".")) * 100;
+	                				}
+	                			}
+	                		}
+	                		else {
+	                			dataset[j] = w;
+	            			}
+	            		});
+	            	});
+	            	
+	            	provdata = cbs_data[slider_value]['__countrydata'];
+	            	
+	            	if (selected_variable == 'stedelijkheid.json') {
+	            		var max = provdata.min[2];
+	            		var min = provdata.max[2];
+	            	}
+	            	else {
+	            		var min = provdata.min[2];
+	            		var max = provdata.max[2];
+	            	}
+	            	
+	            	// Kleurschaal instellen met als range de min en max van de data
+	            	colorScale
+	            		    .range(colorbrewer.OrRd[8])
+	            		    .domain([min, max]);
+	            	
+	            	var coords = topojson.feature(land_gem_data, land_gem_data.objects['latlon_'+slider_value+'_cords']).features;
+	            	
+	            	// Gemeentes instellen, kleur, grootte, tooltip, click event, etc
+	            	gg.selectAll('path')
+	            		.data(coords)
+	            		.attr("id", function(d) { return d.properties.statnaam; })
+	            		.enter().append("g")
+	            		.attr("class", "gemeente")
+	            		.append("path")
+	            		.on("click", function (d) {
+	                		var current_provincie;
+	                		$.each(provincies_gemcode[slider_value], function(i, v) { //Jaar
+	                			if (v.indexOf(d.properties.statcode) != -1) {
+	                				current_provincie = i;
+	                			}
+	                		});
+	                		
+	            			zoom_prov(provincies_data[provincies_reverse[current_provincie]], d); 
+	            		})
+	            		.on('mouseover', function(d) {
+	        				var current_provincie;
+	        				$.each(provincies_gemcode[slider_value], function(i, v) { //Jaar
+	        					if (v.indexOf(d.properties.statcode) != -1) {
+	        						current_provincie = i;
+	        					}
+	        				});
+	        				
+	        				if (value == "x" || value == "-") {
+	        					value == "Geen data bekend";
+	        				}
+	        				else {
+	        					// Tooltips! Als bepaalde variabelen, dan delen door 100 omdat D3 decimale getallen niet leuk vindt
+	        					if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
+	        						var value = parseFloat(dataset[d.properties.statnaam] / 100).toLocaleString('nl');
+	        					}
+	        					else {
+	        						var value = parseFloat(dataset[d.properties.statnaam]).toLocaleString('nl');
+	        					}
+	        				}
+	            			
+	            			// Tooltip opvullen met gemeentenaam, waarde (geformat naar NL cijfers) met eenheid (% bijv)
+	            			tooltip.select('.label').html(provincies_reverse[current_provincie] + "<br /><strong>" + toTitleCase(d.properties.statnaam) + "</strong><br />" + parseFloat(value).toLocaleString('nl') + eenheid);
+	            			tooltip.style('display', 'block');
+	            		})
+	            		.on('mouseout', function(d) {
+	            			tooltip.style('display', 'none');
+	            		})
+	            		.on('mousemove', function(d) {
+	            			tooltip.style('top', (d3.event.pageY + 10) + 'px')
+	            		    	.style('left', (d3.event.pageX + 10) + 'px');
+	            		})
+	            		.attr("id", function(d) { return d.properties.statnaam })
+	            		.attr("d", path)
+	            		.attr("fill", function(d) {
+	            			if (dataset[d.properties.statnaam] === undefined) {
+	            				return '#ccc';
+	            			}
+	            			return colorScale(dataset[d.properties.statnaam]);
+	            		});
+	            		
         			if (selected_provincie != null) {
         		        // Legenda aanmaken
         		        legend();
@@ -400,14 +406,14 @@
             		
                     legend();
                     svg.selectAll('g.provincies').remove();
-				
+				}
 			});
 			
 			// Functie redraw, aangeroepen door een verandering in de slider
 			// Eigenlijk gebeurt hier hetzelfde als bij het veranderen van gegevensbron: 
 			// inladen gemeentes en attributen instellen zoals hoogte en breedte, etc
 			function redraw() {
-				if (selected_variable.length) {
+				if (selected_variable != '') {
 					cbs_data = loadData('convert/data/json/' + selected_variable);
 					
 					if (selected_provincie != null) {
@@ -449,7 +455,7 @@
                 			// Als deze variabelen, dan delen door 100
                 			if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
                 				if (typeof w !== "object") {
-                					if (w == "x") {
+                					if (w == "x" || w == "-") {
                 						dataset[j] == undefined;
                 					}
                 					else {
@@ -507,7 +513,7 @@
                 				}
                 			});
                 			
-                			if (value == "x") {
+                			if (value == "x" || value == "-") {
                 				value == "Geen data bekend";
                 			}
                 			else {
