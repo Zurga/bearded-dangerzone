@@ -160,14 +160,6 @@
 			    .attr("height", height)
 			    .on("click", reset_to_land);
 			
-			svg.append('image')
-				.attr("x", width - 29)
-				.attr("y", 5)
-				.attr("width", 24)
-				.attr("height", 24)
-				.attr('xlink:href', 'img/zoomout.png')
-				.on('click', reset_to_land);
-			
 			// Initialiseren provinces en gemeentes
 			var g = svg.append('g'), // Provincies
 				gg = svg.append('g'), // Gemeentes
@@ -211,6 +203,7 @@
             		.attr("id", function(d) { provincies_data[d.properties.PROV_NAME] = d; return d.properties.PROV_NAME })
             		.attr("d", path)
             		.attr("fill", "#ccc")
+            		.on('click', function() { alert('Selecteer eerst een gegevensbron.'); })
             		.on('mouseover', function(d) {
             			tooltip.select('.label').html(d.properties.PROV_NAME);
             			tooltip.style('display', 'block');
@@ -254,6 +247,10 @@
 			
 			// Als een andere gegevensbron wordt gekozen, kaart aanpassen
 			$('#select_variable').change(function() {
+				$('#instructieBox').hide();
+				if ($(this).val() == '') {
+					$('#instructieBox').show();
+				}
 				
 				// Huidige gegevensbron veranderen
 				selected_variable = $(this).val();
@@ -1074,6 +1071,15 @@
                         }
                     });
             }
+            svg.append('g')
+            	.append('image')
+            	.attr("x", width - 35)
+            	.attr("y", 5)
+            	.attr("width", 30)
+            	.attr("height", 30)
+            	.attr('xlink:href', 'img/zoomout.png')
+            	.on('click', reset_to_land);
+            
 			
 			// Legenda verwijderen
             function remove_legend(){

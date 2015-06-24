@@ -71,7 +71,7 @@ path {
 	stroke: #2C2C2C;
 	stroke-width: 0.2px;
 }
-.gemeente path:hover, .provincie path:hover {
+.gemeente path:hover {
 	fill: lightblue;
 }
 .gemeente path.active_gem {	
