@@ -160,3 +160,7 @@ div.node > span:nth-child(1) {
 #gemeente {
     font-size: 9.5pt;
 }
+
+svg image:hover {
+	cursor: pointer;
+}
