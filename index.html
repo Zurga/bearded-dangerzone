@@ -256,6 +256,7 @@
 			$('#select_variable').change(function() {
 				$('#instructieBox').hide();
 				if ($(this).val() == '') {
+					selected_variable = '';
 					reset_to_land();
 					gg.selectAll('path').remove();
 					load_provincies();
