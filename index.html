@@ -32,7 +32,9 @@
 							<option value="">Selecteer gegevensbron</option>
 						</select>
 					</p>
-					<p id="description"></p>
+                    <p id="description"></p>
+                    <div id="minmaxavg">
+                    </div>
 				</div>
 				
 				<div id="visual">
@@ -309,13 +311,12 @@
             	// Gemeentes instellen, kleur, grootte, tooltip, click event, etc
             	gg.selectAll('path')
             		.data(coords)
+            		.attr("id", function(d) { return d.properties.statnaam; })
             		.enter().append("g")
             		.attr("class", "gemeente")
-            		.attr("id", function(d) { return d.properties.statnaam; })
             		.append("path")
             		.on("click", function (d) {
                 		var current_provincie;
-                        console.log('hnsaoeunsltaoeuhts');
                 		$.each(provincies_gemcode[slider_value], function(i, v) { //Jaar
                 			if (v.indexOf(d.properties.statcode) != -1) {
                 				current_provincie = i;
@@ -1002,17 +1003,22 @@
                 	var max = countrydata.max[2].toFixed(1);
                 }
                 
-                var html = '<div id="minmaxavg"><p><strong>Gemiddelde:</strong> ' + avg + '</p>' +
+                var html = '<p><strong>Gemiddelde:</strong> ' + avg + '</p>' +
                     '<p><strong>Min:</strong> <a id="min" href="#">' + toTitleCase(countrydata.min[1]) + ', ' + min + '</a></p>' +
-                    '<p><strong>Max:</strong> <a id="max" href="#">' + toTitleCase(countrydata.max[1]) + ', ' + max + '</a></p></div>';
-                $('#description').empty();
-                $('#description').append(html);
+                    '<p><strong>Max:</strong> <a id="max" href="#">' + toTitleCase(countrydata.max[1]) + ', ' + max + '</a></p>';
+                $('#minmaxavg').empty();
+                $('#minmaxavg').append(html);
                 $('#min').on("click", function () {
                     var gemeente = $('#'+countrydata.min[1]);
-                    console.log(gemeente);
+                    gemeente.d3Click();
                     gemeente.d3Click();
                 });
-            }
+                $('#max').on("click", function () {
+                    var gemeente = $('#'+countrydata.max[1]);
+                    gemeente.d3Click();
+                    gemeente.d3Click();
+                    });
+                }
 
             // Legenda bouwen
             function legend(){
@@ -1067,8 +1073,6 @@
                 this.each(function (i, e) {
                     var evt = document.createEvent("MouseEvents");
                     evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-                    console.log('hoi');
-
                     e.dispatchEvent(evt);
                 });
             };
