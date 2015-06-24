@@ -827,7 +827,7 @@
 			
 				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
 				
-				if (zoom_counter == 1) {
+				if (zoom_counter > 0) {
 				
 					var current_provincie;
 					$.each(provincies_gemcode[slider_value], function(i, v) { //Jaar
@@ -880,7 +880,7 @@
 			// Tevens instellen variabelen welke gemeente geselecteerd is
 			function zoom_gem(d) {
 				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
-				if (active_gem.node() === this) { $('#gemeente').html(''); return reset_to_prov(); }
+				if (selected_gemeente_obj === this) { $('#gemeente').html(''); return reset_to_prov(); }
 				zoom_counter = 2;
 				selected_gemeente = d;
 				selected_gemeente_obj = this;
@@ -911,12 +911,6 @@
 				//$('#slider').show();
 				$('#visual').empty();
 				drawTreemap();
-				
-				active_gem.classed("active_gem", false);
-				active_gem = d3.select(null);
-				selected_gemeente = null;
-				active_prov.classed("active_prov", false);
-				active_prov = d3.select(selected_provincie_obj).classed("active_prov", true);
 				
 				var bounds = path.bounds(selected_provincie),
 					dx = bounds[1][0] - bounds[0][0],
