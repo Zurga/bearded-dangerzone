@@ -822,11 +822,10 @@
 			// Zoom naar provincie, aangeroepen door click event provincie
 			// Spreekt redelijk voor zich
 			function zoom_prov(d, d2) {
-			
+				
 				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
 				
 				if (zoom_counter > 0) {
-				
 					var current_provincie;
 					$.each(provincies_gemcode[slider_value], function(i, v) { //Jaar
 					    $.each(v, function(j, w) { // Provincie
@@ -838,13 +837,15 @@
 					});
 					
 					var next_provincie = provincies_data[provincies_reverse[current_provincie]];
-					console.log(selected_provincie);
-					console.log(next_provincie);
+					
 					if (selected_provincie == next_provincie) {
+						console.log(d2);
 						zoom_gem(d2);
+						console.log('we gaan zoomen');
 						return true;
 					}
 				}
+				console.log('zoom naar provincie');
 
 				selected_gemeente = null;
 				selected_gemeente_obj = null;
@@ -879,6 +880,7 @@
 			function zoom_gem(d) {
 				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
 				if (selected_gemeente_obj === this) { $('#gemeente').html(''); return reset_to_prov(); }
+				console.log('zoom naar gemeente');
 				zoom_counter = 2;
 				selected_gemeente = d;
 				selected_gemeente_obj = this;
@@ -909,6 +911,9 @@
 				//$('#slider').show();
 				$('#visual').empty();
 				drawTreemap();
+				console.log('reset naar provincie');
+				selected_gemeente = null;
+				selected_gemeente_obj = null;
 				
 				var bounds = path.bounds(selected_provincie),
 					dx = bounds[1][0] - bounds[0][0],
@@ -927,7 +932,7 @@
 			// Uitzoomen: gemeente/provincie -> land
 			function reset_to_land() {
 				zoom_counter = 0;
-				
+				console.log('reset naar land');
 				//$('#slider').show();
 				$('#visual').empty();
 				
@@ -935,11 +940,6 @@
 				selected_gemeente = null;
 				$('#provincie').html('');
 				$('#gemeente').html('');
-				
-				active_gem.classed("active_gem", false);
-				active_gem = d3.select(null);
-				active_prov.classed("active_prov", false);
-				active_prov = d3.select(null);
 				
 				svg.transition()
 				  .duration(zoom_speed)
