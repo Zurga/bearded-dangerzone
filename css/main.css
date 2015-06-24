@@ -148,3 +148,15 @@ div.node > span:nth-child(1) {
     font-weight: bold;
     color: rgba(0, 0, 0, 0.575);
 }
+
+#breadcrumb {
+    font-size: 11.5pt;
+}
+
+#provincie {
+    font-size: 10.5pt;
+}
+
+#gemeente {
+    font-size: 9.5pt;
+}
