@@ -621,10 +621,6 @@
                     });
                 }
                 
-                $.each(dataset, function (i, e) {
-                	dataset[i][selected_variable] = parseInt(parseFloat(e[selected_variable].replace(",", ".")) * 100);
-                });
-                
 				var margin = {top: 20, right: 20, bottom: 30, left: 60},
 				    width = $(".right").width() * 0.8,
 				    height = width * 0.6;
@@ -647,6 +643,9 @@
 				// Als deze variabelen, dan delen door 100
 				if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
 					yAxis.tickFormat(function(d) { return d / 100; });
+                    $.each(dataset, function (i, e) {
+                        dataset[i][selected_variable] = parseInt(parseFloat(e[selected_variable].replace(",", ".")) * 100);
+                    });
 				}
 				
 				var svg = d3.select("#visual").append("svg")
@@ -1040,13 +1039,17 @@
                 $('#min').on("click", function () {
                     var gemeente = $('#'+countrydata.min[1]);
                     gemeente.d3Click();
-                    gemeente.d3Click();
+                    if ( zoomcounter !== 1 ){
+                        gemeente.d3Click();
+                    }
                 });
                 $('#max').on("click", function () {
                     var gemeente = $('#'+countrydata.max[1]);
                     gemeente.d3Click();
-                    gemeente.d3Click();
-                    });
+                    if ( zoomcounter !== 1 ){
+                        gemeente.d3Click();
+                    }
+                });
                 $('#min').hover( function () {
                     var gemeente = $('#'+countrydata.min[1]);
                     gemeente.attr('class', 'hover');
