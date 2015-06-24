@@ -7,6 +7,7 @@
 - Bug: legenda doet gek
 - Bug: kommagetallen gaan weer fout (*100 afvangen!)
 - Bug: kommagetallen gaan ook fout in sidebar min/max
+- Bug: uitzoomen zorgt niet voor laden countrydata
   
 - Verbetering: procentteken staat omgekeerd in de line/bar chart, erg lelijk en onduidelijk
 - Toevoeging: highlighten gemeente op hover kaart en/of treemap
