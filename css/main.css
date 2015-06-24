@@ -132,12 +132,9 @@ path {
 	display: block;
     font-size: 12pt;
     font-weight: 300;
-	width: 50%;
 	background: rgba(238, 238, 238, 0.55);
 	padding: 10px;
     text-align: center;
-    height: 100%;
-    width: 75%;
     display: block;
     position: absolute;
 }

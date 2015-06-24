@@ -119,6 +119,9 @@
 			    active_gem = d3.select(null),
 			    tooltip;
 			    
+			$('#instructieBox').css('width', width - 20);
+			$('#instructieBox').css('height', height - 20);
+			    
 			// Lege tooltip aanmaken
 	    	tooltip = d3.select('#wrapper') 
 	    		.append('div')                 
@@ -831,6 +834,8 @@
 				
 				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
 				
+				$('#zoomout').css('visibility', 'visible');
+				
 				if (zoom_counter > 0) {
 					var current_provincie;
 					$.each(provincies_gemcode[slider_value], function(i, v) { //Jaar
@@ -915,6 +920,8 @@
 			// Uitzoomen: gemeente -> prov
 			function reset_to_prov() {
 				zoom_counter = 1;
+				
+				$('#zoomout').css('visibility', 'hidden');
 				//$('#slider').show();
 				$('#visual').empty();
 				drawTreemap();
@@ -1074,12 +1081,14 @@
             }
             svg.append('g')
             	.append('image')
+            	.attr('id', 'zoomout')
             	.attr("x", width - 35)
             	.attr("y", 5)
             	.attr("width", 30)
             	.attr("height", 30)
             	.attr('xlink:href', 'img/zoomout.png')
-            	.on('click', reset_to_land);
+            	.on('click', reset_to_land)
+            	.style('visibility', 'hidden');
             
 			
 			// Legenda verwijderen
