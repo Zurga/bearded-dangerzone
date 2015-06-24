@@ -26,13 +26,13 @@
 					<div id="instructieBox">
 						 Selecteer een gegevensbron en klik op de gewenste provincie. Met de slider onder de kaart wordt de data van het gewenste jaar weergeven. Klik daarna op een gemeente om meer informatie over een gemeente te zien over de tijd. Op gemeenteniveau kunnen ook twee gegevensbronnen tegen elkaar af worden gezet.
 					</div>
-					<p><strong>Nederland</strong> <span id="provincie"></span> <span id="gemeente"></span></p>
 					<p>
 						<select id="select_variable" name="select_variable">
 							<option value="">Selecteer gegevensbron</option>
 						</select>
 					</p>
                     <p id="description"></p>
+                    <p><strong>Nederland</strong> <span id="provincie"></span> <span id="gemeente"></span></p>
                     <div id="minmaxavg">
                     </div>
 				</div>
@@ -156,6 +156,9 @@
 			    .attr("width", width)
 			    .attr("height", height)
 			    .on("click", reset_to_land);
+			
+			svg.append('rect')
+				.attr("
 			
 			// Initialiseren provinces en gemeentes
 			var g = svg.append('g'), // Provincies
