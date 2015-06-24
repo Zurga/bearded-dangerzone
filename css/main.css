@@ -131,7 +131,19 @@ path {
 	float: right;
 	display: block;
 	width: 50%;
-	margin: 25px 25px 0 0;
+	margin: 0 25px 0 0;
 	background: #eeeeee;
 	padding: 10px;
+}
+
+/* Legenda */
+.legend {
+	/* Fallback for web browsers that don't support RGBa */
+    background-color: rgb(0, 0, 0);
+    /* RGBa with 0.6 opacity */
+    background-color: rgba(0, 0, 0, 0.6);
+    /* For IE 5.5 - 7*/
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
+    /* For IE 8*/
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
 }
