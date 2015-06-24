@@ -332,13 +332,18 @@
         					}
         				});
         				
-            			// Tooltips! Als bepaalde variabelen, dan delen door 100 omdat D3 decimale getallen niet leuk vindt
-            			if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
-            				var value = dataset[d.properties.statnaam] / 100;
-            			}
-            			else {
-            				var value = dataset[d.properties.statnaam];
-            			}
+        				if (value == "x") {
+        					value == "Geen data bekend";
+        				}
+        				else {
+        					// Tooltips! Als bepaalde variabelen, dan delen door 100 omdat D3 decimale getallen niet leuk vindt
+        					if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
+        						var value = parseFloat(dataset[d.properties.statnaam] / 100).toLocaleString('nl');
+        					}
+        					else {
+        						var value = parseFloat(dataset[d.properties.statnaam]).toLocaleString('nl');
+        					}
+        				}
             			
             			// Tooltip opvullen met gemeentenaam, waarde (geformat naar NL cijfers) met eenheid (% bijv)
             			tooltip.select('.label').html(provincies_reverse[current_provincie] + "<br /><strong>" + toTitleCase(d.properties.statnaam) + "</strong><br />" + parseFloat(value).toLocaleString('nl') + eenheid);
@@ -424,12 +429,19 @@
                 	var dataset = {};
                 	$.each(provincies, function (i, v) {
                 		$.each(cbs_data[slider_value][i], function (j, w) {
-	                		// Als deze variabelen, dan delen door 100
-	                		if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
-	                			dataset[j] = w;
-	                		}
-	                		else {
-	                			dataset[j] = w;
+                			// Als deze variabelen, dan delen door 100
+                			if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
+                				if (typeof w !== "object") {
+                					if (w == "x") {
+                						dataset[j] == undefined;
+                					}
+                					else {
+                						dataset[j] = parseFloat(w.replace(",", ".")) * 100;
+                					}
+                				}
+                			}
+                			else {
+                				dataset[j] = w;
                 			}
                 		});
                 	});
@@ -478,16 +490,21 @@
                 				}
                 			});
                 			
-                			// Tooltips! Als bepaalde variabelen, dan delen door 100 omdat D3 decimale getallen niet leuk vindt
-                			if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
-                				var value = dataset[d.properties.statnaam] / 100;
+                			if (value == "x") {
+                				value == "Geen data bekend";
                 			}
                 			else {
-                				var value = dataset[d.properties.statnaam];
+	                			// Tooltips! Als bepaalde variabelen, dan delen door 100 omdat D3 decimale getallen niet leuk vindt
+	                			if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
+	                				var value = parseFloat(dataset[d.properties.statnaam] / 100).toLocaleString('nl');
+	                			}
+	                			else {
+	                				var value = parseFloat(dataset[d.properties.statnaam]).toLocaleString('nl');
+	                			}
                 			}
                 			
                 			// Tooltip opvullen met gemeentenaam, waarde (geformat naar NL cijfers) met eenheid (% bijv)
-                			tooltip.select('.label').html(provincies_reverse[current_provincie] + "<br /><strong>" + toTitleCase(d.properties.statnaam) + "</strong><br />" + parseFloat(value).toLocaleString('nl') + eenheid);
+                			tooltip.select('.label').html(provincies_reverse[current_provincie] + "<br /><strong>" + toTitleCase(d.properties.statnaam) + "</strong><br />" + value + eenheid);
                 			tooltip.style('display', 'block');
                 		})
                 		.on('mouseout', function(d) {
