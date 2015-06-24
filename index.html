@@ -253,8 +253,9 @@
 	            );
 	        d3.select('#slider').select('svg').attr('height', 25);
 	            
-			// Standaard de gegevensbron select selecteren
+			// Standaard de gegevensbron select selecteren, breadcrumb verbergen
             $("#select_variable").focus();
+            $('#breadcrumb').hide();
 			
 			// Als een andere gegevensbron wordt gekozen, kaart aanpassen
 			$('#select_variable').change(function() {
@@ -265,6 +266,7 @@
 					gg.selectAll('path').remove();
 					load_provincies();
 					remove_legend();
+					$('#breadcrumb').hide();
 					$('#description').empty();
 					$('#minmaxavg').empty();
 					$('#instructieBox').show();
@@ -272,6 +274,7 @@
 				else {
 				
 					// Huidige gegevensbron veranderen
+					$('#breadcrumb').show();
 					selected_variable = $(this).val();
 					selected_type = $('#select_variable').find(":selected").data('type');
 					
