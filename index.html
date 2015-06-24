@@ -506,7 +506,7 @@
 									'<label><input type="radio" name="mode" value="bar"> Staaf</label>' +
 									'</form>');
 
-                $('#visual').append('<label>Kies hier een tweede variabele om te vergelijken: </label><select id="second_variable" name="Tweede Variabele">' +
+                $('#visual').append('<label>Kies hier een tweede variabele om te vergelijken: </label><br/><select id="second_variable" name="Tweede Variabele">' +
                         '<option>Selecteer Variable</option>' +
                         '</select>');
                 $.ajax({
@@ -570,7 +570,6 @@
 				});
 				
             }
-			
 
 			// Deze functie wordt aangeroepen om een linechart te bouwen
 			// Instellen x en y-as, zie variabelenamen voor hun taak
@@ -612,7 +611,6 @@
 				    .attr("height", height + margin.top + margin.bottom)
 					.append("g")
 					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-				    
                 
                 var min = [],
                     max = [];
