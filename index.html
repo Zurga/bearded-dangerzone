@@ -338,7 +338,7 @@
 	            	// Gemeentes instellen, kleur, grootte, tooltip, click event, etc
 	            	gg.selectAll('path')
 	            		.data(coords)
-	            		.attr("id", function(d) { return d.properties.statnaam.replace(/\s+/g, ""); })
+	            		.attr("id", function(d) { return d.properties.statnaam; })
 	            		.enter().append("g")
 	            		.attr("class", "gemeente")
 	            		.append("path")
@@ -384,7 +384,7 @@
 	            			tooltip.style('top', (d3.event.pageY + 10) + 'px')
 	            		    	.style('left', (d3.event.pageX + 10) + 'px');
 	            		})
-	            		.attr("id", function(d) { return d.properties.statnaam.replace(/\s+/g, "") })
+	            		.attr("id", function(d) { return d.properties.statnaam })
 	            		.attr("d", path)
 	            		.attr("fill", function(d) {
 	            			if (dataset[d.properties.statnaam] === undefined) {
@@ -495,7 +495,7 @@
                 		.data(coords)
                 		.enter().append("g")
                 		.attr("class", "gemeente")
-                		.attr("id", function(d) { return d.properties.statnaam.replace(/\s+/g, ""); })
+                		.attr("id", function(d) { return d.properties.statnaam; })
                 		.append("path")
                 		.on("click", function (d) {
 	                		var current_provincie;
@@ -540,7 +540,7 @@
                 			tooltip.style('top', (d3.event.pageY + 10) + 'px')
                 		    	.style('left', (d3.event.pageX + 10) + 'px');
                 		})
-                		.attr("id", function(d) { return d.properties.name.replace(/\s+/g, "") })
+                		.attr("id", function(d) { return d.properties.name })
                 		.attr("d", path)
                 		.attr("fill", function(d) {
                 			if (dataset[d.properties.statnaam] === undefined) {
@@ -631,7 +631,7 @@
                 }
                 
 				var margin = {top: 20, right: 20, bottom: 30, left: 60},
-				    width_chart = width_right * 0.9,
+				    width_chart = width_right - 105,
 				    height_chart = width_chart * 0.6;
 				
 				var x = d3.scale.ordinal()
@@ -784,7 +784,7 @@
 				$('#visual').empty();
 				
 				var margin = {top: 10, right: 0, bottom: 5, left: 0},
-				    width_chart = width_right * 0.9,
+				    width_chart = width_right,
 				    height_chart = width_chart * 0.7;
 			
 				var treemap = d3.layout.treemap()
@@ -841,10 +841,10 @@
 						.enter()
 						.append("div")
                         .on('mouseover', function (d) {
-                            $('#'+d.name.replace(/\s+/g, '')).attr('class', 'hover');
+                            $('#'+d.name).attr('class', 'hover');
                         })
                         .on('mouseout', function (d) {
-                            $('#'+d.name.replace(/\s+/g, '')).attr('class', '');
+                            $('#'+d.name).attr('class', '');
                         })
 						.attr("class", "node")
 						.call(position)
@@ -878,11 +878,12 @@
 							current_provincie = i;
 						}
 					});
-					
 					var next_provincie = provincies_data[provincies_reverse[current_provincie]];
+					console.log(selected_provincie);
+					console.log(next_provincie);
 					
 					if (selected_provincie == next_provincie) {
-						//console.log(d2);
+						console.log(d2);
 						zoom_gem(d2);
 						//console.log('we gaan zoomen');
 						return true;
@@ -897,7 +898,7 @@
 				drawTreemap();
 				selected_provincie = d;
 				selected_provincie_obj = this;
-                console.log(d);
+				
                 minmaxavg(cbs_data);
                 //console.log(selected_provincie);
 				$('#provincie').html("&raquo; " + d.properties.PROV_NAME);
@@ -924,7 +925,7 @@
 			// Tevens instellen variabelen welke gemeente geselecteerd is
 			function zoom_gem(d) {
 				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
-				if (selected_gemeente == d) { $('#gemeente').html(''); return reset_to_prov(); }
+				if (selected_gemeente_obj == this) { $('#gemeente').html(''); return reset_to_prov(); }
 				//console.log('zoom naar gemeente');
 				zoom_counter = 2;
 				selected_gemeente = d;
@@ -992,22 +993,6 @@
 				  .call(zoom.translate([0, 0]).scale(1).event);
 
                 minmaxavg(cbs_data);
-				if (zoom_counter > 0) {
-					zoom_counter = 0;
-					//console.log('reset naar land');
-					//$('#slider').show();
-					$('#visual').empty();
-					
-					selected_provincie = null;
-					selected_gemeente = null;
-					$('#provincie').html('');
-					$('#gemeente').html('');
-					
-					svg.transition()
-					  .duration(zoom_speed)
-					  .call(zoom.translate([0, 0]).scale(1).event);
-	
-				}
 			}
 			
 			// D3 zoom event
@@ -1056,33 +1041,33 @@
                 $('#minmaxavg').empty();
                 $('#minmaxavg').append(html);
                 $('#min').on("click", function () {
-                    var gemeente = $('#'+countrydata.min[1].replace(/\s+/g, ""));
+                    var gemeente = $('#'+countrydata.min[1]);
                     gemeente.d3Click();
                     if ( zoom_counter !== 1 ){
                         gemeente.d3Click();
                     }
                 });
                 $('#max').on("click", function () {
-                    var gemeente = $('#'+countrydata.max[1].replace(/\s+/g, ""));
+                    var gemeente = $('#'+countrydata.max[1]);
                     gemeente.d3Click();
                     if ( zoom_counter !== 1 ){
                         gemeente.d3Click();
                     }
                 });
                 $('#min').hover( function () {
-                    var gemeente = $('#'+countrydata.min[1].replace(/\s+/g, ""));
+                    var gemeente = $('#'+countrydata.min[1]);
                     gemeente.attr('class', 'hover');
                     }, 
                     function () {
-                    var gemeente = $('#'+countrydata.min[1].replace(/\s+/g, ""));
+                    var gemeente = $('#'+countrydata.min[1]);
                     gemeente.attr('class', '');
                 });
                 $('#max').hover( function () {
-                    var gemeente = $('#'+countrydata.max[1].replace(/\s+/g, ""));
+                    var gemeente = $('#'+countrydata.max[1]);
                     gemeente.attr('class', 'hover');
                     }, 
                     function () {
-                    var gemeente = $('#'+countrydata.max[1].replace(/\s+/g, ""));
+                    var gemeente = $('#'+countrydata.max[1]);
                     gemeente.attr('class', '');
                 });
             }
