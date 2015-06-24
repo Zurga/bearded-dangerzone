@@ -1022,7 +1022,7 @@
 			    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 			}
 
-            function minmaxavg(cbs_data) {
+            function minmaxavg() {
                 if (selected_provincie) {
                     var countrydata = cbs_data[slider_value][selected_provincie.properties.PROV_NAME]['__provdata'];
                 }
@@ -1043,8 +1043,8 @@
                 }
                 
                 var html = '<p><strong>Gemiddelde:</strong> ' + avg + '</p>' +
-                    '<p><strong>Min:</strong> <a id="min" href="#">' + toTitleCase(countrydata.min[1]) + ', ' + min + '</a></p>' +
-                    '<p><strong>Max:</strong> <a id="max" href="#">' + toTitleCase(countrydata.max[1]) + ', ' + max + '</a></p>';
+                    '<p><strong>Min:</strong> <a id="min" href="#">' + provincies_reverse[countrydata.min[0]] + ', ' + toTitleCase(countrydata.min[1]) + ', ' + min + '</a></p>' +
+                    '<p><strong>Max:</strong> <a id="max" href="#">' + provincies_reverse[countrydata.max[0]] + ', ' + toTitleCase(countrydata.max[1]) + ', ' + max + '</a></p>';
                 $('#minmaxavg').empty();
                 $('#minmaxavg').append(html);
                 $('#min').on("click", function () {
