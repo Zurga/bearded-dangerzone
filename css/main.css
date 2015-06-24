@@ -163,7 +163,7 @@ div.node > span:nth-child(1) {
 svg image:hover {
 	cursor: pointer;
 }
-
+/*
 #minmaxavg * {
     color: #000000;
     text-decoration: none;
@@ -171,3 +171,4 @@ svg image:hover {
     font-size: 8.5pt;
     line-height: 5px;
 }
+*/
