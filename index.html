@@ -405,7 +405,8 @@
 					// Eerst alle huidige gemeentes weg
 					gg.selectAll('path').remove();
 					
-					var countrydata = cbs_data[slider_value]['__provdata'];
+                    console.log(selected_provincie);
+					var countrydata = cbs_data[slider_value][selected_provincie]['__provdata'];
 					
 					$('#description').html($('option:selected', this).data('desc'));
                     $('#minmaxavg').remove();
