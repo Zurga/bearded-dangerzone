@@ -114,12 +114,15 @@
 			var cbs_data = '';
 			
 			// Hoogte, breedte, tooltip, actieve gemeente en provincie van de kaart initialiseren
-			var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) * 0.88,
+			var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 65,
 			    width = height * 0.85,
+			    width_right = (Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - width) * 0.9,
 			    active_prov = d3.select(null),
 			    active_gem = d3.select(null),
 			    tooltip;
-			    
+			
+			$('.left').css('width', width);
+			$('.right').css('width', width_right);
 			$('#instructieBox').css('width', width - 20);
 			$('#instructieBox').css('height', height - 20);
 			    
@@ -248,6 +251,7 @@
 	            		redraw();
 	            	})
 	            );
+	        d3.select('#slider').select('svg').attr('height', 25);
 	            
 			// Standaard de gegevensbron select selecteren
             $("#select_variable").focus();
@@ -627,7 +631,7 @@
                 }
                 
 				var margin = {top: 20, right: 20, bottom: 30, left: 60},
-				    width = $(".right").width() * 0.8,
+				    width = $(".right").width() - 80,
 				    height = width * 0.6;
 				
 				var x = d3.scale.ordinal()
@@ -780,7 +784,7 @@
 				$('#visual').empty();
 				
 				var margin = {top: 10, right: 0, bottom: 5, left: 0},
-				    width = $(".right").width() * 0.95,
+				    width = $(".right").width(),
 				    height = width * 0.7;
 			
 				var treemap = d3.layout.treemap()
