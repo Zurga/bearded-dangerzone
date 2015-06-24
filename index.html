@@ -330,7 +330,7 @@
 					
 					var countrydata = cbs_data[slider_value]['__countrydata'];
 					console.log(countrydata);
-                    var html = '<p><strong>Gemiddelde:</strong> ' + countrydata.avg + '</p>' +
+                    var html = '<p><strong>Gemiddelde:</strong> ' + countrydata.avg.toFixed(1) + '</p>' +
                         '<p><strong>Min:</strong> ' + toTitleCase(countrydata.min[1]) + ', ' + countrydata.min[2] + '</p>' +
                         '<p><strong>Max:</strong> ' + toTitleCase(countrydata.max[1]) + ', ' + countrydata.max[2] + '</p>';
                     $('#description').append(html);
@@ -393,6 +393,8 @@
                 			}
                 			return colorScale(dataset[d.properties.statnaam]);
                 		});
+                    legend();
+                    svg.selectAll('g.provincies').remove();
 				}
 			});
 			
@@ -542,7 +544,7 @@
 									'<label><input type="radio" name="mode" value="bar"> Staaf</label>' +
 									'</form>');
 
-                $('#visual').append('<select id="second_variable" name="Tweede Variabele">' +
+                $('#visual').append('<label>Kies hier een tweede variabele om te vergelijken: </label><select id="second_variable" name="Tweede Variabele">' +
                         '<option>Selecteer Variable</option>' +
                         '</select>');
                 $.ajax({
@@ -715,6 +717,32 @@
                         .attr("class", "line2")
                         .attr("d", second_line);
                 }
+                
+                var legend = svg.append("g")
+                    .attr('class', 'legend')
+                    .selectAll('g.legendEntry')
+                    .data(function () {if (second_variable){ return ['steelblue', 'red'];} return ['steelblue'];})
+                    .enter()
+                    .append('g').attr('class', 'legendEntry');
+
+                legend.append('rect')
+                    .attr("x", width - 100)
+                    .attr("y", function(d,i){
+                        return (i * 20) + 5;})
+                    .attr("width", 10)
+                    .attr("height", 10)
+                    .style("stroke", "black")
+                    .style("stroke-width", 1)
+                    .style("fill", function (d) { return d; });
+
+                legend.append('text')
+                    .attr("x", 20)
+                    .attr("y", function (d, i) {
+                        return (i * 20) + 5;})
+                    .attr("dy", "0.8em")
+                    .text(function (d, i) {
+                        console.log(d,i)
+                    })
                 second_variable = '';
 			}
 			
