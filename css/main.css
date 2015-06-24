@@ -69,7 +69,7 @@ path {
 	stroke-width: 0.5px;
 }
 .gemeente path {
-	stroke: #fafafa;
+	stroke: #2C2C2C;
 	stroke-width: 0.2px;
 }
 .gemeente path:hover, .provincie path:hover {
