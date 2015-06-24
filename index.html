@@ -321,7 +321,6 @@
 						// Anders treemap
 						drawTreemap();
 					}
-				}
 				
 				
 				// Teken alle gemeentes
@@ -408,6 +407,10 @@
             			}
             			return colorScale(dataset[d.properties.statnaam]);
             		});
+            		
+                    legend();
+                    svg.selectAll('g.provincies').remove();
+				
 			});
 			
 			// Functie redraw, aangeroepen door een verandering in de slider
@@ -618,7 +621,7 @@
 									'<label><input type="radio" name="mode" value="bar"> Staaf</label>' +
 									'</form>');
 
-                $('#visual').append('<select id="second_variable" name="Tweede Variabele">' +
+                $('#visual').append('<label>Kies hier een tweede variabele om te vergelijken: </label><select id="second_variable" name="Tweede Variabele">' +
                         '<option>Selecteer Variable</option>' +
                         '</select>');
                 $.ajax({
@@ -733,8 +736,8 @@
                     min.push(Math.floor(dataset[i][selected_variable] * 0.9));
                     max.push(Math.ceil(dataset[i][selected_variable] * 1.1));
                     if (second_variable) {
-                    min.push(Math.floor(dataset[i][second_variable] * 0.9));
-                    max.push(Math.ceil(dataset[i][second_variable] * 1.1));
+                        min.push(Math.floor(dataset[i][second_variable] * 0.9));
+                        max.push(Math.ceil(dataset[i][second_variable] * 1.1));
                     }
                 });
 
@@ -791,6 +794,32 @@
                         .attr("class", "line2")
                         .attr("d", second_line);
                 }
+                
+                var legend = svg.append("g")
+                    .attr('class', 'legend')
+                    .selectAll('g.legendEntry')
+                    .data(function () {if (second_variable){ return ['steelblue', 'red'];} return ['steelblue'];})
+                    .enter()
+                    .append('g').attr('class', 'legendEntry');
+
+                legend.append('rect')
+                    .attr("x", width - 100)
+                    .attr("y", function(d,i){
+                        return (i * 20) + 5;})
+                    .attr("width", 10)
+                    .attr("height", 10)
+                    .style("stroke", "black")
+                    .style("stroke-width", 1)
+                    .style("fill", function (d) { return d; });
+
+                legend.append('text')
+                    .attr("x", 20)
+                    .attr("y", function (d, i) {
+                        return (i * 20) + 5;})
+                    .attr("dy", "0.8em")
+                    .text(function (d, i) {
+                        console.log(d,i)
+                    })
                 second_variable = '';
 			}
 			
