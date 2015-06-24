@@ -54,6 +54,7 @@
 			
 
             var expl = {};
+            var provincie_gemcode = null;
 			// Inladen gegevensbronnen in de select
 			$.ajax({
 			    'async': false,
@@ -175,7 +176,7 @@
 			// Globale variabele met kleurschaal (kleurenpalet)
             var colorScale = d3.scale.quantize();
             
-            var provincies_gemcode = loadData('gemeente-prov/provincies.json');
+            provincies_gemcode = loadData('gemeente-prov/provincies.json');
             
             var provincies = {"Groningen": 20, "Friesland": 21, "Drenthe": 22,
                          "Overijssel": 23, "Flevoland": 24, "Gelderland": 25,
@@ -620,7 +621,7 @@
 				    height = width * 0.6;
 				
 				var x = d3.scale.ordinal()
-				    .rangeRoundBands([0, width], .3);
+				    .rangeRoundBands([0, width], .1);
 				
 				var y = d3.scale.linear()
 				    .range([height, 0]);
@@ -684,7 +685,7 @@
 				// Toevoegen x-as
 				svg.append("g")
 					.attr("class", "x axis")
-					.attr("transform", "translate(0," + height + ")")
+					.attr("transform", "translate(-25," + height + ")")
 					.call(xAxis);
 				
 				// Toevoegen y-as
@@ -808,11 +809,17 @@
 						.data(treemap.nodes)
 						.enter()
 						.append("div")
+                        .on('mouseover', function (d) {
+                            $('#'+d.name).attr('class', 'hover');
+                        })
+                        .on('mouseout', function (d) {
+                            $('#'+d.name).attr('class', '');
+                        })
 						.attr("class", "node")
 						.call(position)
 						.style("background", function(d) { return color(d.name); })
                         .append("span")
-                            .html(function(d) { return toTitleCase(d.name) + "<br>" + d.value.toLocaleString('nl') + ' ' + eenheid;});
+                        .html(function(d) { return toTitleCase(d.name) + "<br>" + d.value.toLocaleString('nl') + ' ' + eenheid;});
 				});
 				
 			}
@@ -862,6 +869,7 @@
 				drawTreemap();
 				selected_provincie = d;
 				selected_provincie_obj = this;
+                console.log(d);
                 minmaxavg(cbs_data);
                 //console.log(selected_provincie);
 				$('#provincie').html("&raquo; " + d.properties.PROV_NAME);
