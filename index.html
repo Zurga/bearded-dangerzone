@@ -416,8 +416,6 @@
 					var countrydata = cbs_data[slider_value]['__countrydata'];
 					
 					$('#description').html($('option:selected', this).data('desc'));
-                    $('#minmaxavg').remove();
-                    
                     minmaxavg(cbs_data);
 					
                 	var land_gem_data = loadData('gemeente-prov/topo_' + slider_value + '_cords.json');
@@ -786,7 +784,6 @@
 						.style("background", function(d) { return color(d.name); })
                         .append("span")
                             .html(function(d) { return toTitleCase(d.name) + "<br>" + d.value.toLocaleString('nl') + ' ' + eenheid;});
-						
 				});
 				
 			}
@@ -1001,7 +998,23 @@
                     gemeente.d3Click();
                     gemeente.d3Click();
                     });
-                }
+                $('#min').hover( function () {
+                    var gemeente = $('#'+countrydata.min[1]);
+                    gemeente.attr('class', 'hover');
+                    }, 
+                    function () {
+                    var gemeente = $('#'+countrydata.min[1]);
+                    gemeente.attr('class', '');
+                });
+                $('#max').hover( function () {
+                    var gemeente = $('#'+countrydata.max[1]);
+                    gemeente.attr('class', 'hover');
+                    }, 
+                    function () {
+                    var gemeente = $('#'+countrydata.max[1]);
+                    gemeente.attr('class', '');
+                });
+            }
 
             // Legenda bouwen
             function legend(){
