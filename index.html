@@ -699,11 +699,11 @@
 					.attr("transform", "translate(-25," + height + ")")
 					.call(xAxis);
 				
-				if (selected_variable == "stedelijkheid.json") {
-					var eenheid_x = 0;
+				if (selected_type == "%") {
+					var eenheid_x = 15;
 				}
 				else {
-					var eenheid_x = 15;
+					var eenheid_x = 30;
 				}
 				
 				// Toevoegen y-as
@@ -716,7 +716,7 @@
 					.attr("dy", ".71em")
                     .attr("dx", "1em")
 					.style("text-anchor", "end")
-					.text($('#select_variable').find(":selected").data('type'));
+					.text(selected_type);
 				
 				// Lijn tekenen
 				svg.append("path")
