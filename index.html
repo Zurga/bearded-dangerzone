@@ -328,9 +328,11 @@
 					
 					var countrydata = cbs_data[slider_value]['__countrydata'];
 					console.log(countrydata);
-                    var html = '<p><strong>Gemiddelde:</strong> ' + countrydata.avg.toFixed(1) + '</p>' +
+                    
+                    $('#minmaxavg').remove();
+                    var html = '<div id="minmaxavg"><p><strong>Gemiddelde:</strong> ' + countrydata.avg.toFixed(1) + '</p>' +
                         '<p><strong>Min:</strong> ' + toTitleCase(countrydata.min[1]) + ', ' + countrydata.min[2].toFixed(1) + '</p>' +
-                        '<p><strong>Max:</strong> ' + toTitleCase(countrydata.max[1]) + ', ' + countrydata.max[2].toFixed(1) + '</p>';
+                        '<p><strong>Max:</strong> ' + toTitleCase(countrydata.max[1]) + ', ' + countrydata.max[2].toFixed(1) + '</p></div>';
                     $('#description').append(html);
 
             	var land_gem_data = loadData('gemeente-prov/topo_' + slider_value + '_cords.json');
@@ -501,10 +503,11 @@
 						
 						$('#description').html($('option:selected', this).data('desc'));
 						
-	                    var html = '<p><strong>Gemiddelde:</strong> ' + countrydata.avg + '</p>' +
-	                        '<p><strong>Min:</strong> ' + toTitleCase(countrydata.min[1]) + ', ' + countrydata.min[2] + '</p>' +
-	                        '<p><strong>Max:</strong> ' + toTitleCase(countrydata.max[1]) + ', ' + countrydata.max[2] + '</p>';
-	                    $('#description').append(html);
+                        $('#minmaxavg').remove();
+                        var html = '<div id="minmaxavg"><p><strong>Gemiddelde:</strong> ' + countrydata.avg.toFixed(1) + '</p>' +
+                            '<p><strong>Min:</strong> ' + toTitleCase(countrydata.min[1]) + ', ' + countrydata.min[2].toFixed(1) + '</p>' +
+                            '<p><strong>Max:</strong> ' + toTitleCase(countrydata.max[1]) + ', ' + countrydata.max[2].toFixed(1) + '</p></div>';
+                        $('#description').append(html);
 	
 	                	var land_gem_data = loadData('gemeente-prov/topo_' + slider_value + '_cords.json');
 	                	
