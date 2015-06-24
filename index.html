@@ -918,7 +918,6 @@
 			function reset_to_prov() {
 				zoom_counter = 1;
 				
-				$('#zoomout').css('visibility', 'hidden');
 				//$('#slider').show();
 				$('#visual').empty();
 				drawTreemap();
@@ -943,7 +942,7 @@
 			// Uitzoomen: gemeente/provincie -> land
 			function reset_to_land() {
 				zoom_counter = 0;
-				//console.log('reset naar land');
+				$('#zoomout').css('visibility', 'hidden');
 				//$('#slider').show();
 				$('#visual').empty();
 				
@@ -1063,7 +1062,7 @@
                 legend.append('rect')
                     .attr("x", 5)
                     .attr("y", function(d, i) {
-                               return (i * 20) + 5;
+                               return (i * 20) + 25;
                                    })
                     .attr("width", 10)
                     .attr("height", 10)
@@ -1071,11 +1070,17 @@
                     .style("stroke-width", 1)
                     .style("fill", function(d){return d;}); 
                   //the data objects are the fill colors
-
+				
+				legend.append('text')
+				    .attr("x", 5) //leave 5 pixel space after the 
+				    .attr("y", 5)
+				    .attr("dy", "0.8em") //place text one line *below* the x,y point
+				    .text('Eenheid: ' + selected_type);
+				
                 legend.append('text')
                     .attr("x", 20) //leave 5 pixel space after the 
                     .attr("y", function(d, i) {
-                                return (i * 20) + 5;
+                                return (i * 20) + 25;
                             })
                     .attr("dy", "0.8em") //place text one line *below* the x,y point
                     .text(function(d,i) {
@@ -1085,10 +1090,10 @@
                         var format = d3.format("1f");
                         
                         if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
-                        	return (+extent[0] / 100).toFixed(1) + " - " + (+extent[1] / 100).toFixed(1) + ' ' + selected_type;
+                        	return (+extent[0] / 100).toFixed(1) + " - " + (+extent[1] / 100).toFixed(1);
                         }
                         else {
-                        	return format(+extent[0]) + " - " + format(+extent[1]) + ' ' + selected_type;
+                        	return format(+extent[0]) + " - " + format(+extent[1]);
                         }
                     });
             }
