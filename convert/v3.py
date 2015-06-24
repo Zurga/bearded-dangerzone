@@ -155,7 +155,7 @@ def get_json(var, variables, provinces, years, location="data/csv/"):
                                             "gemprov/2006.csv")
 
         # For each province in the provinces list parameter...
-        for prov in ["Noord-Holland"]:
+        for prov in provinces:
             # Create a list of Gemeentes in currently iterated province.
             gem = list(gemprov[(gemprov["PROVINCIE"] == prov)]
                        .filter(["GEMEENTE"]).T.columns)
