@@ -1043,8 +1043,8 @@
                 }
                 
                 var html = '<p><strong>Gemiddelde:</strong> ' + avg + '</p>' +
-                    '<p><strong>Min:</strong> <a id="min" href="#">' + provincies_reverse[countrydata.min[0]] + ', ' + toTitleCase(countrydata.min[1]) + ', ' + min + '</a></p>' +
-                    '<p><strong>Max:</strong> <a id="max" href="#">' + provincies_reverse[countrydata.max[0]] + ', ' + toTitleCase(countrydata.max[1]) + ', ' + max + '</a></p>';
+                    '<p><strong>Laagste waarde:</strong> <a id="min" href="#">' + min + ' in ' + toTitleCase(countrydata.min[1]) + ' (' + provincies_reverse[countrydata.min[0]] + ')</a></p>' +
+                    '<p><strong>Hoogste waarde:</strong> <a id="max" href="#">' + max + ' in ' + toTitleCase(countrydata.max[1]) + ' (' + provincies_reverse[countrydata.max[0]] + ')</a></p>';
                 $('#minmaxavg').empty();
                 $('#minmaxavg').append(html);
                 $('#min').on("click", function () {
