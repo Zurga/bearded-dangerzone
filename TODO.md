@@ -1,3 +1,4 @@
+- Bug: 25-45 jaar, 2012 Sudwest Fryslan NaN%
 - Bug: tooltips verdwijen na een tijdje spelen met de kaart
 - Bug: treemap fuckt up na een tijdje spelen met de kaart
 - Bug: stedelijkheid treemap reverse data
