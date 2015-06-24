@@ -30,11 +30,10 @@ h1 {
 	display: none;
 	font-size: 12px;
 	left: 130px;
-	padding: 10px;
+	padding: 10px 20px 10px 20px;
 	position: absolute;
 	text-align: center;
 	top: 95px;
-	width: 100px;
 	z-index: 1000;
 }
 
@@ -125,4 +124,14 @@ path {
   overflow: hidden;
   position: absolute;
   text-indent: 2px;
+}
+
+/* instructies */
+#instructieBox {
+	float: right;
+	display: block;
+	width: 50%;
+	margin: 25px 25px 0 0;
+	background: #eeeeee;
+	padding: 10px;
 }

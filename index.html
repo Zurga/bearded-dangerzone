@@ -23,6 +23,9 @@
 			<div class="column right">
 			
 				<div id="properties">
+					<div id="instructieBox">
+						 Selecteer een gegevensbron en klik op de gewenste provincie, met de slider onder de kaart wordt de data van het gewenste jaar weergeven. Klik daarna op een gemeente om meer informatie over een gemeente te zien over de tijd. Op gemeenteniveau kunnen ook 2 gegevensbronnen tegen elkaar af worden gezet.
+					</div>
 					<p><strong>Nederland</strong> <span id="provincie"></span> <span id="gemeente"></span></p>
 					<p>
 						<select id="select_variable" name="select_variable">
@@ -315,6 +318,13 @@
             			zoom_prov(provincies_data[provincies_reverse[current_provincie]], d); 
             		})
             		.on('mouseover', function(d) {
+        				var current_provincie;
+        				$.each(provincies_gemcode[slider_value], function(i, v) { //Jaar
+        					if (v.indexOf(d.properties.statcode) != -1) {
+        						current_provincie = i;
+        					}
+        				});
+        				
             			// Tooltips! Als bepaalde variabelen, dan delen door 100 omdat D3 decimale getallen niet leuk vindt
             			if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
             				var value = dataset[d.properties.statnaam] / 100;
@@ -322,8 +332,9 @@
             			else {
             				var value = dataset[d.properties.statnaam];
             			}
+            			
             			// Tooltip opvullen met gemeentenaam, waarde (geformat naar NL cijfers) met eenheid (% bijv)
-            			tooltip.select('.label').html(toTitleCase(d.properties.statnaam) + "<br />" + parseFloat(value).toLocaleString('nl') + eenheid);
+            			tooltip.select('.label').html(provincies_reverse[current_provincie] + "<br /><strong>" + toTitleCase(d.properties.statnaam) + "</strong><br />" + parseFloat(value).toLocaleString('nl') + eenheid);
             			tooltip.style('display', 'block');
             		})
             		.on('mouseout', function(d) {
@@ -607,6 +618,7 @@
 					.call(yAxis)
 					.append("text")	
 					.attr("y", 6)
+					.attr("x", 10)
 					.attr("dy", ".71em")
 					.style("text-anchor", "end")
 					.text($('#select_variable').find(":selected").data('type'));
@@ -731,11 +743,10 @@
 			// Zoom naar provincie, aangeroepen door click event provincie
 			// Spreekt redelijk voor zich
 			function zoom_prov(d, d2) {
-			
+				
 				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
 				
-				if (zoom_counter == 1) {
-				
+				if (zoom_counter > 0) {
 					var current_provincie;
 					$.each(provincies_gemcode[slider_value], function(i, v) { //Jaar
 					    $.each(v, function(j, w) { // Provincie
@@ -747,13 +758,15 @@
 					});
 					
 					var next_provincie = provincies_data[provincies_reverse[current_provincie]];
-					console.log(selected_provincie);
-					console.log(next_provincie);
+					
 					if (selected_provincie == next_provincie) {
+						console.log(d2);
 						zoom_gem(d2);
+						console.log('we gaan zoomen');
 						return true;
 					}
 				}
+				console.log('zoom naar provincie');
 
 				selected_gemeente = null;
 				selected_gemeente_obj = null;
@@ -787,7 +800,8 @@
 			// Tevens instellen variabelen welke gemeente geselecteerd is
 			function zoom_gem(d) {
 				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
-				if (active_gem.node() === this) { $('#gemeente').html(''); return reset_to_prov(); }
+				if (selected_gemeente_obj === this) { $('#gemeente').html(''); return reset_to_prov(); }
+				console.log('zoom naar gemeente');
 				zoom_counter = 2;
 				selected_gemeente = d;
 				selected_gemeente_obj = this;
@@ -818,12 +832,9 @@
 				//$('#slider').show();
 				$('#visual').empty();
 				drawTreemap();
-				
-				active_gem.classed("active_gem", false);
-				active_gem = d3.select(null);
+				console.log('reset naar provincie');
 				selected_gemeente = null;
-				active_prov.classed("active_prov", false);
-				active_prov = d3.select(selected_provincie_obj).classed("active_prov", true);
+				selected_gemeente_obj = null;
 				
 				var bounds = path.bounds(selected_provincie),
 					dx = bounds[1][0] - bounds[0][0],
@@ -842,7 +853,7 @@
 			// Uitzoomen: gemeente/provincie -> land
 			function reset_to_land() {
 				zoom_counter = 0;
-				
+				console.log('reset naar land');
 				//$('#slider').show();
 				$('#visual').empty();
 				
@@ -850,11 +861,6 @@
 				selected_gemeente = null;
 				$('#provincie').html('');
 				$('#gemeente').html('');
-				
-				active_gem.classed("active_gem", false);
-				active_gem = d3.select(null);
-				active_prov.classed("active_prov", false);
-				active_prov = d3.select(null);
 				
 				svg.transition()
 				  .duration(zoom_speed)
