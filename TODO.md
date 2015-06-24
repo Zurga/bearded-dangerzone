@@ -1,5 +1,5 @@
 - Bug: stedelijkheid treemap reverse data
- 
+
 - lijn/staafgrafiek pitfall: moeilijk leesbaar --> meer leesbaar maken
 
 - Funfact: Bergen aantal 65+   NH
