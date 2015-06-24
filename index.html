@@ -46,6 +46,16 @@
 		<script type="text/javascript">
 		$(document).ready(function() {
 			
+            jQuery.fn.d3Click = function () {
+                this.each(function (i, e) {
+                    var evt = document.createEvent("MouseEvents");
+                    evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                    console.log('hoi');
+
+                    e.dispatchEvent(evt);
+                });
+            };
+
             var expl = {};
 			// Inladen gegevensbronnen in de select
 			$.ajax({
@@ -315,6 +325,7 @@
                 			}
                 		});
                 		
+                        console.log('zaaaaaming');
             			zoom_prov(provincies_data[provincies_reverse[current_provincie]], d); 
             		})
             		.on('mouseover', function(d) {
@@ -909,7 +920,7 @@
 				  .duration(zoom_speed)
 				  .call(zoom.translate([0, 0]).scale(1).event);
 
-			    remove_legend();	
+                minmaxavg(cbs_data);
 			}
 			
 			// D3 zoom event
@@ -954,10 +965,17 @@
                 }
                 
                 var html = '<div id="minmaxavg"><p><strong>Gemiddelde:</strong> ' + avg + '</p>' +
-                    '<p><strong>Min:</strong> ' + toTitleCase(countrydata.min[1]) + ', ' + min + '</p>' +
-                    '<p><strong>Max:</strong> ' + toTitleCase(countrydata.max[1]) + ', ' + max + '</p></div>';
+                    '<p><strong>Min:</strong> <a id="min" href="#">' + toTitleCase(countrydata.min[1]) + ', ' + min + '</a></p>' +
+                    '<p><strong>Max:</strong> <a id="max" href="#">' + toTitleCase(countrydata.max[1]) + ', ' + max + '</a></p></div>';
                 $('#description').empty();
                 $('#description').append(html);
+                if ( selected_provincie ){
+                    $('#min').click(function () {
+                        var gemeente = $('#'+countrydata.min[1]);
+                        console.log(gemeente);
+                        gemeente.d3Click();
+                    });
+                }
             }
 
             // Legenda bouwen
