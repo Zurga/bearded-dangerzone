@@ -24,7 +24,7 @@
 			
 				<div id="properties">
 					<div id="instructieBox">
-						 Selecteer een gegevensbron en klik op de gewenste provincie, met de slider onder de kaart wordt de data van het gewenste jaar weergeven. Klik daarna op een gemeente om meer informatie over een gemeente te zien over de tijd. Op gemeenteniveau kunnen ook 2 gegevensbronnen tegen elkaar af worden gezet.
+						 Selecteer een gegevensbron en klik op de gewenste provincie. Met de slider onder de kaart wordt de data van het gewenste jaar weergeven. Klik daarna op een gemeente om meer informatie over een gemeente te zien over de tijd. Op gemeenteniveau kunnen ook twee gegevensbronnen tegen elkaar af worden gezet.
 					</div>
 					<p><strong>Nederland</strong> <span id="provincie"></span> <span id="gemeente"></span></p>
 					<p>
@@ -264,9 +264,21 @@
                 console.log(countrydata);
                 
                 $('#minmaxavg').remove();
-                var html = '<div id="minmaxavg"><p><strong>Gemiddelde:</strong> ' + countrydata.avg.toFixed(1) + '</p>' +
-                    '<p><strong>Min:</strong> ' + toTitleCase(countrydata.min[1]) + ', ' + countrydata.min[2].toFixed(1) + '</p>' +
-                    '<p><strong>Max:</strong> ' + toTitleCase(countrydata.max[1]) + ', ' + countrydata.max[2].toFixed(1) + '</p></div>';
+                
+                if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
+                	var avg = (countrydata.avg / 100).toFixed(1);
+                	var min = (countrydata.min[2] / 100).toFixed(1);
+                	var max = (countrydata.max[2] / 100).toFixed(1);
+                }
+                else {
+                	var avg = countrydata.avg.toFixed(1);
+                	var min = countrydata.min[2].toFixed(1);
+                	var max = countrydata.max[2].toFixed(1);
+                }
+                
+                var html = '<div id="minmaxavg"><p><strong>Gemiddelde:</strong> ' + avg + '</p>' +
+                    '<p><strong>Min:</strong> ' + toTitleCase(countrydata.min[1]) + ', ' + min + '</p>' +
+                    '<p><strong>Max:</strong> ' + toTitleCase(countrydata.max[1]) + ', ' + max + '</p></div>';
                 $('#description').append(html);
 
             	var land_gem_data = loadData('gemeente-prov/topo_' + slider_value + '_cords.json');
@@ -277,7 +289,14 @@
                 		// Als deze variabelen, dan delen door 100
                 		if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
                 			// TODO: delen door 100?
-                			dataset[j] = w;
+                			if (typeof w !== "object") {
+                				if (w == "x") {
+	                				dataset[j] == undefined;
+                				}
+                				else {
+                					dataset[j] = parseFloat(w.replace(",", ".")) * 100;
+                				}
+                			}
                 		}
                 		else {
                 			dataset[j] = w;
@@ -407,9 +426,21 @@
 					
 					$('#description').html($('option:selected', this).data('desc'));
                     $('#minmaxavg').remove();
-                    var html = '<div id="minmaxavg"><p><strong>Gemiddelde:</strong> ' + countrydata.avg.toFixed(1) + '</p>' +
-                        '<p><strong>Min:</strong> ' + toTitleCase(countrydata.min[1]) + ', ' + countrydata.min[2].toFixed(1) + '</p>' +
-                        '<p><strong>Max:</strong> ' + toTitleCase(countrydata.max[1]) + ', ' + countrydata.max[2].toFixed(1) + '</p></div>';
+                    
+                    if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
+                    	var avg = (countrydata.avg / 100).toFixed(1);
+                    	var min = (countrydata.min[2] / 100).toFixed(1);
+                    	var max = (countrydata.max[2] / 100).toFixed(1);
+                    }
+                    else {
+                    	var avg = countrydata.avg.toFixed(1);
+                    	var min = countrydata.min[2].toFixed(1);
+                    	var max = countrydata.max[2].toFixed(1);
+                    }
+                    
+                    var html = '<div id="minmaxavg"><p><strong>Gemiddelde:</strong> ' + avg + '</p>' +
+                        '<p><strong>Min:</strong> ' + toTitleCase(countrydata.min[1]) + ', ' + min + '</p>' +
+                        '<p><strong>Max:</strong> ' + toTitleCase(countrydata.max[1]) + ', ' + max + '</p></div>';
                     $('#description').append(html);
 					
                 	var land_gem_data = loadData('gemeente-prov/topo_' + slider_value + '_cords.json');
@@ -421,6 +452,7 @@
 	                		if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
 	                			// TODO: delen door 100?
 	                			dataset[j] = w;
+	                			console.log(w);
 	                		}
 	                		else {
 	                			dataset[j] = w;
@@ -761,7 +793,7 @@
 						.call(position)
 						.style("background", function(d) { return color(d.name); })
                         .append("span")
-                            .html(function(d) { return toTitleCase(d.name) + "<br>" + d.value;});
+                            .html(function(d) { return toTitleCase(d.name) + "<br>" + d.value.toLocaleString('nl');});
 						
 				});
 				
@@ -928,8 +960,17 @@
             function legend(){
                 remove_legend();
 
-                var legend = svg.append('g')
-                    .attr('class', 'legend')
+                var legend = svg.append('g');
+                
+                legend
+                	.append('rect')
+                	.attr("x", 5)
+                	.attr("y", 5)
+                	.attr("height", 90)
+                	.attr("width", 100)
+                	
+                legend
+                	.attr('class', 'legend')
                     .selectAll('g.legendEntry')
                     .data(colorScale.range())
                     .enter()
@@ -955,9 +996,16 @@
                     .attr("dy", "0.8em") //place text one line *below* the x,y point
                     .text(function(d,i) {
                         var extent = colorScale.invertExtent(d);
+                        
                         //extent will be a two-element array, format it however you want:
                         var format = d3.format("1f");
-                        return format(+extent[0]) + " - " + format(+extent[1]) + ' ' + selected_type;
+                        
+                        if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
+                        	return (+extent[0] / 100).toFixed(1) + " - " + (+extent[1] / 100).toFixed(1) + ' ' + selected_type;
+                        }
+                        else {
+                        	return format(+extent[0]) + " - " + format(+extent[1]) + ' ' + selected_type;
+                        }
                     });
             }
 			
