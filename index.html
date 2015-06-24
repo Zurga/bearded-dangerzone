@@ -256,6 +256,9 @@
 			$('#select_variable').change(function() {
 				$('#instructieBox').hide();
 				if ($(this).val() == '') {
+					remove_legend();
+					$('#description').empty();
+					$('#minmaxavg').empty();
 					$('#instructieBox').show();
 				}
 				
@@ -700,7 +703,7 @@
 					.call(yAxis)
 					.append("text")	
 					.attr("y", 6)
-					.attr("x", 10)
+					.attr("x", 0)
 					.attr("dy", ".71em")
 					.style("text-anchor", "end")
 					.text($('#select_variable').find(":selected").data('type'));
