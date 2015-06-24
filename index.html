@@ -120,9 +120,6 @@
 			    active_prov = d3.select(null),
 			    active_gem = d3.select(null),
 			    tooltip;
-			    console.log(width);
-			    console.log(width_right);
-			    console.log(Math.max(document.documentElement.clientWidth, window.innerWidth || 0));
 			
 			$('.left').css('width', width);
 			$('.right').css('width', width_right);
@@ -634,8 +631,8 @@
                 }
                 
 				var margin = {top: 20, right: 20, bottom: 30, left: 60},
-				    width = $(".right").width() - 80,
-				    height = width * 0.6;
+				    width_chart = width_right * 0.9,
+				    height_chart = width_chart * 0.6;
 				
 				var x = d3.scale.ordinal()
 				    .rangeRoundBands([0, width], .1);
@@ -661,8 +658,8 @@
 				}
 				
 				var svg = d3.select("#visual").append("svg")
-				    .attr("width", width + margin.left + margin.right)
-				    .attr("height", height + margin.top + margin.bottom)
+				    .attr("width", width_chart + margin.left + margin.right)
+				    .attr("height", height_chart + margin.top + margin.bottom)
 					.append("g")
 					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
                 
@@ -787,11 +784,11 @@
 				$('#visual').empty();
 				
 				var margin = {top: 10, right: 0, bottom: 5, left: 0},
-				    width = $(".right").width(),
-				    height = width * 0.7;
+				    width_chart = width_right * 0.9,
+				    height_chart = width_chart * 0.7;
 			
 				var treemap = d3.layout.treemap()
-				    .size([width, height])
+				    .size([width_chart, height_chart])
 				    .sticky(true);
 				    
 				if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
@@ -808,8 +805,8 @@
 				
 				var div = d3.select("#visual").append("div")
 				    .style("position", "relative")
-				    .style("width", (width + margin.left + margin.right) + "px")
-				    .style("height", (height + margin.top + margin.bottom) + "px")
+				    .style("width", (width_chart + margin.left + margin.right) + "px")
+				    .style("height", (height_chart + margin.top + margin.bottom) + "px")
 				    .style("left", margin.left + "px")
 				    .style("top", margin.top + "px");
 				
