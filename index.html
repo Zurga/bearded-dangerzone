@@ -476,7 +476,7 @@
 									'<label><input type="radio" name="mode" value="bar"> Staaf</label>' +
 									'</form>');
 
-                $('#visual').append('<label>Kies hier een tweede variabele om te vergelijken: </label><select id="second_variable" name="Tweede Variabele">' +
+                $('#visual').append('<label>Kies hier een tweede variabele om te vergelijken: </label><br/><select id="second_variable" name="Tweede Variabele">' +
                         '<option>Selecteer Variable</option>' +
                         '</select>');
                 $.ajax({
@@ -540,7 +540,6 @@
 				});
 				
             }
-			
 
 			// Deze functie wordt aangeroepen om een linechart te bouwen
 			// Instellen x en y-as, zie variabelenamen voor hun taak
@@ -582,7 +581,6 @@
 				    .attr("height", height + margin.top + margin.bottom)
 					.append("g")
 					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-				    
                 
                 var min = [],
                     max = [];
@@ -887,6 +885,7 @@
 				
 				$('#gemeente').html("&raquo; " + toTitleCase(d.properties.statnaam));
 				
+>>>>>>> de6cbf070e2624f85225b3a3c06f76ebde468264
 				var bounds = path.bounds(d),
 					dx = bounds[1][0] - bounds[0][0],
 					dy = bounds[1][1] - bounds[0][1],
