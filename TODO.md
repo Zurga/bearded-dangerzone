@@ -1,4 +1,5 @@
 - Bug: stedelijkheid treemap reverse data
+- Bug: y-as beschrijving gaat fout
 
 - lijn/staafgrafiek pitfall: moeilijk leesbaar --> meer leesbaar maken
 
