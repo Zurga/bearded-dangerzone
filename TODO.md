@@ -11,6 +11,7 @@
 - Verbetering: procentteken staat omgekeerd in de line/bar chart, erg lelijk en onduidelijk
 - Toevoeging: highlighten gemeente op hover kaart en/of treemap
 - Toevoeging of wijziging: Type in expl.json als % in plaats van PERC of extra Type met % bijv
+ -Toevoeging: variabele in tooltip voor accessibility
  
 - lijn/staafgrafiek pitfall: moeilijk leesbaar --> meer leesbaar maken
 - legenda functioneler maken (3-5 stappen, afgeronde waardes bv 0-25, 25-50 etc..)
