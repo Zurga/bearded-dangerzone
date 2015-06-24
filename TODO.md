@@ -1,4 +1,7 @@
 - Bug: stedelijkheid treemap reverse data
+- Bug: y-as beschrijving gaat fout
+- Bug: linechart werkt niet met decimalen
+- Bug: nou ja, niet een bug, maar de legenda moet echt een transparent divje zijn met achtergrond
 
 - lijn/staafgrafiek pitfall: moeilijk leesbaar --> meer leesbaar maken
 
