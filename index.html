@@ -609,7 +609,7 @@
                         dataset[i][second_variable] = +second_data[i][second_variable];
                     });
                 }
-                console.log(dataset);
+
 				var margin = {top: 20, right: 20, bottom: 30, left: 60},
 				    width = $(".right").width() * 0.8,
 				    height = width * 0.6;
@@ -646,21 +646,15 @@
 
                 $.each(dataset, function (i, v){
                     min.push(Math.floor(dataset[i][selected_variable] * 0.9));
-                    if (second_variable) {
-                    min.push(Math.floor(dataset[i][second_variable] * 0.9));
-                    }
-                });
-
-                $.each(dataset, function (i, v){
                     max.push(Math.ceil(dataset[i][selected_variable] * 1.1));
                     if (second_variable) {
+                    min.push(Math.floor(dataset[i][second_variable] * 0.9));
                     max.push(Math.ceil(dataset[i][second_variable] * 1.1));
                     }
                 });
 
 				min = d3.min(min);
 			    max = d3.max(max);
-                console.log(min, max);
 					
                 y.domain([min, max]);
                 x.domain(yearRange);
@@ -751,7 +745,7 @@
 					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 				
 				x.domain([2006,2007,2008,2009,2010,2011,2012,2013,2014]);
-				y.domain([0, d3.max(dataset, function(d) { return Math.ceil(d.value * 1.1); })]);
+				y.domain([0, d3.max(dataset, function(d) { return Math.ceil(d[selected_variable] * 1.1); })]);
 				
 				// Toevoegen x-as
 				svg.append("g")
@@ -778,8 +772,8 @@
 				  .attr("class", "bar")
 				  .attr("x", function(d) { return x(d.year); })
 				  .attr("width", x.rangeBand())
-				  .attr("y", function(d) { return y(d.value); })
-				  .attr("height", function(d) { return height - y(d.value); });
+				  .attr("y", function(d) { return y(d[selected_variable]); })
+				  .attr("height", function(d) { return height - y(d[selected_variable]); });
 			
 			}
 			
@@ -1075,7 +1069,7 @@
                         var extent = colorScale.invertExtent(d);
                         //extent will be a two-element array, format it however you want:
                         var format = d3.format("1f");
-                        return format(+extent[0]) + " - " + format(+extent[1]);
+                        return format(+extent[0]) + " - " + format(+extent[1]) + ' ' + selected_type;
                     });
             }
 			
