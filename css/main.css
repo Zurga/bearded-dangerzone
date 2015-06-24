@@ -22,6 +22,7 @@ h1 {
 
 #map {
 	position: relative;
+	background-color: #ECF3FD;
 }
 .tooltip {
 	background: #eee;
@@ -134,11 +135,4 @@ path {
 	margin: 0 25px 0 0;
 	background: #eeeeee;
 	padding: 10px;
-}
-
-/* Legenda */
-
-
-.legend rect {
-	background-color: #eee;
 }

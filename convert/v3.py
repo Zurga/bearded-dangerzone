@@ -3,6 +3,7 @@
 
 import pandas as pd
 import numpy as np
+import operator
 import json
 import csv
 import glob
@@ -135,6 +136,7 @@ def get_json(var, variables, provinces, years, location="data/csv/"):
         # Remove rows which contain no data (notice the ~)
         rootx = root[~root[item].isin(['x', '-'])]
 
+        
         # If 'probleemvars', multiply by 100
         if var == "gemiddelde_huishoudensgrootte"\
                 or var == "personenautos_per_huishouden":
@@ -168,15 +170,17 @@ def get_json(var, variables, provinces, years, location="data/csv/"):
 
             # Min, max, average for each province.
             bd = branch[item].to_dict()
-            values = map(lambda x: float(x), branchx[item].to_dict().values())
+            dfdict = {k: int(v) for k, v in branchx[item].to_dict().items()}
+            minimum = min(dfdict.items(), key = lambda x: x[1])
+            maximum = max(dfdict.items(), key = lambda x: x[1])
+            average = np.mean(dfdict.values())
             countrydata = {
                 "__provdata":
                 {"min": [provinces[prov],
-                         branchx[item].idxmin(skipna=True), min(values)],
+                         minimum[0], minimum[1]],
                  "max": [provinces[prov],
-                         branchx[item].idxmax(skipna=True),
-                         max(values)],
-                 "avg": np.mean(values),
+                         maximum[0], maximum[1]],
+                 "avg": average,
                  "inw": (branch["inwoners"]).to_dict()
                  }
             }
@@ -293,4 +297,4 @@ def write_json(variables, tree=False, inp_dir_prefix='',
 
 
 if __name__ == "__main__":
-    print(write_json(variables))
+    print "MAIN WEETJE"

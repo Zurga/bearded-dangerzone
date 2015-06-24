@@ -46,15 +46,6 @@
 		<script type="text/javascript">
 		$(document).ready(function() {
 			
-            jQuery.fn.d3Click = function () {
-                this.each(function (i, e) {
-                    var evt = document.createEvent("MouseEvents");
-                    evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-                    console.log('hoi');
-
-                    e.dispatchEvent(evt);
-                });
-            };
 
             var expl = {};
 			// Inladen gegevensbronnen in de select
@@ -154,7 +145,7 @@
 			var svg = d3.select("#map").append("svg")
 			    .attr("width", width)
 			    .attr("height", height)
-				.on("click", stopped, true); // TODO: wat doet dit?
+				.on("click", stopped, true);
 			
 			// Voeg een rectangle toe aan de SVG waar alle gemeentes in komen
 			svg.append("rect")
@@ -281,7 +272,6 @@
             		$.each(cbs_data[slider_value][i], function (j, w) {
                 		// Als deze variabelen, dan delen door 100
                 		if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
-                			// TODO: delen door 100?
                 			if (typeof w !== "object") {
                 				if (w == "x") {
 	                				dataset[j] == undefined;
@@ -310,7 +300,6 @@
             	var coords = topojson.feature(land_gem_data, land_gem_data.objects['latlon_'+slider_value+'_cords']).features;
             	
             	// Gemeentes instellen, kleur, grootte, tooltip, click event, etc
-            	// TODO: mouseover provincie border!!
             	gg.selectAll('path')
             		.data(coords)
             		.enter().append("g")
@@ -319,13 +308,13 @@
             		.append("path")
             		.on("click", function (d) {
                 		var current_provincie;
+                        console.log('hnsaoeunsltaoeuhts');
                 		$.each(provincies_gemcode[slider_value], function(i, v) { //Jaar
                 			if (v.indexOf(d.properties.statcode) != -1) {
                 				current_provincie = i;
                 			}
                 		});
                 		
-                        console.log('zaaaaaming');
             			zoom_prov(provincies_data[provincies_reverse[current_provincie]], d); 
             		})
             		.on('mouseover', function(d) {
@@ -430,9 +419,7 @@
                 		$.each(cbs_data[slider_value][i], function (j, w) {
 	                		// Als deze variabelen, dan delen door 100
 	                		if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
-	                			// TODO: delen door 100?
 	                			dataset[j] = w;
-	                			console.log(w);
 	                		}
 	                		else {
 	                			dataset[j] = w;
@@ -453,7 +440,6 @@
                 	var coords = topojson.feature(land_gem_data, land_gem_data.objects['latlon_'+slider_value+'_cords']).features;
                 	
                 	// Gemeentes instellen, kleur, grootte, tooltip, click event, etc
-                	// TODO: mouseover provincie border!!
                 	gg.selectAll('path')
                 		.data(coords)
                 		.enter().append("g")
@@ -468,6 +454,7 @@
                 		    	}
 	                		});
 	                	
+                            console.log('zaaaaaming');
                 			zoom_prov(provincies_data[provincies_reverse[current_provincie]], d); 
                 		})
                 		.on('mouseover', function(d) {
@@ -813,13 +800,13 @@
 					var next_provincie = provincies_data[provincies_reverse[current_provincie]];
 					
 					if (selected_provincie == next_provincie) {
-						console.log(d2);
+						//console.log(d2);
 						zoom_gem(d2);
-						console.log('we gaan zoomen');
+						//console.log('we gaan zoomen');
 						return true;
 					}
 				}
-				console.log('zoom naar provincie');
+				//console.log('zoom naar provincie');
 
 				selected_gemeente = null;
 				selected_gemeente_obj = null;
@@ -829,7 +816,7 @@
 				selected_provincie = d;
 				selected_provincie_obj = this;
                 minmaxavg(cbs_data);
-                console.log(selected_provincie);
+                //console.log(selected_provincie);
 				$('#provincie').html("&raquo; " + d.properties.PROV_NAME);
 				
 				zoom_counter = 1;
@@ -855,7 +842,7 @@
 			function zoom_gem(d) {
 				if (selected_variable == '') { alert('Selecteer eerst een gegevensbron'); return false; }
 				if (selected_gemeente_obj === this) { $('#gemeente').html(''); return reset_to_prov(); }
-				console.log('zoom naar gemeente');
+				//console.log('zoom naar gemeente');
 				zoom_counter = 2;
 				selected_gemeente = d;
 				selected_gemeente_obj = this;
@@ -886,7 +873,7 @@
 				//$('#slider').show();
 				$('#visual').empty();
 				drawTreemap();
-				console.log('reset naar provincie');
+				//console.log('reset naar provincie');
 				selected_gemeente = null;
 				selected_gemeente_obj = null;
 				
@@ -907,7 +894,7 @@
 			// Uitzoomen: gemeente/provincie -> land
 			function reset_to_land() {
 				zoom_counter = 0;
-				console.log('reset naar land');
+				//console.log('reset naar land');
 				//$('#slider').show();
 				$('#visual').empty();
 				
@@ -921,6 +908,22 @@
 				  .call(zoom.translate([0, 0]).scale(1).event);
 
                 minmaxavg(cbs_data);
+				if (zoom_counter > 0) {
+					zoom_counter = 0;
+					//console.log('reset naar land');
+					//$('#slider').show();
+					$('#visual').empty();
+					
+					selected_provincie = null;
+					selected_gemeente = null;
+					$('#provincie').html('');
+					$('#gemeente').html('');
+					
+					svg.transition()
+					  .duration(zoom_speed)
+					  .call(zoom.translate([0, 0]).scale(1).event);
+	
+				}
 			}
 			
 			// D3 zoom event
@@ -944,14 +947,14 @@
 			}
 
             function minmaxavg(cbs_data) {
-                console.log(selected_provincie);
+                //console.log(selected_provincie);
                 if (selected_provincie) {
                     var countrydata = cbs_data[slider_value][selected_provincie.properties.PROV_NAME]['__provdata'];
                 }
                 else {
                     var countrydata = cbs_data[slider_value]['__countrydata'];
                 }
-                console.log(countrydata);
+                //console.log(countrydata);
 
                 if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
                 	var avg = (countrydata.avg / 100).toFixed(1);
@@ -969,29 +972,18 @@
                     '<p><strong>Max:</strong> <a id="max" href="#">' + toTitleCase(countrydata.max[1]) + ', ' + max + '</a></p></div>';
                 $('#description').empty();
                 $('#description').append(html);
-                if ( selected_provincie ){
-                    $('#min').click(function () {
-                        var gemeente = $('#'+countrydata.min[1]);
-                        console.log(gemeente);
-                        gemeente.d3Click();
-                    });
-                }
+                $('#min').on("click", function () {
+                    var gemeente = $('#'+countrydata.min[1]);
+                    console.log(gemeente);
+                    gemeente.d3Click();
+                });
             }
 
             // Legenda bouwen
             function legend(){
                 remove_legend();
 
-                var legend = svg.append('g');
-                
-                legend
-                	.append('rect')
-                	.attr("x", 5)
-                	.attr("y", 5)
-                	.attr("height", 90)
-                	.attr("width", 100)
-                	
-                legend
+                var legend = svg.append('g')
                 	.attr('class', 'legend')
                     .selectAll('g.legendEntry')
                     .data(colorScale.range())
@@ -1036,6 +1028,15 @@
                 svg.selectAll('g.legend').remove();
             }
 			
+            $.fn.d3Click = function () {
+                this.each(function (i, e) {
+                    var evt = document.createEvent("MouseEvents");
+                    evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                    console.log('hoi');
+
+                    e.dispatchEvent(evt);
+                });
+            };
 		});
         </script>
 	</body>
