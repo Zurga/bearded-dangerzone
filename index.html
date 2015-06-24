@@ -355,8 +355,8 @@
 	        					}
 	        				});
 	        				
-	        				if (value == "x" || value == "-") {
-	        					value == "Geen data bekend";
+	        				if (dataset[d.properties.statnaam] == "x" || dataset[d.properties.statnaam] == "-" || dataset[d.properties.statnaam] === undefined) {
+	        					var value = "Geen data bekend";
 	        				}
 	        				else {
 	        					// Tooltips! Als bepaalde variabelen, dan delen door 100 omdat D3 decimale getallen niet leuk vindt
@@ -369,7 +369,7 @@
 	        				}
 	            			
 	            			// Tooltip opvullen met gemeentenaam, waarde (geformat naar NL cijfers) met eenheid (% bijv)
-	            			tooltip.select('.label').html(provincies_reverse[current_provincie] + "<br /><strong>" + toTitleCase(d.properties.statnaam) + "</strong><br />" + parseFloat(value).toLocaleString('nl') + eenheid);
+	            			tooltip.select('.label').html(provincies_reverse[current_provincie] + "<br /><strong>" + toTitleCase(d.properties.statnaam) + "</strong><br />" + value + eenheid);
 	            			tooltip.style('display', 'block');
 	            		})
 	            		.on('mouseout', function(d) {
@@ -511,17 +511,17 @@
                 				}
                 			});
                 			
-                			if (value == "x" || value == "-") {
-                				value == "Geen data bekend";
+                			if (dataset[d.properties.statnaam] == "x" || dataset[d.properties.statnaam] == "-" || dataset[d.properties.statnaam] === undefined) {
+                				var value = "Geen data bekend";
                 			}
                 			else {
-	                			// Tooltips! Als bepaalde variabelen, dan delen door 100 omdat D3 decimale getallen niet leuk vindt
-	                			if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
-	                				var value = parseFloat(dataset[d.properties.statnaam] / 100).toLocaleString('nl');
-	                			}
-	                			else {
-	                				var value = parseFloat(dataset[d.properties.statnaam]).toLocaleString('nl');
-	                			}
+                				// Tooltips! Als bepaalde variabelen, dan delen door 100 omdat D3 decimale getallen niet leuk vindt
+                				if (selected_variable == 'gemiddelde_huishoudensgrootte.json' || selected_variable == 'personenautos_per_huishouden.json') {
+                					var value = parseFloat(dataset[d.properties.statnaam] / 100).toLocaleString('nl');
+                				}
+                				else {
+                					var value = parseFloat(dataset[d.properties.statnaam]).toLocaleString('nl');
+                				}
                 			}
                 			
                 			// Tooltip opvullen met gemeentenaam, waarde (geformat naar NL cijfers) met eenheid (% bijv)
