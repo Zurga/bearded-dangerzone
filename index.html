@@ -716,9 +716,6 @@
 				if (selected_type == "%") {
 					var rotate = '';
 				}
-                else if ( selected_type === "Aantal") {
-                    var eenheid_x = 40;
-                }
 				else {
 					var rotate = "rotate(-90)";
 				}
@@ -729,7 +726,7 @@
 					.call(yAxis)
 					.append("text")	
 					.attr("y", 6)
-					.attr("x", 5)
+					.attr("x", 12)
 					.attr("transform", rotate)
 					.attr("dy", ".71em")
 					.style("text-anchor", "end")
