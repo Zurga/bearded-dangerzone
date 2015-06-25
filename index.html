@@ -700,10 +700,13 @@
 					.call(xAxis);
 				
 				if (selected_type == "%") {
-					var eenheid_x = 15;
-				}
-				else {
 					var eenheid_x = 30;
+				}
+                else if ( selected_type === "Aantal") {
+                    var eenheid_x = 40;
+                }
+				else {
+					var eenheid_x = 110;
 				}
 				
 				// Toevoegen y-as
@@ -712,9 +715,8 @@
 					.call(yAxis)
 					.append("text")	
 					.attr("y", 6)
-					.attr("x", 30)
+					.attr("x", eenheid_x)
 					.attr("dy", ".71em")
-                    .attr("dx", "1em")
 					.style("text-anchor", "end")
 					.text(selected_type);
 				
@@ -1046,14 +1048,14 @@
                 $('#min').on("click", function () {
                     var gemeente = $('#'+countrydata.min[1]);
                     gemeente.d3Click();
-                    if ( zoomcounter !== 1 ){
+                    if ( zoom_counter !== 1 ){
                         gemeente.d3Click();
                     }
                 });
                 $('#max').on("click", function () {
                     var gemeente = $('#'+countrydata.max[1]);
                     gemeente.d3Click();
-                    if ( zoomcounter !== 1 ){
+                    if ( zoom_counter !== 1 ){
                         gemeente.d3Click();
                     }
                 });
