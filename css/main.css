@@ -6,21 +6,6 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
-#header {
-    padding:10px 25px 0 25px;
-}
-h1 {
-    border-bottom:1px #D6D6D6 solid;
-    padding-left:10px;
-}
-#footer {
-    text-align: center;
-    margin:0 25px;
-    padding:0 25px 10px 25px;
-    color:#555;
-    border-top:1px #D6D6D6 solid;
-}
-
 #map {
 	position: relative;
 }
@@ -41,12 +26,13 @@ h1 {
 .column {
 	float: left;
 	display: block;
-    padding: 10px 2.5%;
-    height: calc(100% - 20px);
-	width: calc(45% - 2px);
     border-right: 2px solid #eee;
 }
+.left {
+	padding: 15px 15px;
+}
 .right {
+	padding-left: 10px;
     border: none;
 }
 
@@ -56,7 +42,8 @@ h1 {
 }
 
 #description {
-	width: 250px;
+	width: 420px;
+	height: 45px;
 }
 
 /*svg layout */
@@ -176,3 +163,12 @@ div.node > span:nth-child(1) {
 svg image:hover {
 	cursor: pointer;
 }
+/*
+#minmaxavg * {
+    color: #000000;
+    text-decoration: none;
+    cursor: default;
+    font-size: 8.5pt;
+    line-height: 5px;
+}
+*/
